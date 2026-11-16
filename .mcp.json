@@ -1,0 +1,35 @@
+{
+  "mcpServers": {
+    "sequential-thinking": {
+      "command": "cmd",
+      "args": [
+        "/c",
+        "npx",
+        "-y",
+        "@modelcontextprotocol/server-sequential-thinking@1.0.0"
+      ]
+    },
+    "serena": {
+      "command": "serena",
+      "args": [
+        "start-mcp-server",
+        "--context",
+        "claude-code",
+        "--project-from-cwd"
+      ]
+    },
+    "microsoft-learn": {
+      "type": "http",
+      "url": "https://learn.microsoft.com/api/mcp"
+    },
+    "graphify": {
+      "command": "uvx",
+      "args": [
+        "--from",
+        "graphifyy[mcp]==0.9.92",
+        "graphify-mcp",
+        "graphify-out/graph.json"
+      ]
+    }
+  }
+}

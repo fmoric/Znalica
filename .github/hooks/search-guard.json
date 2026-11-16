@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "hooks": {
+    "preToolUse": [
+      {
+        "type": "command",
+        "matcher": "bash|powershell|shell",
+        "powershell": "powershell -NoProfile -ExecutionPolicy Bypass -File \".claude/scripts/search_guard.ps1\"; exit 0",
+        "bash": "command -v powershell.exe >/dev/null 2>&1 && powershell.exe -NoProfile -ExecutionPolicy Bypass -File .claude/scripts/search_guard.ps1 || true",
+        "cwd": ".",
+        "timeoutSec": 15
+      }
+    ]
+  }
+}

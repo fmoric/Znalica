@@ -1,0 +1,94 @@
+{
+  "permissions": {
+    "deny": [
+      "Bash(find / *)",
+      "Bash(find /proc*)"
+    ],
+    "ask": [
+      "Edit(/.claude/scripts/search_guard.*)",
+      "Edit(/.github/hooks/**)",
+      "Edit(/.claude/settings.json)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash|PowerShell",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell -NoProfile -ExecutionPolicy Bypass -Command 'if ($env:CLAUDE_PROJECT_DIR) { & (Join-Path $env:CLAUDE_PROJECT_DIR .claude/scripts/search_guard.ps1) }'; exit 0",
+            "timeout": 15,
+            "statusMessage": "Checking for unbounded searches"
+          }
+        ]
+      },
+      {
+        "matcher": "SubagentHandback",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell -NoProfile -ExecutionPolicy Bypass -Command 'if ($env:CLAUDE_PROJECT_DIR) { & (Join-Path $env:CLAUDE_PROJECT_DIR .claude/scripts/waiting_check.ps1) }'; exit 0",
+            "timeout": 20
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "matcher": "startup",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell -NoProfile -ExecutionPolicy Bypass -Command 'if ($env:CLAUDE_PROJECT_DIR) { & (Join-Path $env:CLAUDE_PROJECT_DIR .claude/scripts/leftover_processes.ps1) -Hook }'; exit 0",
+            "timeout": 30
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "p=$(cat); case \"$p\" in *WAITING:*) [ -n \"$CLAUDE_PROJECT_DIR\" ] && printf %s \"$p\" | powershell -NoProfile -ExecutionPolicy Bypass -File \"$CLAUDE_PROJECT_DIR/.claude/scripts/waiting_check.ps1\";; esac; exit 0",
+            "timeout": 20
+          }
+        ]
+      }
+    ],
+    "SubagentStop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "p=$(cat); case \"$p\" in *WAITING:*) [ -n \"$CLAUDE_PROJECT_DIR\" ] && printf %s \"$p\" | powershell -NoProfile -ExecutionPolicy Bypass -File \"$CLAUDE_PROJECT_DIR/.claude/scripts/waiting_check.ps1\";; esac; exit 0",
+            "timeout": 20
+          }
+        ]
+      }
+    ]
+  },
+  "skillOverrides": {
+    "answer-before-you-ask": "name-only",
+    "discussion-first": "name-only",
+    "external-tool-state-change": "name-only",
+    "knowledge-before-framework-code": "name-only",
+    "no-personal-data-recorded": "name-only",
+    "pr-merge-approval": "name-only",
+    "production-is-read-only": "name-only",
+    "self-review": "name-only",
+    "task-assessment": "name-only",
+    "focus-mode": "name-only",
+    "note": "name-only",
+    "clarify": "name-only",
+    "discussion": "name-only",
+    "plan-quality-gate": "name-only",
+    "diagnose-mcp": "name-only",
+    "context-budget": "name-only",
+    "trace-before-you-claim": "name-only",
+    "mcp-server-setup": "name-only",
+    "pre-commit": "name-only",
+    "hand-off-a-change": "name-only"
+  }
+}
