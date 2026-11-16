@@ -71,7 +71,7 @@ test assembly needs no reference to it.
 
 | Assembly | Folder | Holds | Unity engine reference |
 |---|---|---|---|
-| `Znalica.Domain` | `Assets/Znalica/Domain/` | Numbers and items, item keys, item sets, round engine, scheduler, explanations, parent gate, progress and check calculations, `PhraseKey` and the phrase catalog model with its completeness check, the `IAnswerLog`, `IClock` and `IRandom` contracts (seedable, so tests are repeatable) | **None** (`noEngineReferences: true`) — plain C#, fully testable in EditMode |
+| `Znalica.Domain` | `Assets/Znalica/Domain/` | Numbers and items, item keys, item sets, round engine, scheduler, explanations, parent gate, progress and check calculations, `PhraseKey` and the phrase catalog model with its completeness check, the `IAnswerLog`, `IClock`, `IRandom` (seedable, so tests are repeatable) and `IProblemLog` contracts | **None** (`noEngineReferences: true`) — plain C#, fully testable in EditMode |
 | `Znalica.Storage` | `Assets/Znalica/Storage/` | File answer log (JSON Lines), profile store, settings store, `AtomicFileWriter`, data-folder layout, `PhraseCatalogFile` (reads `Hr.json`) | Yes — `JsonUtility` and `Application.persistentDataPath` |
 | `Znalica.Presentation` | `Assets/Znalica/Presentation/` | `AppRoot` (composition root), `ScreenNavigator`, one view per screen, `VoicePlayer`, `VoiceLibrary`, input | Yes |
 | `Znalica.Editor` | `Assets/Znalica/Editor/` | `BuildScript.Build` (global namespace, to match the `AGENTS.md` command); `VoiceLibraryBuilder` | Editor only |
@@ -134,8 +134,16 @@ Content outside the code:
 `IItemSet` — `Activity Activity`, `IReadOnlyList<Item> All` (deterministic order: by `Difficulty`, then by key) and
 `bool TryFind(ItemKey, out Item)`. `TryFind` **builds the item from the key**, not by looking it up in `All`: the
 planner turns due keys from the schedule back into items this way, and `PutInOrder` items are never in `All`. It
-returns false for a key that does not parse, belongs to another activity, or holds a number outside 0–20 (a log line
-written by a later or broken version); the planner then skips that key. Three implementations:
+returns false (a log line written by a later or broken version; the planner then skips that key) for a key that:
+
+- does not parse, or belongs to another activity;
+- holds a number outside 0–20;
+- is inconsistent: a stated result that is not the operation's result (`A:8+5=14`), or a missing number whose
+  solution falls outside 0–20 (`A:3-?=7` would need −4);
+- names a number-line item that cannot exist: `L:Before:0`, `L:After:20`, a `Jump` whose landing is outside 0–20
+  (`L:Jump:18+5`) or whose `|Step|` is outside 1–10.
+
+Three implementations:
 
 - `ArithmeticItemSet` — every `a + b = c` and `c − a = b` with all numbers in 0–20, in all three unknown positions.
   FS:101–102's four forms of one fact are the two operand orders times the two operations, so they fall out of the
@@ -315,7 +323,10 @@ to `Checks.jsonl`, never to `Answers.jsonl`, so the check neither moves the sche
 - `PhraseKey` enum — every instruction, praise, explanation, break suggestion, spoken activity name, and the
   screen-only texts (buttons, parent area, gate).
 - `PhraseCatalog` — `Phrase Get(PhraseKey)` with `Phrase { string Text; string[] Voice; }` and
-  `string Text(PhraseKey, args)`; a missing key gives the key name and reports an error.
+  `string Text(PhraseKey, args)`; a missing key gives the key name and reports it to `IProblemLog`.
+- `IProblemLog` — `void Report(string message)`, injected like `IClock`, because the domain has no engine reference
+  and so no `Debug.Log`. `AppRoot` passes an implementation that writes `Debug.LogError`; tests pass one that
+  collects the messages, so a test can assert that a missing key was reported.
 - `PhraseCatalogCheck.Missing(PhraseCatalog, IEnumerable<string> clipNames)` — every `PhraseKey` has a text, and
   every clip name a phrase's `Voice` uses (number slots expanded to `Number00`–`Number20`) is in `clipNames`. The
   test passes the file names it lists in `Assets/Znalica/Voice/` with `System.IO` — no Unity object needed.
@@ -347,11 +358,23 @@ so a joined clip would be wrong there. Two rules keep the joined clips correct:
 template texts against rule 2 when the catalog is written (step 2); a wrong form is a text and clip fix, not a code
 fix.
 
+**Residual risk, stated plainly:** FS:134 prefers whole spoken sentences; this design still joins bare-numeral clips
+in sums, number-line counts and number comparisons, because one clip per sentence would mean one per fact and form
+(hundreds). Rule 2 rests on that speaker's check alone: `PhraseCatalogCheck` sees clip names, not grammar, and
+cannot tell a bare numeral from one before a noun. If the voice method chosen for release is generated speech, whole
+sentences per item become cheap; using them would need a per-item clip lookup this design does not build — a design
+change to make then, not now.
+
 **Playback — `Znalica.Presentation`:**
 
 - `VoiceLibrary` — ScriptableObject mapping clip name → `AudioClip`. It is **generated**, not hand-edited:
   `VoiceLibraryBuilder` (`Znalica.Editor`) scans `Assets/Znalica/Voice/` and maps each file by its name, and
   `BuildScript.Build` runs it before every build.
+- **The asset is committed** (`Assets/Znalica/Voice/VoiceLibrary.asset`, with `VoiceScript.csv`). An editor session
+  plays from the committed asset; after adding or renaming clips the developer runs the menu command
+  `Znalica/Rebuild Voice Library` (`VoiceLibraryBuilder`) and commits the result. A stale asset in the editor costs
+  only sound — a clip it lacks leaves the text on screen — and never ships, since every build regenerates it. Tests
+  do not use the asset at all: the completeness test reads the folder's file names (above).
 - **Changing the clip source needs no code change.** Placeholders, a human recording or clips generated with a speech
   service (the functional spec's open question 5) are all the same: files with the names the catalog lists, dropped
   into the folder. `VoiceLibraryBuilder` also writes `Assets/Znalica/Voice/VoiceScript.csv` (clip name, the Croatian
@@ -429,9 +452,11 @@ Each step is a vertical slice for one session, names its check, and lists what b
    `RoundSession` over `InMemoryAnswerLog`, `AnswerEntry` (the answer box's rule: refuse a keystroke that would pass
    20). Tests: every generated number in 0–20; the four forms of a fact present; `ItemKey` round-trip; `TryFind`
    rebuilds an item from its key; the answer-box rule; wrong → explanation → retry → return later; a second wrong
-   ends the item; right first time counted only on `First`.
+   ends the item; right first time counted only on `First`; `TryFind` returns false for `A:8+5=14` and `A:3-?=7`.
+   Domain-only, so it is checked by tests alone; 3b is where it is first seen playing.
    *Check:* the tests above.
-   *Blocked by:* 1.
+   *Blocked by:* 2 — `Explanation` and `AttemptOutcome.PraisePhrase` carry a `PhraseKey`, which step 2 creates; 3a
+   adds its own entries to that enum.
 3b. **Računanje do 20 screen, playable end to end in memory.** The arithmetic screen over `RoundSession`: number pad,
    keys, in-place feedback with the number-line jump, praise that does not hold the next item; the round-end screen.
    *Check:* a round played with the mouse only and one with the keys only; a wrong answer shows and speaks the jump
@@ -457,7 +482,8 @@ Each step is a vertical slice for one session, names its check, and lists what b
    *Check:* the tests; a round played to the end with the mouse.
    *Blocked by:* 3b (5 for scheduling, which then applies without change).
 7. **Brojevna crta.** `NumberLineItemSet` (place, before, after, jump), the number-line screen with click-to-place,
-   `PositionOnLine` and `NumberLineJump` explanations. Tests: all numbers in 0–20; before/after bounds; jumps land in
+   `PositionOnLine` and `NumberLineJump` explanations. Tests: all numbers in 0–20; before/after bounds; `TryFind` false for `L:Before:0`, `L:After:20`, `L:Jump:18+5`
+   and `L:Jump:6+11`; jumps land in
    range.
    *Check:* the tests; a round played to the end with the mouse.
    *Blocked by:* 3b.
@@ -491,7 +517,7 @@ Each step is a vertical slice for one session, names its check, and lists what b
 | 6 | 8, 9 | The parent area's two screens, both read-only over the stored data |
 | 7 | 10 | Release checks on the built player; mostly verification |
 
-Step 3a needs only step 1, so PR 2 can be built beside PR 1's step 2. PR 5 can be built beside PR 4 (steps 6 and 7
+PR 2 starts after PR 1, since step 3a needs step 2's `PhraseKey`. PR 5 can be built beside PR 4 (steps 6 and 7
 need only step 3b). Parallel work goes in a separate worktree, as `AGENTS.md` → *Overlap is allowed* says.
 
 ## Risks and Open Questions
