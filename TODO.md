@@ -5,10 +5,12 @@
 - [ ] **Decide whether the knowledge server loads at session start.** *(T3. New 2026-11-16.)* Claude Code reads
   `knowledge` from `Documents\.mcp.json`, which has no `"alwaysLoad": true`, so the main session goes through a
   tool search first. Adding the key costs context in every session and up to 5 s of startup.
-- [ ] **Write the first functional spec for Znalica.** *(T4. New 2026-11-16.)* Start from the curriculum brief in
-  Knowledge-Documentation, `docs/research/2026-11-16-croatia-primary-curriculum-learning-games-brief.md`
-  (uncommitted, branch `docs/research-croatian-primary-learning-games`): tie each level to an outcome code,
-  teach in the feedback, short sessions, spoken instructions for grades 1–2.
+- [ ] **Write the first functional spec for Znalica.** *(T4. New 2026-11-16.)* Draft:
+  `docs/specs/2026-11-16-grade-1-maths-first-version.md` (grade 1 maths, numbers 0–20 and add/subtract to 20,
+  Windows desktop). Sources: the knowledge-store articles
+  `docs/articles/LEARNING_GAME_EVIDENCE_AND_GAME_FORMAT_PER_CONTENT_TYPE.md` and
+  `docs/articles/tools/CROATIA_PRIMARY_SCHOOL_CURRICULUM_SUBJECTS_PER_GRADE_AND_OUTCOME_CODES.md`. Next: its
+  technical spec (`write-tech-spec`); the build command in `AGENTS.md` still targets WebGL, not Windows.
 
 ## Done
 
