@@ -14,18 +14,19 @@ Line references of the form *FS:n* point to lines of the functional spec.
 change the design (an outcome code's label, voice talent, art style, later testing with children, publication).
 
 One small gap, carried to *Risks and Open Questions* as Q1: the data list names "the parent gate setting" (FS:78), but
-no screen (FS:94) and no rule (FS:108–109) says what a parent sets. The design recommends no gate setting in this
-version.
+no screen (FS:94) and no rule (FS:108–109) says what a parent sets. **Resolved:** the product owner dropped it, and
+the functional spec now says the gate has no setting in this version (FS:78, commit `057e3c6`).
 
 Product-owner constraints taken as given: Windows desktop app; grade 1 maths, domains A/B; pupil plus a parent view
-behind a simple parent gate; progress only on this PC; recorded human voice; every name starts with a capital letter
-(applied below to types, assemblies, folders, files, enum values and text keys).
+behind a simple parent gate; progress only on this PC; spoken instructions from pre-made clips, placeholders for
+now, with the voice method (recorded human or generated) left open until release (FS:134); every name starts with a
+capital letter (applied below to types, assemblies, folders, files, enum values and text keys).
 
 ## Goal
 
 Build, from an empty repository, a Unity application for **Windows 64-bit standalone** that runs three practice
 activities on the numbers 0–20 (number line, comparison, addition and subtraction), records every answer to local files
-as it is given, schedules missed items to return sooner, speaks every instruction and feedback from recorded clips with
+as it is given, schedules missed items to return sooner, speaks every instruction and feedback from pre-made voice clips with
 the same text on screen, and offers a parent area behind a gate with progress, a school-like check and profile
 management. Nothing is sent off the PC.
 
@@ -60,16 +61,20 @@ references.
 Znalica.Presentation ──► Znalica.Storage ──► Znalica.Domain
         │                                        ▲
         └────────────────────────────────────────┘
-Znalica.Editor (editor only) — BuildScript
+Znalica.Editor (editor only) ──► Znalica.Presentation, Znalica.Storage, Znalica.Domain
 Znalica.Tests.EditMode ──► Znalica.Domain, Znalica.Storage
 ```
 
+Everything a test must reach sits in `Znalica.Domain` or `Znalica.Storage`, including the phrase catalog's model and
+its completeness check (*Text and voice*). `Znalica.Presentation` holds only what plays, draws or reads input, so the
+test assembly needs no reference to it.
+
 | Assembly | Folder | Holds | Unity engine reference |
 |---|---|---|---|
-| `Znalica.Domain` | `Assets/Znalica/Domain/` | Numbers and items, item keys, item sets, round engine, scheduler, explanations, parent gate, progress and check calculations, the `IAnswerLog`, `IClock` and `IRandom` contracts (seedable, so tests are repeatable) | **None** (`noEngineReferences: true`) — plain C#, fully testable in EditMode |
-| `Znalica.Storage` | `Assets/Znalica/Storage/` | File answer log (JSON Lines), profile store, settings store, `AtomicFileWriter`, data-folder layout | Yes — `JsonUtility` and `Application.persistentDataPath` |
-| `Znalica.Presentation` | `Assets/Znalica/Presentation/` | `AppRoot` (composition root), `ScreenNavigator`, one view per screen, `VoicePlayer`, `TextCatalog`, `VoiceLibrary`, input | Yes |
-| `Znalica.Editor` | `Assets/Znalica/Editor/` | `BuildScript.Build` (global namespace, to match the `AGENTS.md` command) | Editor only |
+| `Znalica.Domain` | `Assets/Znalica/Domain/` | Numbers and items, item keys, item sets, round engine, scheduler, explanations, parent gate, progress and check calculations, `PhraseKey` and the phrase catalog model with its completeness check, the `IAnswerLog`, `IClock` and `IRandom` contracts (seedable, so tests are repeatable) | **None** (`noEngineReferences: true`) — plain C#, fully testable in EditMode |
+| `Znalica.Storage` | `Assets/Znalica/Storage/` | File answer log (JSON Lines), profile store, settings store, `AtomicFileWriter`, data-folder layout, `PhraseCatalogFile` (reads `Hr.json`) | Yes — `JsonUtility` and `Application.persistentDataPath` |
+| `Znalica.Presentation` | `Assets/Znalica/Presentation/` | `AppRoot` (composition root), `ScreenNavigator`, one view per screen, `VoicePlayer`, `VoiceLibrary`, input | Yes |
+| `Znalica.Editor` | `Assets/Znalica/Editor/` | `BuildScript.Build` (global namespace, to match the `AGENTS.md` command); `VoiceLibraryBuilder` | Editor only |
 | `Znalica.Tests.EditMode` | `Assets/Znalica/Tests/EditMode/` | NUnit tests via the Unity Test Framework | Editor test assembly |
 
 Content outside the code:
@@ -77,7 +82,7 @@ Content outside the code:
 | Content | Location | Why there |
 |---|---|---|
 | All Croatian text (child and parent) | `Assets/StreamingAssets/Text/Hr.json` | FS:96 — correctable without a rebuild; StreamingAssets ships as loose files beside the player (unverified, R2) |
-| Recorded voice clips | `Assets/Znalica/Voice/*.ogg`, listed in a `VoiceLibrary` ScriptableObject | Imported assets: no runtime file loading (trade-off in *Approach* §8) |
+| Voice clips (placeholders now; recorded or generated later) | `Assets/Znalica/Voice/<ClipName>.ogg`, indexed by name in a `VoiceLibrary` ScriptableObject that `VoiceLibraryBuilder` regenerates from the folder | Imported assets: no runtime file loading; the clip source changes by replacing files, not code (*Approach* §8) |
 | Profile pictures | `Assets/Znalica/Art/ProfilePictures/` | Bundled set; art style is the functional spec's open question 6 |
 | Main scene | `Assets/Znalica/Scenes/Main.unity` | One scene; screens are panels |
 
@@ -127,14 +132,18 @@ Content outside the code:
 ### Item sets (`Znalica.Domain`)
 
 `IItemSet` — `Activity Activity`, `IReadOnlyList<Item> All` (deterministic order: by `Difficulty`, then by key) and
-`Item Find(ItemKey)`. Three implementations:
+`bool TryFind(ItemKey, out Item)`. `TryFind` **builds the item from the key**, not by looking it up in `All`: the
+planner turns due keys from the schedule back into items this way, and `PutInOrder` items are never in `All`. It
+returns false for a key that does not parse, belongs to another activity, or holds a number outside 0–20 (a log line
+written by a later or broken version); the planner then skips that key. Three implementations:
 
 - `ArithmeticItemSet` — every `a + b = c` and `c − a = b` with all numbers in 0–20, in all three unknown positions.
   FS:101–102's four forms of one fact are the two operand orders times the two operations, so they fall out of the
   enumeration. The generator asserts `NumberRange.Contains` on every number it produces.
 - `ComparisonItemSet` — every `ChooseSign` pair in 0–20 in both representations; `PutInOrder` sets are drawn from a
   seeded random source when a round is planned (the space of 3–5-element sets is too large to enumerate usefully),
-  and become schedule entries like any other key once answered.
+  and become schedule entries like any other key once answered. `TryFind` rebuilds one from its `O:` key (three to
+  five numbers, ascending, distinct, each in 0–20; anything else returns false).
 - `NumberLineItemSet` — `Place` 0–20, `Before` 1–20, `After` 0–19, `Jump` with start and landing both in 0–20 and
   `|Step|` 1–10.
 
@@ -193,7 +202,7 @@ Data folder: `Application.persistentDataPath` (on Windows, a per-user folder und
 - `Profile` — `ProfileId` (GUID string; also the folder name), `DisplayName` (1–20 characters after trimming;
   letters, spaces and hyphens), `PictureId` (name of a bundled picture, e.g. `Fox`), `CreatedAt` (ISO 8601). No
   surname or birth date field exists (FS:73).
-- `Settings` — `VoiceVolume` (0.0–1.0, default 1.0). No gate setting (Q1).
+- `Settings` — `VoiceVolume` (0.0–1.0, default 1.0). No gate setting (FS:78).
 - `Checks.jsonl` — one line per check answer, `CheckId`, `ItemKey`, `Answer`, `IsCorrect`, `AnsweredAt`, and one
   closing line per finished check, `CheckId`, `CompletedAt`, `Score`, `ItemCount`. `CheckResult` (FS:77: date, items,
   answers, score) is read back by grouping lines by `CheckId`; a check with no closing line is listed as *not
@@ -271,6 +280,14 @@ digits, and not spoken** (*"Koliko je šest puta sedam?"*); `bool Check(GateChal
 challenge; three wrong in a row make the gate wait 30 seconds before the next one. Multiplication is grade 2 content,
 reading the words is beyond most grade 1 pupils, and an adult answers in seconds (FS:108–109, AC8). No password.
 
+- **Text:** `PhraseKey.GateQuestion` (*"Koliko je {First} puta {Second}?"*) with the factors filled from the text-only
+  keys `NumberWord3`–`NumberWord9` (*tri* … *devet*; these forms do not change with gender). All eight have `Text` and
+  an empty `Voice`, so the completeness check accepts them without clips.
+- **Guessing limit:** there are 49 factor pairs and the answer lies between 9 and 81; a random two-digit guess hits about 1 time in
+  90. With three tries, then a 30-second wait, a child pressing keys at random gets about 6 tries a minute, so passing
+  by chance takes on average about a quarter of an hour of steady guessing. The gate stops a grade 1 pupil "clicking
+  around" (AC8); it does not stop an older sibling who can read and multiply, and is not meant to.
+
 ### Progress (`Znalica.Domain`)
 
 `ProgressCalculator.For(IReadOnlyList<AnswerRecord>, ItemSchedule, DateTimeOffset now) → ProgressReport`, per
@@ -285,21 +302,60 @@ reading the words is beyond most grade 1 pupils, and an adult answers in seconds
 ### School-like check (`Znalica.Domain`)
 
 `SchoolCheckPlanner.Plan(IRandom) → IReadOnlyList<Item>` — 20 items drawn evenly across difficulties, ignoring the
-schedule: 6 arithmetic with the result unknown, 4 with a missing number, 4 `ChooseSign` with numbers, 6 number-line
-neighbour items shown as a worksheet strip (`12, _, 14`). Two pages of ten, one answer box or sign box per item, plain
-style; one spoken instruction per section and nothing else — no hints, no feedback, no explanation (AC10). Answers go
+schedule: 6 arithmetic with the result unknown, 4 with a missing number, 4 `ChooseSign` with numbers, and 6 existing
+`NumberLineItem`s with task `Before` or `After` (keys `L:Before:14`, `L:After:12`), shown as a worksheet strip — `_, 14`
+or `12, _` — with the answer typed, not clicked on a line. No new task or key form. Two pages of ten, one answer box
+or sign box per item, plain style; one spoken instruction per section and nothing else — no hints, no feedback, no explanation (AC10). Answers go
 to `Checks.jsonl`, never to `Answers.jsonl`, so the check neither moves the schedule nor mixes with the game score.
 
-### Text and voice (`Znalica.Presentation`)
+### Text and voice
 
-- `PhraseKey` enum — every instruction, praise, explanation, break suggestion and spoken activity name. Number words
-  are clips `Number00`–`Number20`; operators and joining words are clips too (`Plus`, `Minus`, `Is`, `ThenMore`, …).
-- `Hr.json` — an array of `{ "Key": "ExplainJump", "Text": "{Start}, pa još {Change}, to je {End}.", "Voice":
-  ["{Start}", "ThenMore", "{Change}", "Is", "{End}"] }`; a `{Name}` slot in `Voice` resolves to the number clip.
-  Screen-only text (buttons, parent area) has `Text` and an empty `Voice`.
-- `TextCatalog` — loads `Hr.json` once at start; `string Text(PhraseKey, args)`; a missing key shows the key name and
-  logs an error.
-- `VoiceLibrary` — ScriptableObject mapping clip name → `AudioClip`.
+**Model and check — `Znalica.Domain`:**
+
+- `PhraseKey` enum — every instruction, praise, explanation, break suggestion, spoken activity name, and the
+  screen-only texts (buttons, parent area, gate).
+- `PhraseCatalog` — `Phrase Get(PhraseKey)` with `Phrase { string Text; string[] Voice; }` and
+  `string Text(PhraseKey, args)`; a missing key gives the key name and reports an error.
+- `PhraseCatalogCheck.Missing(PhraseCatalog, IEnumerable<string> clipNames)` — every `PhraseKey` has a text, and
+  every clip name a phrase's `Voice` uses (number slots expanded to `Number00`–`Number20`) is in `clipNames`. The
+  test passes the file names it lists in `Assets/Znalica/Voice/` with `System.IO` — no Unity object needed.
+
+**File — `Znalica.Storage`:** `PhraseCatalogFile.Read(path)` parses `Hr.json` with `JsonUtility` into the domain
+model. The file is an **object wrapping the list**, because `JsonUtility` is believed not to parse a top-level array
+(unverified, R2 (e)):
+
+```json
+{ "Entries": [
+  { "Key": "PraiseRight", "Text": "Bravo!", "Voice": ["PraiseRight"] },
+  { "Key": "ExplainJump", "Text": "{Start}, pa još {Change}, to je {End}.",
+    "Voice": ["{Start}", "ThenMore", "{Change}", "Is", "{End}"] },
+  { "Key": "ButtonNext", "Text": "Dalje", "Voice": [] }
+] }
+```
+
+**Spoken forms (Croatian *jedan/jedna/jedno*, *dva/dvije*):** a number before a noun changes with the noun's gender,
+so a joined clip would be wrong there. Two rules keep the joined clips correct:
+
+1. **Every phrase without a number is one whole-sentence clip** named after its key (`PraiseRight.ogg`,
+   `InstructionArithmetic.ogg`, …).
+2. **A phrase with numbers joins clips only where the number stands alone as a bare numeral** — in a sum, a count
+   along the line, a comparison of two numbers (*"osam, pa još pet, to je trinaest"*) — never before a noun. Group
+   comparisons say *"ovdje sedam, ondje dvanaest"*, not *"sedam jabuka"*. A phrase that needs a number before a noun
+   gets its own whole-sentence clips, one per number, instead of a slot.
+
+`Number00`–`Number20` are recorded in the bare counting form. A Croatian speaker the product owner names checks the
+template texts against rule 2 when the catalog is written (step 2); a wrong form is a text and clip fix, not a code
+fix.
+
+**Playback — `Znalica.Presentation`:**
+
+- `VoiceLibrary` — ScriptableObject mapping clip name → `AudioClip`. It is **generated**, not hand-edited:
+  `VoiceLibraryBuilder` (`Znalica.Editor`) scans `Assets/Znalica/Voice/` and maps each file by its name, and
+  `BuildScript.Build` runs it before every build.
+- **Changing the clip source needs no code change.** Placeholders, a human recording or clips generated with a speech
+  service (the functional spec's open question 5) are all the same: files with the names the catalog lists, dropped
+  into the folder. `VoiceLibraryBuilder` also writes `Assets/Znalica/Voice/VoiceScript.csv` (clip name, the Croatian
+  sentence to say) as the script for whoever or whatever produces the clips.
 - `VoicePlayer` — plays a phrase as a queue of clips on one `AudioSource` at `Settings.VoiceVolume`; `ReplayLast()`
   backs the speaker button (FS:39, AC2). A missing clip, no audio device or volume 0 leaves the text on screen and the
   game playable (FS:111).
@@ -308,7 +364,9 @@ to `Checks.jsonl`, never to `Answers.jsonl`, so the check neither moves the sche
 
 Mouse for everything (AC1). Number entry: an on-screen pad 0–9, *Obriši*, *U redu*; keys 0–9 (top row and numpad),
 Backspace, Enter through the Input System package. The answer box refuses any keystroke that would make its value
-above 20 (after `2`, only `0`) — no answer outside 0–20 can be entered (AC3). Number-line answers are a click on the
+above 20 (after `2`, only `0`) — no answer outside 0–20 can be entered (AC3). That rule is `AnswerEntry`
+(`Znalica.Domain`: `bool TryType(int digit)`, `Erase()`, `int? Value`), so it is tested in EditMode; the pad and the
+keys only call it. Number-line answers are a click on the
 line, snapped to the nearest whole number; ordering answers are clicks in order (no drag).
 
 ## Approach
@@ -336,8 +394,9 @@ line, snapped to the nearest whole number; ordering answers are clicks in order 
 7. **Easy first, few new items per round.** At most 4 new items per round keeps new load small; the difficulty order
    decides which.
 8. **Voice as imported assets; text as a loose file.** FS:96 requires text to be correctable without a rebuild; voice
-   is not so required, and a new phrase needs a new recording anyway. Imported clips avoid loading audio from disk at
-   runtime. *Trade-off:* fixing a recording needs a rebuild. Revisit with the functional spec's open question 5.
+   is not so required, and a new phrase needs a new clip anyway. Imported clips avoid loading audio from disk at
+   runtime. Clips are found by file name through a generated `VoiceLibrary`, so the voice method (open until release,
+   the functional spec's open question 5) changes by replacing files. *Trade-off:* a replaced clip needs a rebuild.
 9. **No network code at all.** No `UnityWebRequest` to any URL, no Unity Services; the analytics module is removed
    from the package manifest and Unity Cloud Diagnostics is off. Step 10 checks it on the built player (AC12, R3).
 10. **No hours or effort in this spec** — estimating is the `estimate-effort` skill's separate step.
@@ -355,20 +414,29 @@ Each step is a vertical slice for one session, names its check, and lists what b
    built player and record them in this spec.
    *Check:* the batch build exits 0 and `Znalica.exe` starts; the smoke test passes.
    *Blocked by:* none — can start now (needs a Unity install, R1).
-2. **Text and voice catalog, and the activity menu that speaks.** `PhraseKey`, `Hr.json`, `TextCatalog`,
-   `VoiceLibrary`, `VoicePlayer` with replay and volume; the activity menu with three pictures, each speaking its
-   name; placeholder clips until the real recordings exist (Q3). A completeness test: every `PhraseKey` has a text, and
-   every voice name it uses has a clip in `VoiceLibrary`.
-   *Check:* the completeness test; clicking each picture plays its name and shows it; with the audio device disabled,
-   the text still shows.
+2. **Text and voice catalog, and the activity menu that speaks.** `PhraseKey`, `PhraseCatalog`,
+   `PhraseCatalogCheck`, `PhraseCatalogFile`, `Hr.json` (wrapped object), `VoiceLibraryBuilder` with `VoiceScript.csv`,
+   `VoicePlayer` with replay and volume; the activity menu with three pictures, each speaking its name; placeholder
+   clips under the final names (Q3). A Croatian speaker reads the template texts against the spoken-forms rule.
+   *Check:* the completeness test (`PhraseCatalogCheck` over the voice folder's file names); a `PhraseCatalogFile`
+   test reading a small wrapped `Hr.json`; clicking each picture plays its name and shows it; with the audio device
+   disabled, the text still shows; replacing one placeholder file by another with the same name changes the voice
+   after a rebuild, with no code change.
    *Blocked by:* 1.
-3. **Računanje do 20, playable end to end in memory.** `NumberRange`, `ItemKey`, `Difficulty`, `ArithmeticItemSet`,
-   `Explanation`, `RoundPlanner` (new items only — no schedule yet), `RoundSession` over `InMemoryAnswerLog`; the
-   arithmetic screen with the number pad, keys, in-place feedback and the number-line jump; the round-end screen.
-   Tests: every generated number in 0–20; the four forms of a fact present; `ItemKey` round-trip; the answer box
-   refuses values above 20; wrong → explanation → retry → return later; right first time counted only on `First`.
-   *Check:* the tests above; a round played with the mouse only and one with the keys only.
-   *Blocked by:* 2.
+3a. **Arithmetic items and the round engine (domain only).** **The riskiest step:** the round engine is the design's
+   core, and the three activities, the scheduler and the progress view all build on its records. `NumberRange`,
+   `ItemKey`, `Difficulty`, `ArithmeticItemSet`, `Explanation`, `RoundPlanner` (new items only — no schedule yet),
+   `RoundSession` over `InMemoryAnswerLog`, `AnswerEntry` (the answer box's rule: refuse a keystroke that would pass
+   20). Tests: every generated number in 0–20; the four forms of a fact present; `ItemKey` round-trip; `TryFind`
+   rebuilds an item from its key; the answer-box rule; wrong → explanation → retry → return later; a second wrong
+   ends the item; right first time counted only on `First`.
+   *Check:* the tests above.
+   *Blocked by:* 1.
+3b. **Računanje do 20 screen, playable end to end in memory.** The arithmetic screen over `RoundSession`: number pad,
+   keys, in-place feedback with the number-line jump, praise that does not hold the next item; the round-end screen.
+   *Check:* a round played with the mouse only and one with the keys only; a wrong answer shows and speaks the jump
+   before the retry.
+   *Blocked by:* 2, 3a.
 4. **Profiles, the parent gate, and answers saved to disk.** `ProfileStore`, `SettingsStore`, `AtomicFileWriter`,
    `FileAnswerLog`; `ParentGate`; screens: start/profile pick, gate, first-start flow (gate then first profile),
    profiles and settings (add, rename, delete, volume); `SessionNumber`. Tests: append survives reopening; a
@@ -376,7 +444,7 @@ Each step is a vertical slice for one session, names its check, and lists what b
    30-second wait.
    *Check:* the tests; kill `Znalica.exe` from Task Manager mid-round, restart: the answers given are in
    `Answers.jsonl` and the app opens at the profile pick, then the menu.
-   *Blocked by:* 3.
+   *Blocked by:* 3b (its screens and round to kill mid-way).
 5. **Missed items return next session.** `ItemSchedule` (build by replay, apply per answer) and the full
    `RoundPlanner` (due, new, fill). Tests: a first-time wrong item is due next session and is planned within the
    first two rounds; boxes rise on right answers and intervals lengthen; `Retry`/`Return` do not move an item.
@@ -384,20 +452,22 @@ Each step is a vertical slice for one session, names its check, and lists what b
    *Blocked by:* 4.
 6. **Veće, manje, jednako.** `ComparisonItemSet` (signs with numbers and groups, ordering 3–5), the comparison screen
    with three sign buttons, groups in ten-frames, click-to-order, `SideBySide` and `OrderedSequence` explanations.
-   Tests: all numbers in 0–20; `O:` keys sorted; correctness of each sign.
+   Tests: all numbers in 0–20; `O:` keys sorted; correctness of each sign; `TryFind` rebuilds a `PutInOrder` item
+   from `O:3,9,14` with those numbers, and returns false for `O:3,3,9`, `O:9,3`, `O:3,9,21` and six numbers.
    *Check:* the tests; a round played to the end with the mouse.
-   *Blocked by:* 3 (5 for scheduling, which then applies without change).
+   *Blocked by:* 3b (5 for scheduling, which then applies without change).
 7. **Brojevna crta.** `NumberLineItemSet` (place, before, after, jump), the number-line screen with click-to-place,
    `PositionOnLine` and `NumberLineJump` explanations. Tests: all numbers in 0–20; before/after bounds; jumps land in
    range.
    *Check:* the tests; a round played to the end with the mouse.
-   *Blocked by:* 3.
+   *Blocked by:* 3b.
 8. **Parent area — progress.** `ProgressCalculator` and the progress screen, per profile and activity. Tests over a
    fixed log: rounds played, first-time share, still-missed list, weekly practice across a week boundary.
    *Check:* the tests; the screen for a profile with a few rounds in each activity.
    *Blocked by:* 4, 5 (`StillMissed` reads the box); 6 and 7 for their activities to show data.
 9. **Parent area — school-like check.** `SchoolCheckPlanner`, the worksheet screens (no feedback), `Checks.jsonl`,
-   past results listed with unfinished checks marked. Tests: 20 items in the stated mix, all in range; check answers
+   past results listed with unfinished checks marked. Tests: 20 items in the stated mix, all in range; the 6
+   number-line items are `Before`/`After` and scored from a typed number; check answers
    never reach `Answers.jsonl`; an unfinished check has no score.
    *Check:* the tests; one check run through, its score in the list, the game progress unchanged.
    *Blocked by:* 4.
@@ -414,41 +484,45 @@ Each step is a vertical slice for one session, names its check, and lists what b
 | PR | Steps | Why together, or alone |
 |---|---|---|
 | 1 | 1, 2 | Skeleton and catalog: infrastructure every later step stands on; small and reviewed together |
-| 2 | 3 | The round engine and the first activity — the core design; its review needs full attention |
-| 3 | 4, 5 | The on-disk format and the schedule derived from it — one data decision, reviewed as one |
-| 4 | 6, 7 | Two activities on the finished engine; similar shape, cheap to review together |
-| 5 | 8, 9 | The parent area's two screens, both read-only over the stored data |
-| 6 | 10 | Release checks on the built player; mostly verification |
+| 2 | 3a | The round engine — the core design and the riskiest step; its review needs full attention on its own |
+| 3 | 3b | The first playable screen; checked by hand, kept apart so PR 2's review stays on the rules |
+| 4 | 4, 5 | The on-disk format and the schedule derived from it — one data decision, reviewed as one |
+| 5 | 6, 7 | Two activities on the finished engine; similar shape, cheap to review together |
+| 6 | 8, 9 | The parent area's two screens, both read-only over the stored data |
+| 7 | 10 | Release checks on the built player; mostly verification |
 
-PR 4 can be built beside PR 3 (steps 6 and 7 need only step 3), in a separate worktree as `AGENTS.md` → *Overlap is
-allowed* says.
+Step 3a needs only step 1, so PR 2 can be built beside PR 1's step 2. PR 5 can be built beside PR 4 (steps 6 and 7
+need only step 3b). Parallel work goes in a separate worktree, as `AGENTS.md` → *Overlap is allowed* says.
 
 ## Risks and Open Questions
 
 ### Open questions
 
-- **Q1 — "The parent gate setting" (FS:78).** The data list names it; no screen, rule or acceptance criterion says what
-  it sets. *Recommended:* drop it from this version — one gate kind, nothing to set. *Alternative:* a choice between
-  the multiplication gate and a hold-the-button gate, which adds a second gate and a settings control. Product owner
-  decides; the design changes only in `Settings` and the settings screen.
-- **Q2 — Unity version.** *Recommended:* the newest Unity 6 LTS release available when step 1 starts, pinned in
-  `ProjectSettings/ProjectVersion.txt`. Which release that is was not checked here (no Unity source reachable).
-- **Q3 — Voice recordings** (the functional spec's open question 5). Steps 2–9 run on placeholder clips with the final
-  file names; the list of clips to record is `PhraseKey` plus `Number00`–`Number20`, generated from the catalog in
-  step 2. The real recordings are content, not a build step.
+- **Q1 — "The parent gate setting" (FS:78). Resolved:** the product owner dropped it; the functional spec now says the
+  gate has no setting in this version (commit `057e3c6`). `Settings` holds `VoiceVolume` only.
+- **Q2 — Unity version. Open, to settle at step 1.** *Recommended:* the newest Unity 6 LTS release available when
+  step 1 starts, pinned in `ProjectSettings/ProjectVersion.txt`. Which release that is was not checked here (no Unity
+  source reachable).
+- **Q3 — Voice method (the functional spec's open question 5). Open until release, by the product owner's choice:**
+  recorded human voice or clips generated with a speech service (the functional spec names two Croatian voices).
+  The design does not depend on the answer: steps 2–10 run on placeholder clips under the final names, and the final
+  clips replace them as files, with no code change (*Text and voice*). `VoiceScript.csv` (step 2) is the script for
+  either method.
 
 ### Risks
 
 - **R1 — No Unity editor found on this machine** at the default Hub path (the only place looked). Without one, no
-  step can build or run tests. Installing Unity changes state outside the repository and is the user's decision
-  (`external_tool_state_change`).
+  step can build or run tests. The user approved installing Unity Hub; the editor version is Q2. Until an editor is
+  installed, step 1 cannot start.
 - **R2 — Unity behaviours this design relies on are unverified.** No curated Unity source was reachable: the knowledge
   store has no Unity article (two searches, above), `microsoft-learn` does not document the Unity runtime, and no
   library-documentation server is connected. Derived from general knowledge, unverified: (a) StreamingAssets ships as
   loose, editable files beside a Windows player; (b) `Application.persistentDataPath` on Windows is a per-user folder
   under `AppData\LocalLow`; (c) `JsonUtility` serialises `[Serializable]` classes with public fields but not
-  dictionaries or `DateTime`; (d) the command-line build target for Windows 64-bit is `Win64`. Step 1 confirms all
-  four before step 2 relies on them; knowledge-store research request 67 asks for a cited Unity article covering them
+  dictionaries or `DateTime`; (d) the command-line build target for Windows 64-bit is `Win64`; (e) `JsonUtility`
+  cannot parse a JSON document whose top level is an array — the reviewer's belief too, also unverified — which is
+  why `Hr.json` wraps its list in `{ "Entries": [...] }`; the wrapped form works either way. Step 1 confirms all five
+  before step 2 relies on them; knowledge-store research request 67 asks for a cited Unity article covering (a)–(d)
   and R3.
 - **R3 — "Sends no data off the PC" depends on the engine, not only our code.** Our code has no network calls; whether
   a Unity player contacts any Unity service by default is unverified (R2). Step 10's firewall and connection check is
@@ -478,18 +552,18 @@ Technical exclusions in this design:
 - **PlayMode and UI automation tests** — the rules are tested in EditMode; screens are checked by hand in each step's
   check.
 - **Localisation beyond Croatian** — one `Hr.json`; the catalog's shape would take a second file, but none is built.
-- **A gate setting** — pending Q1.
+- **A gate setting** — dropped by the product owner (Q1; FS:78).
 
 ## Coverage Check
 
 | Functional point | Where in this design |
 |---|---|
-| AC1 mouse alone; keys for add/subtract | *Input*; steps 3, 6, 7, 10 |
+| AC1 mouse alone; keys for add/subtract | *Input*; steps 3b, 6, 7, 10 |
 | AC2 voice and text for every instruction and feedback; replay | *Text and voice*; completeness test, step 2 |
-| AC3 no number below 0 or above 20 | `NumberRange`, item sets, answer box; steps 3, 6, 7, 9 |
-| AC4 answer produced, never chosen | Number pad and keys, no offered answers; step 3 |
-| AC5 explanation before the next item; right never waits | `RoundSession`, `Explanation`; step 3 |
-| AC6 wrong item returns in round and early next session | `Return` insertion; scheduler and planner; steps 3, 5 |
+| AC3 no number below 0 or above 20 | `NumberRange`, item sets, answer box; steps 3a, 6, 7, 9 |
+| AC4 answer produced, never chosen | Number pad and keys, no offered answers; step 3b |
+| AC5 explanation before the next item; right never waits | `RoundSession`, `Explanation`; steps 3a, 3b |
+| AC6 wrong item returns in round and early next session | `Return` insertion; scheduler and planner; steps 3a, 5 |
 | AC7 no leaderboard, ranking or timer pressure | Nothing built; response time never shown; step 10 check |
 | AC8 child cannot enter the parent area | `ParentGate`; step 4 |
 | AC9 progress per profile and activity | `ProgressCalculator`; step 8 |
@@ -499,9 +573,9 @@ Technical exclusions in this design:
 | AC13 delete a profile and all its progress | `ProfileStore.Delete`; step 4 |
 | FS:36 profile pick by picture · FS:84 add only via parent area | Start screen and profiles screen; step 4 |
 | FS:38–39 picture menu, spoken instructions, speaker button | Step 2 |
-| FS:39 round of 10 · FS:44 round-end screen | `RoundPlanner`, round-end screen; step 3 |
+| FS:39 round of 10 · FS:44 round-end screen | `RoundPlanner`, round-end screen; steps 3a, 3b |
 | FS:45 about 10 minutes, break suggested, no lock | `SessionClock`; step 10 |
-| FS:71–80 data | *Data and Interfaces*; schedule derived (§4); gate setting Q1 |
+| FS:71–80 data | *Data and Interfaces*; schedule derived (§4); no gate setting (FS:78, Q1 resolved) |
 | FS:96 text outside the code | `Hr.json` in StreamingAssets; R2(a) |
 | FS:100–113 business rules | Range, fact set and difficulty, scheduler, explanations, praise only, gate, closed mid-round, no sound, first start, several children — each in *Data and Interfaces* |
 | FS:117–122 out of scope | *Out of Scope* |
