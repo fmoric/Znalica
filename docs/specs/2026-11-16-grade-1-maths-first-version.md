@@ -12,8 +12,8 @@ The game teaches through its feedback, not through points: every mistake is foll
 and the facts a child misses come back sooner. Success is measured on school-like tasks, not on the game score.
 
 Decisions taken with the product owner (2026-11-16): Windows desktop app; grade 1 maths, domains A/B only; pupil plus
-a parent progress view behind a simple parent gate; progress kept only on this PC; instructions in a recorded human
-Croatian voice.
+a parent progress view behind a simple parent gate; progress kept only on this PC; spoken instructions, with
+placeholder clips until the voice method (recorded or generated) is chosen.
 
 ## Users
 
@@ -34,7 +34,7 @@ Each format carries the strength of its evidence, from the knowledge-store artic
 ## Process
 
 1. The child starts Znalica. If there is more than one profile, they pick their own by its picture.
-2. The child picks one of the three activities from a picture menu. Each activity's instruction plays in the recorded
+2. The child picks one of the three activities from a picture menu. Each activity's instruction plays in the spoken
    voice; a speaker button repeats it.
 3. A **round** is a short set of items (proposed: 10). After each answer the child sees and hears whether it was right.
    - **Right:** brief praise, next item at once. No animation stands between the child and the next item.
@@ -50,7 +50,7 @@ Each format carries the strength of its evidence, from the knowledge-store artic
 
 1. Each of the three activities can be played start to finish with the mouse alone; the add/subtract answer can also
    be typed with the number keys.
-2. Every instruction and every feedback message plays in the recorded voice and is also shown as text; the speaker
+2. Every instruction and every feedback message plays in the spoken voice and is also shown as text; the speaker
    button replays it.
 3. No number shown, asked or answered is below 0 or above 20, in any activity.
 4. In **Računanje do 20**, the child produces the answer (number pad or keys); it is never a choice from offered answers.
@@ -75,7 +75,7 @@ Kept only on this PC, per profile:
   time to answer, date and time.
 - **Item schedule:** for each item, when it is next due (used by the "missed items return sooner" rule).
 - **Check result:** date, items, answers, score.
-- **Settings:** voice volume, the parent gate setting.
+- **Settings:** voice volume. (The parent gate has no setting in this version.)
 
 No account, no e-mail, no online service.
 
@@ -131,7 +131,7 @@ All text the child sees is Croatian, kept outside the code so it can be correcte
 3. **Number line 11–20.** The evidence covers 1–10; whether the same game helps for 11–20 is to be checked with
    children.
 4. **Round and session length** (10 items, about 10 minutes) are proposals, not research results.
-5. **Voice recording.** Who records it, and how new phrases are added later.
+5. **Voice method.** Recorded human voice or generated (Azure Speech has Croatian voices `hr-HR-GabrijelaNeural` and `hr-HR-SreckoNeural`); decided before release. Until then the game uses placeholder clips. Croatian 1 and 2 change form (jedan/jedna/jedno, dva/dvije), so whole spoken sentences are safer than joined number clips.
 6. **The app's shown name and art style** (simple, clear, cartoon or schematic, per the evidence).
 7. **Distribution beyond the family.** Rules for children's apps were not researched; if Znalica is published, they
    need research first.
