@@ -11,6 +11,11 @@
   `docs/articles/LEARNING_GAME_EVIDENCE_AND_GAME_FORMAT_PER_CONTENT_TYPE.md` and
   `docs/articles/tools/CROATIA_PRIMARY_SCHOOL_CURRICULUM_SUBJECTS_PER_GRADE_AND_OUTCOME_CODES.md`. Next: its
   technical spec (`write-tech-spec`); the build command in `AGENTS.md` still targets WebGL, not Windows.
+- [ ] **Make the Unity commands in `AGENTS.md` run on a machine where `Unity.exe` is not on PATH.** *(T5. New
+  2026-11-16.)* The build and test commands call a bare `Unity.exe`; on this PC the editor is at
+  `C:\Program Files\Unity\Hub\Editor\6000.3.28f1\Editor\Unity.exe` and not on PATH, so the developer had to call it
+  by full path. The path is per-machine, so it must not be hardcoded: read it from an environment variable or from
+  `ProjectSettings/ProjectVersion.txt` plus the Hub's install folder.
 
 ## Done
 
