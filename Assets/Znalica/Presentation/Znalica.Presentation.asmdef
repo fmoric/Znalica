@@ -1,0 +1,14 @@
+{
+    "name": "Znalica.Presentation",
+    "rootNamespace": "Znalica.Presentation",
+    "references": ["Znalica.Domain","Znalica.Storage"],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
