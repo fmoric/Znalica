@@ -1,6 +1,6 @@
 {
   "plugin": "ai-agent-templates",
-  "version": "0.195.10",
+  "version": "0.195.16",
   "packet": "developer",
   "language": "other",
   "options": {
@@ -25,13 +25,13 @@
     "ESTIMATE_PHASES": "Design (technical analysis and design, including settling technical unknowns) · Build (development, including the developer's own testing) · Test (playtesting and fixes)",
     "KNOWLEDGE_READ_TOOLS": "search_knowledge, get_article, list_articles, get_research, get_teachable_moment",
     "LANGUAGE": "C# / Unity",
-    "BUILD_CMD": "Unity.exe -batchmode -quit -projectPath . -buildTarget WebGL -executeMethod BuildScript.Build",
+    "BUILD_CMD": "Unity.exe -batchmode -quit -projectPath . -buildTarget Win64 -executeMethod BuildScript.Build",
     "TEST_CMD": "Unity.exe -batchmode -projectPath . -runTests -testPlatform EditMode -testResults TestResults.xml",
     "RUN_CMD": "none",
     "TEST_GLOB": "Assets/Tests/**/*.cs"
   },
   "rule_decisions": [],
-  "delivered": "2026-11-16",
+  "delivered": "2026-11-17",
   "files": {
     ".claude/skills/discussion/SKILL.md": {
       "hash": "2b2b3d7a10d9e7eb6b6b13b904ba26152d4402d5",
@@ -374,12 +374,12 @@
       "template": "a7beee3e4461a8cee63a7729534deb16568a6a06"
     },
     ".claude/agents/developer.md": {
-      "hash": "dcfcfab8f7f6c83cff20cf29972cb5da491cc7b6",
-      "template": "dcfcfab8f7f6c83cff20cf29972cb5da491cc7b6"
+      "hash": "a074bc2476c97e2b28947f9d5afaf2557dac6b04",
+      "template": "a074bc2476c97e2b28947f9d5afaf2557dac6b04"
     },
     ".github/agents/developer.agent.md": {
-      "hash": "f6547d691e139f6f41755927e3d88ccbd7952303",
-      "template": "f6547d691e139f6f41755927e3d88ccbd7952303"
+      "hash": "61fc531af70387982dc988bdab85600a488db2f6",
+      "template": "61fc531af70387982dc988bdab85600a488db2f6"
     },
     ".claude/agents/code-reviewer.md": {
       "hash": "c395b12ede3e5b06d345157c65d8d029466c0243",
@@ -438,12 +438,12 @@
       "template": "c877f63198ba63be4703391b2b40e6c26d1b1c20"
     },
     ".claude/CLAUDE.md": {
-      "hash": "55dad532868b97163eb8e17701beea5dcc478a53",
-      "template": "55dad532868b97163eb8e17701beea5dcc478a53"
+      "hash": "7ce57ddeee3a9ab79eacdc11e3cdbaff0b4666c3",
+      "template": "7ce57ddeee3a9ab79eacdc11e3cdbaff0b4666c3"
     },
     "AGENTS.md": {
-      "hash": "b5e2e319e30fdd5ebb6b4bd9b9e161e1f9399174",
-      "template": "b5e2e319e30fdd5ebb6b4bd9b9e161e1f9399174"
+      "hash": "70c55b4100f890a2136a9ceec78bfeef752d3b35",
+      "template": "70c55b4100f890a2136a9ceec78bfeef752d3b35"
     },
     ".github/copilot-instructions.md": {
       "hash": "1ada9d53cf61194443a92083979aad84df232566",
@@ -590,8 +590,8 @@
       "template": "8728b28009f25d8df4cd37f2cf7e337091f5660a"
     },
     "MCP-SETUP.md": {
-      "hash": "2b6fa211806ca10f7c324c4054a8cf102b5547c2",
-      "template": "2b6fa211806ca10f7c324c4054a8cf102b5547c2"
+      "hash": "13c90c14256f3d71cea0d5a8375d391b8db495f4",
+      "template": "13c90c14256f3d71cea0d5a8375d391b8db495f4"
     }
   },
   "preflight": {

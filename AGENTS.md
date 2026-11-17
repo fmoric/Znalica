@@ -5,7 +5,7 @@ every agent working in it.
 
 ## Commands
 
-- Build: `Unity.exe -batchmode -quit -projectPath . -buildTarget WebGL -executeMethod BuildScript.Build`
+- Build: `Unity.exe -batchmode -quit -projectPath . -buildTarget Win64 -executeMethod BuildScript.Build`
 - Test: `Unity.exe -batchmode -projectPath . -runTests -testPlatform EditMode -testResults TestResults.xml`
 
 ## Working principles (always on)

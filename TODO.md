@@ -10,7 +10,9 @@
   Windows desktop). Sources: the knowledge-store articles
   `docs/articles/LEARNING_GAME_EVIDENCE_AND_GAME_FORMAT_PER_CONTENT_TYPE.md` and
   `docs/articles/tools/CROATIA_PRIMARY_SCHOOL_CURRICULUM_SUBJECTS_PER_GRADE_AND_OUTCOME_CODES.md`. Next: its
-  technical spec (`write-tech-spec`); the build command in `AGENTS.md` still targets WebGL, not Windows.
+  technical spec (`write-tech-spec`; graded B). **In progress:** its steps 1 and 2 (project skeleton that builds for
+  Windows, then the text and voice catalog and the activity menu; branch `feat/unity-project-skeleton`; `docs/specs/2026-11-16-grade-1-maths-first-version-tech.md`,
+  *Work Sequence* 1 and 2). The build command in `AGENTS.md` now targets `Win64`.
 - [ ] **Make the Unity commands in `AGENTS.md` run on a machine where `Unity.exe` is not on PATH.** *(T5. New
   2026-11-16.)* The build and test commands call a bare `Unity.exe`; on this PC the editor is at
   `C:\Program Files\Unity\Hub\Editor\6000.3.28f1\Editor\Unity.exe` and not on PATH, so the developer had to call it

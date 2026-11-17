@@ -542,7 +542,7 @@ need only step 3b). Parallel work goes in a separate worktree, as `AGENTS.md` �
   installed, step 1 cannot start.
 - **R2 — Unity behaviours this design relies on are unverified.** No curated Unity source was reachable: the knowledge
   store has no Unity article (two searches, above), `microsoft-learn` does not document the Unity runtime, and no
-  library-documentation server is connected. Derived from general knowledge, unverified: (a) StreamingAssets ships as
+  library-documentation server is connected. **Step 1 findings are at the end of this entry.** Derived from general knowledge, unverified: (a) StreamingAssets ships as
   loose, editable files beside a Windows player; (b) `Application.persistentDataPath` on Windows is a per-user folder
   under `AppData\LocalLow`; (c) `JsonUtility` serialises `[Serializable]` classes with public fields but not
   dictionaries or `DateTime`; (d) the command-line build target for Windows 64-bit is `Win64`; (e) `JsonUtility`
@@ -550,11 +550,38 @@ need only step 3b). Parallel work goes in a separate worktree, as `AGENTS.md` �
   why `Hr.json` wraps its list in `{ "Entries": [...] }`; the wrapped form works either way. Step 1 confirms all five
   before step 2 relies on them; knowledge-store research request 67 asks for a cited Unity article covering (a)–(d)
   and R3.
+  **Step 1 findings (2026-11-16, Unity 6000.3.28f1, Mono, Windows 64-bit player built with
+  `BuildScript.Build`; by observation of the built player, not from a cited source).** A throwaway probe script,
+  run in the built player with `-batchmode -nographics` and then removed, wrote what it saw to a file:
+  (a) **Confirmed.** A file under `Assets/StreamingAssets/Text/` arrived as the loose file
+  `Znalica_Data/StreamingAssets/Text/<name>`; after editing it on disk without a rebuild, the player read the edited
+  text. (b) **Confirmed.** `Application.persistentDataPath` was `C:/Users/<user>/AppData/LocalLow/Znalica/Znalica`
+  (company name / product name from `ProjectSettings`). (c) **Confirmed.** `JsonUtility.ToJson` wrote public fields,
+  strings with `č` and a `List<int>`, and dropped a `Dictionary<string,int>` and a `DateTime` field silently
+  (`{"Kept":5}` for a class that had both). (d) **Confirmed.** `-buildTarget Win64` is accepted: the build succeeded
+  (exit 0, `Builds/Windows/Znalica.exe`); an invalid name exits 21 and the editor lists the valid names, among them
+  `Win` and `Win64`. (e) **Confirmed.** `JsonUtility.FromJson<T>("[1,2,3]")` throws `ArgumentException: JSON must
+  represent an object type.` (also for `List<int>`); the wrapped `{"Entries":[1,2,3]}` parsed into `int[] Entries`.
+  Not covered: an installed player (rather than the build folder), other Windows users, a user name with non-ASCII
+  characters. R3 was not tested here (step 10).
+  **Step 2 findings (2026-11-17, same editor; by observation in the editor and a headless run of the built player,
+  not from a cited source).** (f) The project had no `com.unity.ugui` entry in `Packages/manifest.json`, so uGUI and
+  TextMeshPro did not exist for the asmdefs; step 2 added `"com.unity.ugui": "2.0.0"` (the copy shipped inside the
+  editor install) and imported TextMeshPro's *TMP Essential Resources* into `Assets/TextMesh Pro/`, without which no
+  `TextMeshProUGUI` has a font. (g) `activeInputHandler` is 1 (Input System only), so the menu's event system uses
+  `InputSystemUIInputModule`, and `Znalica.Presentation` references `Unity.InputSystem`. (h) A built player started
+  with `-batchmode -nographics` for 12 s built the menu, read `Hr.json` from `Znalica_Data/StreamingAssets/Text/` and
+  wrote no error line; what it draws and plays was not seen (manual checks, step 2).
 - **R3 — "Sends no data off the PC" depends on the engine, not only our code.** Our code has no network calls; whether
   a Unity player contacts any Unity service by default is unverified (R2). Step 10's firewall and connection check is
   the test.
 - **R4 — Croatian glyphs.** The TextMeshPro font asset must include č, ć, đ, š, ž, their capitals and `−` (U+2212);
   a missing glyph shows as a box. Step 2's catalog screen exposes it.
+  **Step 2 finding:** the default font asset *LiberationSans SDF* is static with 250 characters and holds none of
+  those eleven (`HasCharacter` without fallbacks: false for all). With fallbacks searched, all eleven are found, in
+  the dynamic fallback asset *LiberationSans SDF - Fallback* that the essentials import adds. So the menu should show
+  them; the first look at the built player (step 2's manual checks) confirms it, and a box in place of a letter there
+  means the fallback did not reach the label.
 - **R5 — The number line 11–20 and addition to 20 rest on inference** (FS:30, FS:32). The design does not depend on
   it; testing with children is the functional spec's open question 3.
 - **R6 — Scheduler constants are proposals** (6 due, 4 new, intervals 1-1-2-4-8). Each is one named constant.
