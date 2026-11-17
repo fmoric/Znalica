@@ -132,7 +132,7 @@ All text the child sees is Croatian, kept outside the code so it can be correcte
    children.
 4. **Round and session length** (10 items, about 10 minutes) are proposals, not research results.
 5. **Voice method.** Recorded human voice or generated (Azure Speech has Croatian voices `hr-HR-GabrijelaNeural` and `hr-HR-SreckoNeural`); decided before release. Until then the game uses placeholder clips. Croatian 1 and 2 change form (jedan/jedna/jedno, dva/dvije), so whole spoken sentences are safer than joined number clips.
-6. **The app's shown name and art style** (simple, clear, cartoon or schematic, per the evidence).
+6. **The app's shown name and art style** (simple, clear, cartoon or schematic, per the evidence). The first play-test, on 2026-11-17, found the placeholder graphics plain ("could be better").
 7. **Distribution beyond the family.** Rules for children's apps were not researched; if Znalica is published, they
    need research first.
 
