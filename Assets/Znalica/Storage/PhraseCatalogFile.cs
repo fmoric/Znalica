@@ -59,6 +59,7 @@ namespace Znalica.Storage
             var entries = new Dictionary<PhraseKey, Phrase>();
 
             FileDto file = null;
+            bool reported = false;
             try
             {
                 file = JsonUtility.FromJson<FileDto>(json);
@@ -66,6 +67,12 @@ namespace Znalica.Storage
             catch (ArgumentException exception)
             {
                 problems.Report("Text file is not valid JSON: " + exception.Message);
+                reported = true;
+            }
+
+            if (file == null && !reported)
+            {
+                problems.Report("Text file is empty.");
             }
 
             if (file != null && file.Entries == null)

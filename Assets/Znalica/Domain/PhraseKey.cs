@@ -3,7 +3,8 @@ namespace Znalica.Domain
     /// <summary>
     /// Every phrase the game shows or speaks: instructions, praise, explanations, spoken activity names and the
     /// screen-only texts. The Croatian text and the clip names for each key live in Hr.json, not in code.
-    /// Later steps add their own keys.
+    /// Later steps add their own keys. Append new keys at the end only: Main.unity serializes PhraseKey as an
+    /// integer (the menu keys are 0, 1 and 2), so inserting or reordering silently changes what the scene refers to.
     /// </summary>
     public enum PhraseKey
     {

@@ -7,7 +7,8 @@ namespace Znalica.Presentation
 {
     /// <summary>
     /// Plays a phrase as a queue of clips on one AudioSource at the voice volume, and replays the last one for the
-    /// speaker button. A missing clip or no audio device never stops the game: the text stays on screen.
+    /// speaker button. At volume 0 nothing is played and nothing is waited on. A missing clip or no audio device
+    /// never stops the game: the text stays on screen.
     /// </summary>
     [RequireComponent(typeof(AudioSource))]
     public sealed class VoicePlayer : MonoBehaviour
@@ -26,7 +27,7 @@ namespace Znalica.Presentation
             get => _volume;
             set
             {
-                _volume = Mathf.Clamp01(value);
+                _volume = VoiceVolume.Clamp(value);
                 if (_source != null)
                 {
                     _source.volume = _volume;
@@ -50,9 +51,15 @@ namespace Znalica.Presentation
             if (_playing != null)
             {
                 StopCoroutine(_playing);
+                _playing = null;
             }
 
             _source.Stop();
+            if (VoiceVolume.IsSilent(_volume))
+            {
+                return;
+            }
+
             _playing = StartCoroutine(PlayQueue(clipNames));
         }
 

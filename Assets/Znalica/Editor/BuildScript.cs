@@ -12,6 +12,8 @@ public static class BuildScript
 
     public static void Build()
     {
+        // A broken Hr.json or a clip that is not an .ogg is logged by the builder but does not fail the build;
+        // the EditMode completeness test is the guard.
         VoiceLibraryBuilder.Rebuild();
 
         Directory.CreateDirectory(Path.GetDirectoryName(OutputPath));

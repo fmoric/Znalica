@@ -104,6 +104,33 @@ namespace Znalica.Tests.EditMode
             StringAssert.Contains("End", _problems.Messages[0]);
         }
 
+        [TestCase("0", "Number00")]
+        [TestCase("8", "Number08")]
+        [TestCase("08", "Number08")]
+        [TestCase("20", "Number20")]
+        public void VoiceClips_NumberInsideZeroToTwenty_IsAccepted(string value, string expectedClip)
+        {
+            PhraseCatalog catalog = CatalogWith((PhraseKey.ThenMore, "x", new[] { "{N}" }));
+
+            IReadOnlyList<string> clips = catalog.VoiceClips(PhraseKey.ThenMore, new Dictionary<string, string> { ["N"] = value });
+
+            CollectionAssert.AreEqual(new[] { expectedClip }, clips);
+            Assert.IsEmpty(_problems.Messages);
+        }
+
+        [TestCase("-1")]
+        [TestCase("21")]
+        [TestCase("+8")]
+        public void VoiceClips_NumberOutsideTheRangeOrNotADigitString_IsRejected(string value)
+        {
+            PhraseCatalog catalog = CatalogWith((PhraseKey.ThenMore, "x", new[] { "{N}" }));
+
+            IReadOnlyList<string> clips = catalog.VoiceClips(PhraseKey.ThenMore, new Dictionary<string, string> { ["N"] = value });
+
+            Assert.IsEmpty(clips);
+            Assert.AreEqual(1, _problems.Messages.Count);
+        }
+
         [Test]
         public void VoiceClips_SlotWithoutArgumentOrWithNonNumber_IsReportedAndLeftOut()
         {

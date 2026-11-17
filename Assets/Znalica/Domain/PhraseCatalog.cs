@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Text.RegularExpressions;
 
 namespace Znalica.Domain
 {
@@ -11,8 +10,6 @@ namespace Znalica.Domain
     /// </summary>
     public sealed class PhraseCatalog
     {
-        private static readonly Regex TextSlot = new Regex(@"\{([A-Za-z0-9_]+)\}", RegexOptions.Compiled);
-
         private readonly Dictionary<PhraseKey, Phrase> _phrases = new Dictionary<PhraseKey, Phrase>();
         private readonly IProblemLog _problems;
 
@@ -47,7 +44,7 @@ namespace Znalica.Domain
         /// <summary>The text with each <c>{Name}</c> replaced by the argument of that name.</summary>
         public string Text(PhraseKey key, IReadOnlyDictionary<string, string> args = null)
         {
-            return TextSlot.Replace(Get(key).Text, match =>
+            return PhraseSlot.InText.Replace(Get(key).Text, match =>
             {
                 string name = match.Groups[1].Value;
                 if (args != null && args.TryGetValue(name, out string value))

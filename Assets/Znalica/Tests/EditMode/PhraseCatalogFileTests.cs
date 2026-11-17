@@ -58,6 +58,16 @@ namespace Znalica.Tests.EditMode
             Assert.IsEmpty(catalog.Entries);
         }
 
+        [TestCase("")]
+        [TestCase("   \r\n\t ")]
+        public void Parse_EmptyOrWhitespaceOnly_ReportsOnceAndGivesAnEmptyCatalog(string json)
+        {
+            PhraseCatalog catalog = PhraseCatalogFile.Parse(json, _problems);
+
+            Assert.AreEqual(1, _problems.Messages.Count);
+            Assert.IsEmpty(catalog.Entries);
+        }
+
         [Test]
         public void Parse_TopLevelArray_ReportsBecauseTheListMustBeWrapped()
         {

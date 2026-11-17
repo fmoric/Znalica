@@ -64,7 +64,10 @@ namespace Znalica.Editor
             EditorUtility.SetDirty(library);
         }
 
-        /// <summary>One row per whole-sentence clip: the clip name and the Croatian sentence to say.</summary>
+        /// <summary>
+        /// One row per whole-sentence clip: the clip name and the Croatian sentence to say. A broken Hr.json is logged
+        /// and gives a shorter script; it does not fail the build (the EditMode completeness test is the guard).
+        /// </summary>
         private static void WriteScript()
         {
             PhraseCatalog catalog = PhraseCatalogFile.Read(

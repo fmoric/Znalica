@@ -30,6 +30,19 @@ namespace Znalica.Tests.EditMode
             Assert.IsEmpty(problems.Messages);
         }
 
+        [TestCase(PhraseKey.ActivityNameNumberLine)]
+        [TestCase(PhraseKey.ActivityNameComparison)]
+        [TestCase(PhraseKey.ActivityNameArithmetic)]
+        [TestCase(PhraseKey.PraiseRight)]
+        [TestCase(PhraseKey.ExplainJump)]
+        public void PhraseThatMustSpeak_HasVoiceInTheShippedHrJson(PhraseKey key)
+        {
+            PhraseCatalog catalog = PhraseCatalogFile.Read(
+                PhraseCatalogFile.PathIn(Application.streamingAssetsPath), new CollectingProblemLog());
+
+            Assert.IsNotEmpty(catalog.Get(key).Voice, key + " has an empty Voice, so it would be silent.");
+        }
+
         [Test]
         public void EveryPhraseKeyHasATextAndEveryClipItSpeaksIsInTheVoiceFolder()
         {

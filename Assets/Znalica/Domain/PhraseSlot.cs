@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Globalization;
+using System.Text.RegularExpressions;
 
 namespace Znalica.Domain
 {
@@ -10,16 +11,18 @@ namespace Znalica.Domain
     /// </summary>
     public static class PhraseSlot
     {
+        private const string NamePattern = "[A-Za-z0-9_]+";
+
+        /// <summary>A slot inside a text; group 1 is its name. The one definition of what a slot name may hold.</summary>
+        public static readonly Regex InText = new Regex(@"\{(" + NamePattern + @")\}", RegexOptions.Compiled);
+
+        private static readonly Regex WholeItem = new Regex(@"^\{(" + NamePattern + @")\}\z", RegexOptions.Compiled);
+
         public static bool TryParse(string voiceItem, out string name)
         {
-            name = null;
-            if (voiceItem == null || voiceItem.Length < 3 || voiceItem[0] != '{' || voiceItem[voiceItem.Length - 1] != '}')
-            {
-                return false;
-            }
-
-            name = voiceItem.Substring(1, voiceItem.Length - 2);
-            return true;
+            Match match = voiceItem == null ? Match.Empty : WholeItem.Match(voiceItem);
+            name = match.Success ? match.Groups[1].Value : null;
+            return match.Success;
         }
 
         public static string NumberClipName(int number)
