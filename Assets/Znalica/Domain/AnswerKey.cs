@@ -1,0 +1,26 @@
+namespace Znalica.Domain
+{
+    /// <summary>
+    /// What a pad button or a keyboard key means for the answer box. The views map their buttons and keys to this;
+    /// <see cref="ArithmeticPlay"/> says what each does. The digits are in order, so <c>Digit0 + n</c> is digit n.
+    /// </summary>
+    public enum AnswerKey
+    {
+        Digit0,
+        Digit1,
+        Digit2,
+        Digit3,
+        Digit4,
+        Digit5,
+        Digit6,
+        Digit7,
+        Digit8,
+        Digit9,
+
+        /// <summary>Obriši: removes the last digit.</summary>
+        Erase,
+
+        /// <summary>U redu / Enter: gives the answer; after a second wrong answer it goes on instead.</summary>
+        Confirm,
+    }
+}

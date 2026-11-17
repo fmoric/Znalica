@@ -59,5 +59,13 @@ namespace Znalica.Domain
         // Step 3a: the jump back that explains a subtraction (placeholder wording, for the Croatian review)
         ExplainJumpBack,
         ThenLess,
+
+        // Step 3b: the number pad and round-end texts (screen only). Wording: the pad's two come from the spec's Input
+        // section; the round-end three are placeholders for the Croatian review.
+        ButtonErase,
+        ButtonOk,
+        ButtonPlayAgain,
+        ButtonStop,
+        RoundEndScore,
     }
 }
