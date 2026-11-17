@@ -463,6 +463,33 @@ Each step is a vertical slice for one session, names its check, and lists what b
    *Check:* a round played with the mouse only and one with the keys only; a wrong answer shows and speaks the jump
    before the retry.
    *Blocked by:* 2, 3a.
+   **Step 3b findings (2026-11-17; by EditMode tests, a batch build and a throwaway editor probe that drove the screen's
+   code; the screen was not seen, so its manual checks are open).** Built as specified, with these choices where the spec
+   was silent, each open to the product owner or the next step: (1) **Where the rules sit.** `ArithmeticPlay`, with
+   `AnswerKey` (pad button or key) and `Feedback`, in `Znalica.Domain`: what a key does to the answer box, when an answer
+   is given, the feedback that follows, the response time (from the moment the item was last put in front of the child),
+   and the round-end numbers. `ArithmeticScreen` (Presentation) only draws it and maps buttons and keys to `AnswerKey`.
+   `ItemFormatter` is in `Znalica.Domain` and returns tokens (`8`, `+`, `5`, `=`, the unknown), so the screen can draw
+   the unknown as a box; it formats arithmetic items only and shows `−` (U+2212). The progress view's use of keys is not
+   built, since it has no caller yet. `SystemClock` is added to Domain (the real `IClock`). (2) **Keys and the second
+   wrong answer.** Enter (also the numpad's) confirms; after a second wrong answer it goes on, as the *Dalje* button does,
+   so a round can be played from the keyboard alone. The round-end buttons are mouse only. (3) **Feedback has no timer.**
+   Praise stays beside the next item until the next answer; an explanation stays until the retry is answered or *Dalje*
+   is pressed. The knowledge article on 6–7-year-olds gives no duration and suggests keeping it until the child moves on
+   (an inference there, not a finding). (4) **The jump is drawn at once, not animated:** the 0–20 line with the start and
+   the landing marked and a bar with the size of the jump; the spoken phrase gives the order. *Approach* 6 names an
+   animated jump; an animation is a later addition if the manual check finds the picture hard to follow. (5) **Nothing
+   is said that the spec gives no words for:** no spoken instruction (`InstructionArithmetic`), no spoken item, no spoken
+   round-end. Clicking the picture speaks the activity's name, as in step 2, then opens the screen. New keys, screen only
+   and appended at the end of `PhraseKey`: `ButtonErase` (*Obriši*) and `ButtonOk` (*U redu*), the spec's words;
+   `ButtonPlayAgain` (*Igraj opet*), `ButtonStop` (*Završi*) and `RoundEndScore` (`{Right} / {Total}`) are placeholders for
+   the Croatian review. (6) **Stand-ins until step 4:** every round is session 1, the answers go to one `InMemoryAnswerLog`
+   for as long as the app runs, and the planner is seeded from `Environment.TickCount`. (7) **`ScreenNavigator` now
+   works:** it is the component already in `Main.unity`, found with `FindFirstObjectByType`, with `Add` and `Show`; no
+   scene change. (8) **Unity behaviour relied on, unverified in a player:** a uGUI `Button` clicked with the mouse holds the
+   selection, and the Input System UI module would then also "click" it on Enter; every button therefore takes no
+   keyboard navigation and clears the selection after a click (`UiBuilder.NewButton`), and the navigator clears it on a
+   screen change. That the fallback font draws `−` and the layout at 1920×1080 are for the manual check.
 4. **Profiles, the parent gate, and answers saved to disk.** `ProfileStore`, `SettingsStore`, `AtomicFileWriter`,
    `FileAnswerLog`; `ParentGate`; screens: start/profile pick, gate, first-start flow (gate then first profile),
    profiles and settings (add, rename, delete, volume); `SessionNumber`. Tests: append survives reopening; a
