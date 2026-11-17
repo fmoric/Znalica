@@ -10,9 +10,10 @@
   Windows desktop). Sources: the knowledge-store articles
   `docs/articles/LEARNING_GAME_EVIDENCE_AND_GAME_FORMAT_PER_CONTENT_TYPE.md` and
   `docs/articles/tools/CROATIA_PRIMARY_SCHOOL_CURRICULUM_SUBJECTS_PER_GRADE_AND_OUTCOME_CODES.md`. Next: its
-  technical spec (`write-tech-spec`; graded B). **In progress:** its steps 1 and 2 (project skeleton that builds for
-  Windows, then the text and voice catalog and the activity menu; branch `feat/unity-project-skeleton`; `docs/specs/2026-11-16-grade-1-maths-first-version-tech.md`,
-  *Work Sequence* 1 and 2). The build command in `AGENTS.md` now targets `Win64`.
+  technical spec (`write-tech-spec`; graded B), `docs/specs/2026-11-16-grade-1-maths-first-version-tech.md`. Steps 1
+  and 2 (project skeleton for Windows; text and voice catalog and the activity menu) merged in PR #3 on 2026-11-17;
+  their manual player checks and the Croatian reading of `Hr.json` are still to do. **In progress:** step 3a (round
+  engine, domain only; branch `feat/round-engine`, PR 2).
 - [ ] **Make the Unity commands in `AGENTS.md` run on a machine where `Unity.exe` is not on PATH.** *(T5. New
   2026-11-16.)* The build and test commands call a bare `Unity.exe`; on this PC the editor is at
   `C:\Program Files\Unity\Hub\Editor\6000.3.28f1\Editor\Unity.exe` and not on PATH, so the developer had to call it
