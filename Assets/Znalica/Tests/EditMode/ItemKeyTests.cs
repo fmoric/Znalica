@@ -42,6 +42,16 @@ namespace Znalica.Tests.EditMode
         }
 
         [Test]
+        public void TryParse_TheLongestKeyAndTheEdgesOfPrintableAscii_AreAccepted()
+        {
+            Assert.IsTrue(ItemKey.TryParse(new string('A', 64), out _));
+            Assert.IsTrue(ItemKey.TryParse("!", out _));
+            Assert.IsTrue(ItemKey.TryParse("~", out _));
+            Assert.IsFalse(ItemKey.TryParse(" ", out _));
+            Assert.IsFalse(ItemKey.TryParse("\u007f", out _));
+        }
+
+        [Test]
         public void TryParse_TextLongerThanAnyKey_ReturnsFalse()
         {
             Assert.IsFalse(ItemKey.TryParse(new string('A', 65), out _));

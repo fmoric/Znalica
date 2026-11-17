@@ -90,18 +90,29 @@ namespace Znalica.Tests.EditMode
         }
 
         [Test]
-        public void Plan_EveryNumberOfEveryPlannedItemIsInRange_OverManySeeds()
+        public void Plan_ShufflesAcrossLevels_SoTheEasyItemsAreNotAlwaysFirst()
         {
-            var set = new ArithmeticItemSet();
-            for (int seed = 0; seed < 200; seed++)
+            var easy = new List<Item> { Sum(1, 2), Sum(2, 2), Sum(3, 2) };
+            var harder = new List<Item>();
+            for (int b = 0; b <= 7; b++)
             {
-                foreach (ArithmeticItem item in RoundPlanner.Plan(set, new SeededRandom(seed)).Cast<ArithmeticItem>())
+                harder.Add(Sum(12, b));
+            }
+
+            var set = new ListItemSet(easy.Concat(harder).ToList());
+            int easyAllFirst = 0;
+            for (int seed = 0; seed < 50; seed++)
+            {
+                IReadOnlyList<Item> round = RoundPlanner.Plan(set, new SeededRandom(seed));
+                if (round.Take(3).All(item => item.Difficulty == Difficulty.WithinTen))
                 {
-                    Assert.IsTrue(
-                        NumberRange.Contains(item.First) && NumberRange.Contains(item.Second) && NumberRange.Contains(item.Result),
-                        item.Key.ToString());
+                    easyAllFirst++;
                 }
             }
+
+            // Without the final shuffle the easy items fill the first three places every time (50 of 50);
+            // shuffled, that happens by chance about 1 time in 120.
+            Assert.Less(easyAllFirst, 10);
         }
 
         [Test]

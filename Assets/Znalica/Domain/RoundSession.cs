@@ -9,13 +9,13 @@ namespace Znalica.Domain
     /// <list type="bullet">
     /// <item>Right: the next item is current at once; nothing waits.</item>
     /// <item>Wrong on the first ask of an item: the explanation shows, the same item is asked again (Retry), and the item
-    /// is also inserted to come back (Return) three places later, or last if fewer remain: at most once per item.</item>
+    /// is also inserted to come back (Return) after three other items, or last if fewer than three other items remain: at most once per item.</item>
     /// <item>Wrong on a Retry: the explanation shows again and <see cref="Continue"/> goes on, so a child cannot get stuck.</item>
     /// </list>
     /// </summary>
     public sealed class RoundSession
     {
-        /// <summary>How many places after the current item a wrong item comes back.</summary>
+        /// <summary>How many other items are asked between a wrong item's first ask and its Return (fewer if fewer remain).</summary>
         public const int ReturnDistance = 3;
 
         private readonly IAnswerLog _log;
@@ -54,8 +54,19 @@ namespace Znalica.Domain
         /// <summary>The item being asked, or being explained; null once the round has ended.</summary>
         public Item CurrentItem => _current;
 
-        /// <summary>How the next <see cref="Submit"/> will be recorded.</summary>
-        public AttemptKind NextAttempt => State == RoundState.ShowingExplanation ? AttemptKind.Retry : _currentAttempt;
+        /// <summary>How the next <see cref="Submit"/> will be recorded; null when Submit would throw (no retry left, or the round has ended).</summary>
+        public AttemptKind? NextAttempt
+        {
+            get
+            {
+                switch (State)
+                {
+                    case RoundState.AwaitingAnswer: return _currentAttempt;
+                    case RoundState.ShowingExplanation: return _retryPending ? AttemptKind.Retry : (AttemptKind?)null;
+                    default: return null;
+                }
+            }
+        }
 
         /// <summary>In <see cref="RoundState.ShowingExplanation"/>: true if the item is asked again, false if only <see cref="Continue"/> goes on.</summary>
         public bool CanRetry => State == RoundState.ShowingExplanation && _retryPending;
@@ -83,7 +94,7 @@ namespace Znalica.Domain
                 throw new ArgumentOutOfRangeException(nameof(responseMilliseconds));
             }
 
-            AttemptKind attempt = NextAttempt;
+            AttemptKind attempt = NextAttempt.Value;
             Item item = _current;
             bool correct = item.IsCorrect(answer);
             _log.Append(new AnswerRecord(
@@ -110,6 +121,7 @@ namespace Znalica.Domain
 
             if (attempt == AttemptKind.First)
             {
+                // Index 3 of the upcoming items: exactly three other items come before the Return.
                 _upcoming.Insert(Math.Min(ReturnDistance, _upcoming.Count), new Pending(item, AttemptKind.Return));
             }
 

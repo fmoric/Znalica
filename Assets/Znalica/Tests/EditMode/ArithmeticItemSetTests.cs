@@ -31,6 +31,14 @@ namespace Znalica.Tests.EditMode
         }
 
         [Test]
+        public void All_HoldsThreeHundredNinetySixWithinTenItems()
+        {
+            // 66 ordered pairs with a sum of 10 or less, times two operations, times three unknown positions:
+            // the pool the pacing question Q4 in the technical spec counts from.
+            Assert.AreEqual(396, Set.All.Count(item => item.Difficulty == Difficulty.WithinTen));
+        }
+
+        [Test]
         public void All_KeysAreUnique()
         {
             Assert.AreEqual(Set.All.Count, Set.All.Select(item => item.Key).Distinct().Count());
@@ -178,6 +186,12 @@ namespace Znalica.Tests.EditMode
             Assert.Throws<System.ArgumentException>(() => new ArithmeticItem(18, Operation.Addition, 5, 23, Unknown.Result));
             Assert.Throws<System.ArgumentException>(() => new ArithmeticItem(3, Operation.Subtraction, 7, -4, Unknown.Result));
             Assert.Throws<System.ArgumentException>(() => new ArithmeticItem(8, Operation.Addition, 5, 14, Unknown.Result));
+        }
+
+        [Test]
+        public void Constructor_UndefinedUnknown_Throws()
+        {
+            Assert.Throws<System.ArgumentException>(() => new ArithmeticItem(8, Operation.Addition, 5, 13, (Unknown)7));
         }
 
         [TestCase("A:8+5=?", 13, true)]

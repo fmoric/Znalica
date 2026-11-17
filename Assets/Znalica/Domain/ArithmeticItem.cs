@@ -17,11 +17,16 @@ namespace Znalica.Domain
         // The one definition of the key's form; Format below writes the same shape.
         private static readonly Regex KeyForm = new Regex(
             "^" + KeyPrefix + Number + "([+-])" + Number + "=" + Number + "\\z",
-            RegexOptions.CultureInvariant | RegexOptions.Compiled);
+            RegexOptions.CultureInvariant);
 
         /// <exception cref="ArgumentException">A number outside 0-20, or a fact that is not true.</exception>
         public ArithmeticItem(int first, Operation operation, int second, int result, Unknown unknown)
         {
+            if (!Enum.IsDefined(typeof(Unknown), unknown))
+            {
+                throw new ArgumentException("Unknown must name one of the three numbers.", nameof(unknown));
+            }
+
             if (!NumberRange.Contains(first) || !NumberRange.Contains(second) || !NumberRange.Contains(result))
             {
                 throw new ArgumentException("The numbers " + first + ", " + second + ", " + result + " are not all in "

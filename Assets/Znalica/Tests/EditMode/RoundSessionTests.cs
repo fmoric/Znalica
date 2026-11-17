@@ -345,8 +345,10 @@ namespace Znalica.Tests.EditMode
         {
             IReadOnlyList<Item> items = RoundPlanner.Plan(new ArithmeticItemSet(), new SeededRandom(7));
             RoundSession round = Start(items);
-            var random = new SeededRandom(11);
+            bool wrongOnReturn = false;
+            int retries = 0;
 
+            // Wrong on every first ask and every Return; on a Retry, right and wrong in turn.
             int steps = 0;
             while (round.State != RoundState.Ended)
             {
@@ -355,21 +357,131 @@ namespace Znalica.Tests.EditMode
                 {
                     round.Continue();
                 }
-                else if (random.Next(2) == 0)
+                else if (round.NextAttempt == AttemptKind.Retry && retries++ % 2 == 0)
                 {
                     SubmitRight(round);
                 }
                 else
                 {
+                    wrongOnReturn |= round.NextAttempt == AttemptKind.Return;
                     SubmitWrong(round);
                 }
             }
 
-            foreach (IGrouping<string, AnswerRecord> perItem in _log.ReadAll().GroupBy(r => r.ItemKey))
+            Assert.IsTrue(wrongOnReturn, "the round must have reached a wrong answer on a Return ask, or the test covers less than it says");
+            IReadOnlyList<AnswerRecord> records = _log.ReadAll();
+            Assert.AreEqual(
+                round.PlannedCount,
+                records.Where(r => r.Attempt == AttemptKind.First).Select(r => r.ItemKey).Distinct().Count(),
+                "every planned item was asked once");
+            foreach (IGrouping<string, AnswerRecord> perItem in records.GroupBy(r => r.ItemKey))
             {
                 Assert.AreEqual(1, perItem.Count(r => r.Attempt == AttemptKind.First), perItem.Key);
                 Assert.LessOrEqual(perItem.Count(r => r.Attempt == AttemptKind.Return), 1, perItem.Key);
             }
+        }
+
+        [Test]
+        public void Return_ComesBackAfterExactlyThreeOtherItems_WhenThreeRemain()
+        {
+            List<Item> items = Items(4);
+            RoundSession round = Start(items);
+
+            SubmitWrong(round);
+            SubmitRight(round);
+            SubmitRight(round);
+            SubmitRight(round);
+            SubmitRight(round);
+
+            Assert.AreSame(items[0], round.CurrentItem);
+            Assert.AreEqual(AttemptKind.Return, round.NextAttempt);
+        }
+
+        [Test]
+        public void Return_ComesBackLast_WhenOnlyTwoOtherItemsRemain()
+        {
+            List<Item> items = Items(3);
+            RoundSession round = Start(items);
+
+            SubmitWrong(round);
+            SubmitRight(round);
+            SubmitRight(round);
+            SubmitRight(round);
+
+            Assert.AreSame(items[0], round.CurrentItem);
+            Assert.AreEqual(AttemptKind.Return, round.NextAttempt);
+            SubmitRight(round);
+            Assert.AreEqual(RoundState.Ended, round.State);
+        }
+
+        [Test]
+        public void TwoReturnsQueuedAtOnce_ComeBackInTheOrderTheyWereMissed()
+        {
+            RoundSession round = Start(Items(6));
+
+            SubmitWrong(round);   // item 1
+            SubmitRight(round);
+            SubmitWrong(round);   // item 2, while the Return of item 1 is still queued
+            SubmitRight(round);
+            while (round.State != RoundState.Ended)
+            {
+                SubmitRight(round);
+            }
+
+            CollectionAssert.AreEqual(
+                new[]
+                {
+                    "A:1+1=? First wrong", "A:1+1=? Retry right",
+                    "A:2+1=? First wrong", "A:2+1=? Retry right",
+                    "A:3+1=? First right", "A:4+1=? First right",
+                    "A:1+1=? Return right", "A:2+1=? Return right",
+                    "A:5+1=? First right", "A:6+1=? First right",
+                },
+                Asked());
+        }
+
+        [Test]
+        public void EachAnswer_IsStampedWithTheTimeItWasGiven()
+        {
+            RoundSession round = Start(Items(2));
+
+            SubmitRight(round);
+            _clock.Now = Now.AddSeconds(5);
+            SubmitRight(round);
+
+            IReadOnlyList<AnswerRecord> records = _log.ReadAll();
+            Assert.AreEqual(Now.ToString("o"), records[0].AnsweredAt);
+            Assert.AreEqual(Now.AddSeconds(5).ToString("o"), records[1].AnsweredAt);
+        }
+
+        [Test]
+        public void Continue_AfterTheRoundEnded_Throws()
+        {
+            RoundSession round = Start(Items(1));
+            SubmitRight(round);
+            Assert.AreEqual(RoundState.Ended, round.State);
+
+            Assert.Throws<InvalidOperationException>(() => round.Continue());
+        }
+
+        [Test]
+        public void NextAttempt_IsWhatSubmitAccepts_AndNullWhenSubmitWouldThrow()
+        {
+            RoundSession round = Start(Items(1));
+            Assert.AreEqual(AttemptKind.First, round.NextAttempt);
+
+            SubmitWrong(round);
+            Assert.AreEqual(AttemptKind.Retry, round.NextAttempt);
+
+            SubmitWrong(round);
+            Assert.IsNull(round.NextAttempt, "after a second wrong answer only Continue goes on");
+
+            round.Continue();
+            Assert.AreEqual(AttemptKind.Return, round.NextAttempt);
+
+            SubmitRight(round);
+            Assert.AreEqual(RoundState.Ended, round.State);
+            Assert.IsNull(round.NextAttempt, "no stale value once the round has ended");
         }
     }
 }
