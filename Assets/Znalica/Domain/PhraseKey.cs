@@ -55,5 +55,9 @@ namespace Znalica.Domain
         Number18,
         Number19,
         Number20,
+
+        // Step 3a: the jump back that explains a subtraction (placeholder wording, for the Croatian review)
+        ExplainJumpBack,
+        ThenLess,
     }
 }
