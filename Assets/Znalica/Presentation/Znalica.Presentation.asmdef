@@ -1,7 +1,7 @@
 {
     "name": "Znalica.Presentation",
     "rootNamespace": "Znalica.Presentation",
-    "references": ["Znalica.Domain","Znalica.Storage"],
+    "references": ["Znalica.Domain","Znalica.Storage","UnityEngine.UI","Unity.TextMeshPro","Unity.InputSystem"],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
