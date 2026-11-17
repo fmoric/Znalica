@@ -457,6 +457,7 @@ Each step is a vertical slice for one session, names its check, and lists what b
    *Check:* the tests above.
    *Blocked by:* 2 — `Explanation` and `AttemptOutcome.PraisePhrase` carry a `PhraseKey`, which step 2 creates; 3a
    adds its own entries to that enum.
+   **Step 3a findings (2026-11-17; by EditMode tests in the editor).** Built as specified, with these points the spec left open and 3a settled by the smallest choice, each open to the product owner or the next step: (1) **Subtraction needs its own explanation phrase.** `ExplainJump` says *pa još* (then more), wrong for `13 − 6`; 3a appends `ExplainJumpBack` and `ThenLess` (placeholder text *pa manje za*, a copy of `Is.ogg` as clip) for the Croatian speaker to replace. `Explanation.Change` is signed; the spoken `{Change}` is its size. (2) **`Difficulty` of a fact is defined on the fact, not the form:** `CrossingTen` when both parts are below 10 and the whole is above it, so the four forms and the three unknowns of one fact share a difficulty; facts that start from or land on 10 (`10 + 5`, `13 − 3`) are `BeyondTenWithoutCrossing`. (3) **`RoundPlanner` in 3a has no schedule, so every item is new and the cap of 4 new items cannot apply:** it fills the 10 slots from the easiest `Difficulty` first, drawing at random inside a level and moving to the next level only when one is used up, then shuffles the whole round. With no schedule, play therefore stays `WithinTen` (396 items); step 5 must add the cap, the due items and the fill, and Q4 below must be settled first. (3a) **Return distance, exactly:** a missed item comes back **after three other items**, or last if fewer than three other items remain in the round (`RoundSession.ReturnDistance`); tests cover exactly three, exactly two and one remaining. (4) **A wrong answer on a `Return` ask** is not covered by the spec: 3a gives it a `Retry`, then `Continue()` after a second wrong answer, and never a second `Return` (at most one per item per round). (5) `A:8+5=14` is refused because a key must have exactly one `?`; the inconsistent-result rule is thereby subsumed. (6) `Answer` holds a number only; the sign and the ordering arrive with steps 6 and 7. `IClock`, `IRandom` (with `SeededRandom`) and `AttemptOutcome` (`PraisePhrase` is `PhraseKey?`, `PraiseRight` on a right answer) were added because `RoundSession` and `RoundPlanner` need them. `RoundSession` does not call `ItemSchedule.Apply` yet: it does not exist until step 5, and the records it needs are in the log.
 3b. **Računanje do 20 screen, playable end to end in memory.** The arithmetic screen over `RoundSession`: number pad,
    keys, in-place feedback with the number-line jump, praise that does not hold the next item; the round-end screen.
    *Check:* a round played with the mouse only and one with the keys only; a wrong answer shows and speaks the jump
@@ -534,6 +535,14 @@ need only step 3b). Parallel work goes in a separate worktree, as `AGENTS.md` �
   The design does not depend on the answer: steps 2–10 run on placeholder clips under the final names, and the final
   clips replace them as files, with no code change (*Text and voice*). `VoiceScript.csv` (step 2) is the script for
   either method.
+
+- **Q4 — Pacing of new items. Open, a product decision due before step 5.** With "at most 4 new items per round, easiest
+  first" (*Approach* 7), the `WithinTen` pool is 66 ordered pairs with a sum of 10 or less, times 2 operations times 3
+  unknown positions = 396 items, so at 4 new items a round it takes about 100 rounds before the first
+  `BeyondTenWithoutCrossing` or `CrossingTen` item can be new. Until step 5, `RoundPlanner` never leaves `WithinTen`, so step 3b's
+  screen shows nothing beyond 10. Options named by the code review, none chosen: (a) promote a level once most of its
+  facts are in box 3 or higher; (b) cap new items per unknown form so a round does not spend its new slots on one form.
+  The count of 396 is the review's; it matches 66 x 6 from the enumeration in `ArithmeticItemSet` and is pinned by `ArithmeticItemSetTests.All_HoldsThreeHundredNinetySixWithinTenItems`.
 
 ### Risks
 

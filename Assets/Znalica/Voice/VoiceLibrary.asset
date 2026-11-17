@@ -65,5 +65,7 @@ MonoBehaviour:
     Clip: {fileID: 8300000, guid: a97a9171f8efbe4409a749df5023bcb7, type: 3}
   - Name: PraiseRight
     Clip: {fileID: 8300000, guid: e580d9a5b8863134cb39537deda33951, type: 3}
+  - Name: ThenLess
+    Clip: {fileID: 8300000, guid: 411b2f7e6629427396ef07580ed808bf, type: 3}
   - Name: ThenMore
     Clip: {fileID: 8300000, guid: 9ec247b94e2295a479d38ce7d47203e3, type: 3}

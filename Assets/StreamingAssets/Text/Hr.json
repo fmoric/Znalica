@@ -36,5 +36,7 @@
   {"Key": "Number17", "Text": "sedamnaest", "Voice": ["Number17"]},
   {"Key": "Number18", "Text": "osamnaest", "Voice": ["Number18"]},
   {"Key": "Number19", "Text": "devetnaest", "Voice": ["Number19"]},
-  {"Key": "Number20", "Text": "dvadeset", "Voice": ["Number20"]}
+  {"Key": "Number20", "Text": "dvadeset", "Voice": ["Number20"]},
+  {"Key": "ExplainJumpBack", "Text": "{Start}, pa manje za {Change}, to je {End}.", "Voice": ["{Start}", "ThenLess", "{Change}", "Is", "{End}"]},
+  {"Key": "ThenLess", "Text": "pa manje za", "Voice": ["ThenLess"]}
 ] }
