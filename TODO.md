@@ -19,6 +19,14 @@
   `C:\Program Files\Unity\Hub\Editor\6000.3.28f1\Editor\Unity.exe` and not on PATH, so the developer had to call it
   by full path. The path is per-machine, so it must not be hardcoded: read it from an environment variable or from
   `ProjectSettings/ProjectVersion.txt` plus the Hub's install folder.
+- [ ] **Decide whether "05" in the answer box should count as 5.** *(T6. New 2026-11-17.)* Step 3a's `AnswerEntry`
+  takes "0" then "5" as 5, so the box shows "5" when the child typed 0 then 5. The step 3b code review raised it as
+  pre-existing; it is the product owner's call whether a leading 0 is dropped, refused or counted wrong.
+- [ ] **Stop the Unity build from rewriting two asset files with line-ending-only changes.** *(T7. New 2026-11-17.)*
+  Each batch build rewrote `LiberationSans SDF - Fallback.asset` and `VoiceLibrary.asset` with only line-ending
+  changes, and both were reverted by hand. The repository has no `.gitattributes`.
+  - **Fix direction:** a `.gitattributes` that fixes the line endings of Unity's text assets, so a build leaves them
+    unchanged.
 
 ## Done
 
