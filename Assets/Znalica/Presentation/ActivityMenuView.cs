@@ -30,26 +30,27 @@ namespace Znalica.Presentation
         private const float ReplayBottomMargin = 80f;
         private const float ReplayFontSize = 48f;
 
-        private static readonly Color BackgroundColor = new Color(0.96f, 0.95f, 0.88f);
-        private static readonly Color TextColor = new Color(0.12f, 0.12f, 0.12f);
-
         private readonly PhraseCatalog _catalog;
         private readonly VoicePlayer _voice;
+        private readonly Action<PhraseKey> _picked;
 
-        public ActivityMenuView(PhraseCatalog catalog, VoicePlayer voice)
+        /// <param name="picked">Called with a picture's name key after its name has been spoken; the app opens that activity.</param>
+        public ActivityMenuView(PhraseCatalog catalog, VoicePlayer voice, Action<PhraseKey> picked)
         {
             _catalog = catalog;
             _voice = voice;
+            _picked = picked;
         }
 
-        public void Build(RectTransform parent, ActivityPicture[] pictures)
+        /// <returns>The menu's panel, for the navigator.</returns>
+        public RectTransform Build(RectTransform parent, ActivityPicture[] pictures)
         {
-            RectTransform panel = NewChild("ActivityMenu", parent);
-            Stretch(panel);
-            panel.gameObject.AddComponent<Image>().color = BackgroundColor;
+            RectTransform panel = UiBuilder.NewChild("ActivityMenu", parent);
+            UiBuilder.Stretch(panel);
+            panel.gameObject.AddComponent<Image>().color = UiBuilder.BackgroundColor;
 
-            RectTransform row = NewChild("Pictures", panel);
-            Stretch(row);
+            RectTransform row = UiBuilder.NewChild("Pictures", panel);
+            UiBuilder.Stretch(row);
             HorizontalLayoutGroup rowLayout = row.gameObject.AddComponent<HorizontalLayoutGroup>();
             rowLayout.spacing = CardSpacing;
             rowLayout.childAlignment = TextAnchor.MiddleCenter;
@@ -64,14 +65,15 @@ namespace Znalica.Presentation
             }
 
             BuildReplayButton(panel);
+            return panel;
         }
 
         private void BuildCard(RectTransform row, ActivityPicture picture)
         {
-            RectTransform card = NewChild(picture.NameKey.ToString(), row);
+            RectTransform card = UiBuilder.NewChild(picture.NameKey.ToString(), row);
             card.sizeDelta = new Vector2(PictureSize, PictureSize + LabelHeight);
 
-            RectTransform image = NewChild("Picture", card);
+            RectTransform image = UiBuilder.NewChild("Picture", card);
             image.anchorMin = image.anchorMax = new Vector2(0.5f, 1f);
             image.pivot = new Vector2(0.5f, 1f);
             image.sizeDelta = new Vector2(PictureSize, PictureSize);
@@ -83,7 +85,7 @@ namespace Znalica.Presentation
             button.targetGraphic = graphic;
             button.onClick.AddListener(Speak(picture.NameKey));
 
-            TextMeshProUGUI label = NewLabel("Name", card, _catalog.Text(picture.NameKey), LabelFontSize);
+            TextMeshProUGUI label = UiBuilder.NewLabel("Name", card, _catalog.Text(picture.NameKey), LabelFontSize);
             label.rectTransform.anchorMin = new Vector2(0f, 0f);
             label.rectTransform.anchorMax = new Vector2(1f, 0f);
             label.rectTransform.pivot = new Vector2(0.5f, 0f);
@@ -93,52 +95,20 @@ namespace Znalica.Presentation
 
         private void BuildReplayButton(RectTransform panel)
         {
-            RectTransform replay = NewChild("Replay", panel);
+            RectTransform replay = UiBuilder.NewButton("Replay", panel, _catalog.Text(PhraseKey.ButtonReplay), ReplayFontSize, _voice.ReplayLast);
             replay.anchorMin = replay.anchorMax = new Vector2(0.5f, 0f);
             replay.pivot = new Vector2(0.5f, 0f);
             replay.sizeDelta = new Vector2(ReplayWidth, ReplayHeight);
             replay.anchoredPosition = new Vector2(0f, ReplayBottomMargin);
-            Image background = replay.gameObject.AddComponent<Image>();
-            background.color = Color.white;
-            Button button = replay.gameObject.AddComponent<Button>();
-            button.targetGraphic = background;
-            button.onClick.AddListener(_voice.ReplayLast);
-
-            TextMeshProUGUI label = NewLabel("Label", replay, _catalog.Text(PhraseKey.ButtonReplay), ReplayFontSize);
-            Stretch(label.rectTransform);
         }
 
         private UnityAction Speak(PhraseKey key)
         {
-            return () => _voice.Play(_catalog.VoiceClips(key));
-        }
-
-        private static TextMeshProUGUI NewLabel(string name, RectTransform parent, string text, float fontSize)
-        {
-            RectTransform rect = NewChild(name, parent);
-            TextMeshProUGUI label = rect.gameObject.AddComponent<TextMeshProUGUI>();
-            label.text = text;
-            label.fontSize = fontSize;
-            label.color = TextColor;
-            label.alignment = TextAlignmentOptions.Center;
-            label.textWrappingMode = TextWrappingModes.Normal;
-            label.raycastTarget = false;
-            return label;
-        }
-
-        private static RectTransform NewChild(string name, RectTransform parent)
-        {
-            var child = new GameObject(name, typeof(RectTransform));
-            child.transform.SetParent(parent, false);
-            return (RectTransform)child.transform;
-        }
-
-        private static void Stretch(RectTransform rect)
-        {
-            rect.anchorMin = Vector2.zero;
-            rect.anchorMax = Vector2.one;
-            rect.offsetMin = Vector2.zero;
-            rect.offsetMax = Vector2.zero;
+            return () =>
+            {
+                _voice.Play(_catalog.VoiceClips(key));
+                _picked?.Invoke(key);
+            };
         }
     }
 }
