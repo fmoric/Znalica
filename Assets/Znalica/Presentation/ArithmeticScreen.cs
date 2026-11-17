@@ -37,7 +37,7 @@ namespace Znalica.Presentation
         private const float LineBarHeight = 14f;
         private const float LineChangeY = 140f;
         private const float LineChangeFontSize = 56f;
-        private const float NextTop = 780f;
+        private const float NextTop = 750f;
         private const float WideButtonWidth = 380f;
         private const float WideButtonHeight = 130f;
         private const float WideButtonFontSize = 56f;
@@ -102,6 +102,7 @@ namespace Znalica.Presentation
         private TextMeshProUGUI _feedback;
         private RectTransform _line;
         private RectTransform _next;
+        private CanvasGroup _pad;
         private RectTransform _taskGroup;
         private RectTransform _roundEnd;
         private TextMeshProUGUI _score;
@@ -148,17 +149,42 @@ namespace Znalica.Presentation
                 return;
             }
 
+            // At most one Confirm per frame (Enter and numpad Enter together are one press); Enter goes on after a second wrong answer.
+            bool confirmed = false;
             foreach (KeyValuePair<Key, AnswerKey> mapping in KeyMap)
             {
-                if (keyboard[mapping.Key].wasPressedThisFrame)
+                if (!keyboard[mapping.Key].wasPressedThisFrame)
                 {
-                    Press(mapping.Value);
+                    continue;
                 }
+
+                AnswerKey key = mapping.Value;
+                if (key == AnswerKey.Confirm)
+                {
+                    if (confirmed)
+                    {
+                        continue;
+                    }
+
+                    confirmed = true;
+                    if (_play.AwaitsContinue)
+                    {
+                        key = AnswerKey.Continue;
+                    }
+                }
+
+                Press(key);
             }
         }
 
         private void Press(AnswerKey key)
         {
+            if (key == AnswerKey.Continue)
+            {
+                // The explanation of the item just left must not go on speaking over the next one.
+                _voice.Stop();
+            }
+
             Feedback feedback = _play.Press(key);
             if (feedback != null)
             {
@@ -198,7 +224,7 @@ namespace Znalica.Presentation
             _line = TopRow("NumberLine", left, LineTop, LineHeight);
 
             _next = UiBuilder.NewButton(
-                "Next", left, _catalog.Text(PhraseKey.ButtonNext), WideButtonFontSize, () => Press(AnswerKey.Confirm));
+                "Next", left, _catalog.Text(PhraseKey.ButtonNext), WideButtonFontSize, () => Press(AnswerKey.Continue));
             CentreTop(_next, NextTop, WideButtonWidth, WideButtonHeight);
 
             RectTransform replay = UiBuilder.NewButton(
@@ -219,6 +245,7 @@ namespace Znalica.Presentation
             pad.pivot = new Vector2(0.5f, 0.5f);
             pad.sizeDelta = new Vector2(PadWidth, PadHeight);
             pad.anchoredPosition = Vector2.zero;
+            _pad = pad.gameObject.AddComponent<CanvasGroup>();
             GridLayoutGroup grid = pad.gameObject.AddComponent<GridLayoutGroup>();
             grid.cellSize = new Vector2(PadCellWidth, PadCellHeight);
             grid.spacing = new Vector2(PadSpacing, PadSpacing);
@@ -309,6 +336,7 @@ namespace Znalica.Presentation
             }
 
             _next.gameObject.SetActive(_play.AwaitsContinue);
+            _pad.interactable = !_play.AwaitsContinue;
         }
 
         private void RenderEquation()
@@ -370,7 +398,7 @@ namespace Znalica.Presentation
             bar.anchoredPosition = new Vector2((startX + endX) / 2f, LineBarY);
             bar.gameObject.AddComponent<Image>().color = JumpColor;
 
-            TextMeshProUGUI change = UiBuilder.NewLabel("Change", _line, ItemFormatter.ChangeText(explanation.Change), LineChangeFontSize);
+            TextMeshProUGUI change = UiBuilder.NewLabel("Change", _line, ItemFormatter.ChangeText(explanation), LineChangeFontSize);
             change.rectTransform.anchorMin = change.rectTransform.anchorMax = new Vector2(0.5f, 0f);
             change.rectTransform.pivot = new Vector2(0.5f, 0f);
             change.rectTransform.sizeDelta = new Vector2(240f, 80f);

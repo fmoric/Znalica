@@ -14,7 +14,6 @@ namespace Znalica.Domain
         public const string MinusSign = "−";
         public const string PlusSign = "+";
         public const string EqualsSign = "=";
-        public const string UnknownMark = "?";
 
         /// <summary><c>8 + 5 = ?</c> as five tokens: first, operation, second, equals sign, result.</summary>
         /// <exception cref="ArgumentException">An item that is not an arithmetic item.</exception>
@@ -35,17 +34,16 @@ namespace Znalica.Domain
             };
         }
 
-        /// <summary>The size of a jump on the number line: <c>+5</c>, or <c>−6</c> for a jump back.</summary>
-        public static string ChangeText(int change)
+        /// <summary>The size of a jump on the number line: <c>+5</c>, or <c>−6</c> for a jump back (<c>−0</c> for taking 0 away).</summary>
+        public static string ChangeText(Explanation explanation)
         {
-            return change < 0
-                ? MinusSign + (-change).ToString(CultureInfo.InvariantCulture)
-                : PlusSign + change.ToString(CultureInfo.InvariantCulture);
+            return (explanation.Backwards ? MinusSign : PlusSign)
+                + Math.Abs(explanation.Change).ToString(CultureInfo.InvariantCulture);
         }
 
         private static ItemToken Number(int number, bool unknown)
         {
-            return new ItemToken(unknown ? UnknownMark : number.ToString(CultureInfo.InvariantCulture), unknown);
+            return new ItemToken(unknown ? ArithmeticItem.UnknownMark : number.ToString(CultureInfo.InvariantCulture), unknown);
         }
     }
 }

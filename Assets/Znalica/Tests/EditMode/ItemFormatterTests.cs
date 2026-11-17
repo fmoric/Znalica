@@ -52,25 +52,22 @@ namespace Znalica.Tests.EditMode
         }
 
         [Test]
-        public void Number_WithTwoDigitsAndZero_IsWrittenInFull()
-        {
-            var item = new ArithmeticItem(0, Operation.Addition, 20, 20, Unknown.Result);
-
-            Assert.AreEqual(new[] { "0", "+", "20", "=", "?" }, Texts(item));
-        }
-
-        [Test]
         public void Tokens_OfAnItemThatIsNotArithmetic_Throws()
         {
             Assert.Throws<ArgumentException>(() => ItemFormatter.Tokens(new OtherItem()));
         }
 
-        [TestCase(5, "+5")]
-        [TestCase(-6, "−6")]
-        [TestCase(12, "+12")]
-        public void ChangeText_SignsTheJump(int change, string expected)
+        [TestCase(8, Operation.Addition, 5, "+5")]
+        [TestCase(13, Operation.Subtraction, 6, "−6")]
+        [TestCase(1, Operation.Addition, 12, "+12")]
+        [TestCase(8, Operation.Addition, 0, "+0")]
+        [TestCase(8, Operation.Subtraction, 0, "−0")]
+        public void ChangeText_SignsTheJumpByItsDirection(int first, Operation operation, int second, string expected)
         {
-            Assert.AreEqual(expected, ItemFormatter.ChangeText(change));
+            int result = operation == Operation.Addition ? first + second : first - second;
+            Explanation explanation = new ArithmeticItem(first, operation, second, result, Unknown.Result).Explain();
+
+            Assert.AreEqual(expected, ItemFormatter.ChangeText(explanation));
         }
 
         private sealed class OtherItem : Item

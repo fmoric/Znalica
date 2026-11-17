@@ -207,7 +207,7 @@ namespace Znalica.Tests.EditMode
         }
 
         [Test]
-        public void SecondWrongAnswer_ShowsTheExplanationAgain_AndOnlyConfirmGoesOn()
+        public void SecondWrongAnswer_ShowsTheExplanationAgain_AndOnlyContinueGoesOn()
         {
             List<Item> items = Items(3);
             ArithmeticPlay play = Play(items);
@@ -219,18 +219,83 @@ namespace Znalica.Tests.EditMode
             Assert.IsTrue(play.AwaitsContinue);
 
             play.Press(AnswerKey.Digit5);
+            Assert.IsNull(play.Entered, "The digits do nothing while only going on is left.");
             play.Press(AnswerKey.Erase);
             Assert.IsNull(play.Entered);
             Assert.AreSame(items[0], play.CurrentItem);
             Assert.AreEqual(2, _log.ReadAll().Count);
 
-            Feedback onward = play.Press(AnswerKey.Confirm);
+            Feedback onward = play.Press(AnswerKey.Continue);
 
             Assert.IsNull(onward);
             Assert.IsNull(play.Feedback);
             Assert.IsFalse(play.AwaitsContinue);
             Assert.AreSame(items[1], play.CurrentItem);
             Assert.AreEqual(2, _log.ReadAll().Count, "Going on is not an answer.");
+        }
+
+        [Test]
+        public void Confirm_AfterTheSecondWrongAnswer_DoesNotGoOn()
+        {
+            List<Item> items = Items(3);
+            ArithmeticPlay play = Play(items);
+            EnterWrong(play);
+            Feedback second = EnterWrong(play);
+
+            Assert.IsNull(play.Press(AnswerKey.Confirm));
+            Assert.IsNull(play.Press(AnswerKey.Confirm));
+
+            Assert.IsTrue(play.AwaitsContinue);
+            Assert.AreSame(second, play.Feedback, "The explanation stays until the child chooses to go on.");
+            Assert.AreSame(items[0], play.CurrentItem);
+            Assert.AreEqual(2, _log.ReadAll().Count);
+        }
+
+        [Test]
+        public void Continue_BeforeTheSecondWrongAnswer_DoesNothing()
+        {
+            List<Item> items = Items(3);
+            ArithmeticPlay play = Play(items);
+            EnterWrong(play);
+            play.Press(Digit(2));
+
+            Assert.IsNull(play.Press(AnswerKey.Continue));
+
+            Assert.AreEqual(2, play.Entered, "Continue is not Confirm.");
+            Assert.AreSame(items[0], play.CurrentItem);
+            Assert.AreEqual(FeedbackKind.Explanation, play.Feedback.Kind);
+            Assert.AreEqual(1, _log.ReadAll().Count);
+        }
+
+        [Test]
+        public void Praise_IsClearedByTheFirstDigitOfTheNextAnswer_AnExplanationIsNot()
+        {
+            ArithmeticPlay play = Play(Items(3));
+            EnterRight(play);
+            Assert.AreEqual(FeedbackKind.Praise, play.Feedback.Kind);
+
+            play.Press(Digit(3));
+
+            Assert.IsNull(play.Feedback);
+            Assert.AreEqual(3, play.Entered);
+
+            EnterRight(play);
+            play.Press(AnswerKey.Digit9);
+            play.Press(AnswerKey.Confirm);
+            Assert.AreEqual(FeedbackKind.Explanation, play.Feedback.Kind);
+            play.Press(Digit(3));
+            Assert.AreEqual(FeedbackKind.Explanation, play.Feedback.Kind, "The explanation stays while the child retries.");
+        }
+
+        [Test]
+        public void Praise_IsKept_WhenConfirmIsPressedWithAnEmptyBox()
+        {
+            ArithmeticPlay play = Play(Items(3));
+            Feedback praise = EnterRight(play);
+
+            Assert.IsNull(play.Press(AnswerKey.Confirm));
+
+            Assert.AreSame(praise, play.Feedback);
         }
 
         [Test]
@@ -254,7 +319,7 @@ namespace Znalica.Tests.EditMode
 
             EnterWrong(play);
             Assert.IsTrue(play.AwaitsContinue);
-            play.Press(AnswerKey.Confirm);
+            play.Press(AnswerKey.Continue);
 
             Assert.AreSame(items[4], play.CurrentItem);
             EnterRight(play);
@@ -283,7 +348,7 @@ namespace Znalica.Tests.EditMode
             ArithmeticPlay play = Play(items);
             EnterWrong(play);
             EnterWrong(play);
-            play.Press(AnswerKey.Confirm);
+            play.Press(AnswerKey.Continue);
             for (int other = 0; other < 3; other++)
             {
                 EnterRight(play);
@@ -308,7 +373,7 @@ namespace Znalica.Tests.EditMode
             _clock.Now = _clock.Now.AddMilliseconds(700);
             EnterWrong(play);
             _clock.Now = _clock.Now.AddMilliseconds(5000);
-            play.Press(AnswerKey.Confirm);
+            play.Press(AnswerKey.Continue);
             _clock.Now = _clock.Now.AddMilliseconds(300);
             EnterRight(play);
 

@@ -20,7 +20,10 @@ namespace Znalica.Domain
         /// <summary>Obriši: removes the last digit.</summary>
         Erase,
 
-        /// <summary>U redu / Enter: gives the answer; after a second wrong answer it goes on instead.</summary>
+        /// <summary>U redu / Enter: gives the answer. After a second wrong answer it does nothing; <see cref="Continue"/> goes on.</summary>
         Confirm,
+
+        /// <summary>Dalje / Enter after a second wrong answer: goes on to the next item. Does nothing at any other time.</summary>
+        Continue,
     }
 }

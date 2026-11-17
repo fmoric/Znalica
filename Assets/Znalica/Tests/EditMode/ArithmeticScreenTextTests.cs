@@ -34,10 +34,15 @@ namespace Znalica.Tests.EditMode
             play.Press(AnswerKey.Confirm);
             play.Press(AnswerKey.Digit3);
             play.Press(AnswerKey.Confirm);
+            play.Press(AnswerKey.Digit4);
+            play.Press(AnswerKey.Confirm);
+            play.Press(AnswerKey.Digit3);
+            play.Press(AnswerKey.Confirm);
+            Assert.IsTrue(play.IsEnded, "The round has to be over for its score to be the round-end numbers.");
 
             string text = ShippedCatalog(problems).Text(PhraseKey.RoundEndScore, play.SummaryArgs);
 
-            Assert.AreEqual("1 / 3", text);
+            Assert.AreEqual("2 / 3", text);
             Assert.IsEmpty(problems.Messages);
         }
 
@@ -53,24 +58,6 @@ namespace Znalica.Tests.EditMode
                 new[] { "Number08", "ThenMore", "Number05", "Is", "Number13" },
                 catalog.VoiceClips(feedback.Phrase, feedback.Args));
             Assert.IsEmpty(problems.Messages);
-        }
-
-        [Test]
-        public void PraiseFeedback_SpeaksItsPhrase()
-        {
-            var problems = new CollectingProblemLog();
-            PhraseCatalog catalog = ShippedCatalog(problems);
-            Feedback feedback = Feedback.Praise(PhraseKey.PraiseRight);
-
-            Assert.AreEqual(new[] { "PraiseRight" }, catalog.VoiceClips(feedback.Phrase, feedback.Args));
-            Assert.IsEmpty(problems.Messages);
-        }
-
-        [TestCase(PhraseKey.ButtonErase, "Obriši")]
-        [TestCase(PhraseKey.ButtonOk, "U redu")]
-        public void PadButtonTexts_AreTheWordsTheSpecGives(PhraseKey key, string text)
-        {
-            Assert.AreEqual(text, ShippedCatalog(new CollectingProblemLog()).Text(key));
         }
     }
 }

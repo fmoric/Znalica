@@ -11,8 +11,9 @@ namespace Znalica.Domain
     /// <item>A digit goes into the box if <see cref="AnswerEntry"/> takes it; Erase removes the last one.</item>
     /// <item>Confirm with an empty box does nothing. Otherwise the answer goes to the round, the box is emptied, and the
     /// feedback is praise (the next item is already current) or the explanation (the same item is asked again).</item>
-    /// <item>After a second wrong answer the digits do nothing and Confirm goes on to the next item, so a round can be
-    /// played from the keyboard alone.</item>
+    /// <item>The first digit or Erase of the next answer clears the praise, so it does not stay beside the next item.</item>
+    /// <item>After a second wrong answer the digits and Confirm do nothing: only <see cref="AnswerKey.Continue"/> goes on
+    /// to the next item. A repeated click on the pad's U redu therefore cannot skip the explanation unseen.</item>
     /// </list>
     /// The response time of an answer runs from when its item was last put in front of the child (the round start,
     /// the previous answer, or Continue) to the Confirm.
@@ -62,7 +63,7 @@ namespace Znalica.Domain
 
             if (AwaitsContinue)
             {
-                if (key == AnswerKey.Confirm)
+                if (key == AnswerKey.Continue)
                 {
                     _session.Continue();
                     Feedback = null;
@@ -70,6 +71,16 @@ namespace Znalica.Domain
                 }
 
                 return null;
+            }
+
+            if (key == AnswerKey.Continue)
+            {
+                return null;
+            }
+
+            if (key != AnswerKey.Confirm && Feedback != null && Feedback.Kind == FeedbackKind.Praise)
+            {
+                Feedback = null;
             }
 
             if (key >= AnswerKey.Digit0 && key <= AnswerKey.Digit9)

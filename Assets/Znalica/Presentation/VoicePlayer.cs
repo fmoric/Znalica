@@ -63,6 +63,18 @@ namespace Znalica.Presentation
             _playing = StartCoroutine(PlayQueue(clipNames));
         }
 
+        /// <summary>Stops what is playing. What <see cref="ReplayLast"/> replays is kept.</summary>
+        public void Stop()
+        {
+            if (_playing != null)
+            {
+                StopCoroutine(_playing);
+                _playing = null;
+            }
+
+            _source.Stop();
+        }
+
         public void ReplayLast()
         {
             Play(_last);

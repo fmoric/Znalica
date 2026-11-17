@@ -9,7 +9,7 @@ namespace Znalica.Domain
             IsUnknown = isUnknown;
         }
 
-        /// <summary>What to draw; for the unknown, the <c>?</c> mark of the item key (the screen draws a box instead).</summary>
+        /// <summary>What to draw; for the unknown, the <see cref="ArithmeticItem.UnknownMark"/> of the item key (the screen draws a box instead).</summary>
         public string Text { get; }
 
         /// <summary>True for the number the child has to find.</summary>
