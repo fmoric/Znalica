@@ -144,6 +144,7 @@ a path that "triggers" one is a reason to report, not to run. **One that is not 
 over about 8 minutes, is your caller's:** do not start it; report the commit and say so. (When you are the main
 session yourself, there is no caller: ask the user, then run it in the background with a watcher, as
 `work_while_waiting` says.) A targeted pre-check estimated over
-its budget — about 8 minutes, as `AGENTS.md` sets it — is too wide: narrow it by hand as `docs/process/PR_GATES_PRECHECK.md` says, and never run the full suite in its place. If a run
+its budget — about 8 minutes, as `AGENTS.md` sets it — is too wide: narrow it by hand as `docs/process/PR_GATES_PRECHECK.md` says, and never run the full suite in its place; a brief
+that says to stop when the pre-check refuses wins over narrowing it: stop and report, with no tests run in its place. If a run
 outlasts its timeout anyway, check whether its processes are still going before you
 report — a shell that ended can leave the runner running — and report it as running or not finished, never as done.

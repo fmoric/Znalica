@@ -43,7 +43,8 @@ The folder name is a literal — Test 1 applies; prefer the path relative to the
 
 Before writing a function, helper, or block: **search the codebase for it.** If it exists, call it. If it half
 exists, extend it. Write a new one only when you have looked and it is genuinely absent — two near-copies are
-one unit of work and one future bug.
+one unit of work and one future bug. **A document for the user counts too:** find the project's document template,
+converter or header convention and write through it.
 
 **Search your own change, not only the repo.** The block you wrote earlier in this same task is not in the
 committed code, and **the near-copy you are most likely to create is your own** — a second parser, retry loop
