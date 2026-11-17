@@ -564,11 +564,24 @@ need only step 3b). Parallel work goes in a separate worktree, as `AGENTS.md` �
   represent an object type.` (also for `List<int>`); the wrapped `{"Entries":[1,2,3]}` parsed into `int[] Entries`.
   Not covered: an installed player (rather than the build folder), other Windows users, a user name with non-ASCII
   characters. R3 was not tested here (step 10).
+  **Step 2 findings (2026-11-17, same editor; by observation in the editor and a headless run of the built player,
+  not from a cited source).** (f) The project had no `com.unity.ugui` entry in `Packages/manifest.json`, so uGUI and
+  TextMeshPro did not exist for the asmdefs; step 2 added `"com.unity.ugui": "2.0.0"` (the copy shipped inside the
+  editor install) and imported TextMeshPro's *TMP Essential Resources* into `Assets/TextMesh Pro/`, without which no
+  `TextMeshProUGUI` has a font. (g) `activeInputHandler` is 1 (Input System only), so the menu's event system uses
+  `InputSystemUIInputModule`, and `Znalica.Presentation` references `Unity.InputSystem`. (h) A built player started
+  with `-batchmode -nographics` for 12 s built the menu, read `Hr.json` from `Znalica_Data/StreamingAssets/Text/` and
+  wrote no error line; what it draws and plays was not seen (manual checks, step 2).
 - **R3 — "Sends no data off the PC" depends on the engine, not only our code.** Our code has no network calls; whether
   a Unity player contacts any Unity service by default is unverified (R2). Step 10's firewall and connection check is
   the test.
 - **R4 — Croatian glyphs.** The TextMeshPro font asset must include č, ć, đ, š, ž, their capitals and `−` (U+2212);
   a missing glyph shows as a box. Step 2's catalog screen exposes it.
+  **Step 2 finding:** the default font asset *LiberationSans SDF* is static with 250 characters and holds none of
+  those eleven (`HasCharacter` without fallbacks: false for all). With fallbacks searched, all eleven are found, in
+  the dynamic fallback asset *LiberationSans SDF - Fallback* that the essentials import adds. So the menu should show
+  them; the first look at the built player (step 2's manual checks) confirms it, and a box in place of a letter there
+  means the fallback did not reach the label.
 - **R5 — The number line 11–20 and addition to 20 rest on inference** (FS:30, FS:32). The design does not depend on
   it; testing with children is the functional spec's open question 3.
 - **R6 — Scheduler constants are proposals** (6 due, 4 new, intervals 1-1-2-4-8). Each is one named constant.
