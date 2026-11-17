@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using UnityEditor;
 using UnityEditor.Build.Reporting;
+using Znalica.Editor;
 
 /// <summary>Batch build entry point named in AGENTS.md: BuildScript.Build.</summary>
 public static class BuildScript
@@ -11,6 +12,8 @@ public static class BuildScript
 
     public static void Build()
     {
+        VoiceLibraryBuilder.Rebuild();
+
         Directory.CreateDirectory(Path.GetDirectoryName(OutputPath));
 
         var options = new BuildPlayerOptions

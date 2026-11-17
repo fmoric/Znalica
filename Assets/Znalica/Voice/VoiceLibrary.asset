@@ -1,0 +1,69 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9cccd0d4159a0fa46bff2a824642faa9, type: 3}
+  m_Name: VoiceLibrary
+  m_EditorClassIdentifier: Znalica.Presentation::Znalica.Presentation.VoiceLibrary
+  _entries:
+  - Name: ActivityNameArithmetic
+    Clip: {fileID: 8300000, guid: 01d9f3c5a1c453e4e922b44882858df7, type: 3}
+  - Name: ActivityNameComparison
+    Clip: {fileID: 8300000, guid: 32c9a6b08faf6a046acca820f81d9f5b, type: 3}
+  - Name: ActivityNameNumberLine
+    Clip: {fileID: 8300000, guid: fa54e9061c4bc26408ac6d0b0fd7d2d8, type: 3}
+  - Name: Is
+    Clip: {fileID: 8300000, guid: 739cbaf94feb7ff40a7dc946844cfb93, type: 3}
+  - Name: Number00
+    Clip: {fileID: 8300000, guid: cfb9fa134f38d624facc5e2779f9e869, type: 3}
+  - Name: Number01
+    Clip: {fileID: 8300000, guid: 63327978dc4b11e4c860879b33d7de3b, type: 3}
+  - Name: Number02
+    Clip: {fileID: 8300000, guid: 645dd30f3f441dc43bfe184d255b7be9, type: 3}
+  - Name: Number03
+    Clip: {fileID: 8300000, guid: f99f77f0ef20baa49954edd28903586b, type: 3}
+  - Name: Number04
+    Clip: {fileID: 8300000, guid: 4d69c8fa15c85b64f853d697d517d989, type: 3}
+  - Name: Number05
+    Clip: {fileID: 8300000, guid: b9fdaddb89e9b4d4d9e3f1c2d7da88b8, type: 3}
+  - Name: Number06
+    Clip: {fileID: 8300000, guid: 2f5c75cf1eeed964aa4af419b994d137, type: 3}
+  - Name: Number07
+    Clip: {fileID: 8300000, guid: 7c48fb6c83ea8864894a86b6a7c24ef5, type: 3}
+  - Name: Number08
+    Clip: {fileID: 8300000, guid: 81e8f90047a7d554fbfb178029caee7f, type: 3}
+  - Name: Number09
+    Clip: {fileID: 8300000, guid: cf245b8d70b904c4589c889410883dcd, type: 3}
+  - Name: Number10
+    Clip: {fileID: 8300000, guid: ecb411e89a8dd5b4a98f46bd6dd7ada0, type: 3}
+  - Name: Number11
+    Clip: {fileID: 8300000, guid: 660a8f4057f3f954b832fd1efbc059f3, type: 3}
+  - Name: Number12
+    Clip: {fileID: 8300000, guid: 483706daeb18a734395d91d0f47c39da, type: 3}
+  - Name: Number13
+    Clip: {fileID: 8300000, guid: 2369e950752e2f84ab13bb1eec566e9f, type: 3}
+  - Name: Number14
+    Clip: {fileID: 8300000, guid: e39ad64892ffc074898c55c9931e4a5e, type: 3}
+  - Name: Number15
+    Clip: {fileID: 8300000, guid: d0847e15d71c123428d09e06e7475259, type: 3}
+  - Name: Number16
+    Clip: {fileID: 8300000, guid: 1452573c4a8264048a3186026b6b0f09, type: 3}
+  - Name: Number17
+    Clip: {fileID: 8300000, guid: e1b8bd0dffec8bb4e9a79ca92e268062, type: 3}
+  - Name: Number18
+    Clip: {fileID: 8300000, guid: 28c4899dac9a3444cac7a15b9f1a68cb, type: 3}
+  - Name: Number19
+    Clip: {fileID: 8300000, guid: d93e4d97faad25c42a9f7cb99fd728af, type: 3}
+  - Name: Number20
+    Clip: {fileID: 8300000, guid: a97a9171f8efbe4409a749df5023bcb7, type: 3}
+  - Name: PraiseRight
+    Clip: {fileID: 8300000, guid: e580d9a5b8863134cb39537deda33951, type: 3}
+  - Name: ThenMore
+    Clip: {fileID: 8300000, guid: 9ec247b94e2295a479d38ce7d47203e3, type: 3}
