@@ -67,6 +67,50 @@ namespace Znalica.Presentation
             return rect;
         }
 
+        /// <summary>Lays the row's children out side by side, centred, each at the size it was given.</summary>
+        public static void CentreRow(RectTransform row, float spacing)
+        {
+            HorizontalLayoutGroup layout = row.gameObject.AddComponent<HorizontalLayoutGroup>();
+            layout.spacing = spacing;
+            layout.childAlignment = TextAnchor.MiddleCenter;
+            layout.childControlWidth = false;
+            layout.childControlHeight = false;
+            layout.childForceExpandWidth = false;
+            layout.childForceExpandHeight = false;
+        }
+
+        /// <summary>A full-width row that hangs <paramref name="top"/> pixels below the top of the parent.</summary>
+        public static RectTransform TopRow(string name, RectTransform parent, float top, float height)
+        {
+            RectTransform row = NewChild(name, parent);
+            row.anchorMin = new Vector2(0f, 1f);
+            row.anchorMax = new Vector2(1f, 1f);
+            row.pivot = new Vector2(0.5f, 1f);
+            row.sizeDelta = new Vector2(0f, height);
+            row.anchoredPosition = new Vector2(0f, -top);
+            return row;
+        }
+
+        /// <summary>Centres the rect horizontally, <paramref name="top"/> pixels below the top of its parent.</summary>
+        public static void CentreTop(RectTransform rect, float top, float width, float height)
+        {
+            rect.anchorMin = rect.anchorMax = new Vector2(0.5f, 1f);
+            rect.pivot = new Vector2(0.5f, 1f);
+            rect.sizeDelta = new Vector2(width, height);
+            rect.anchoredPosition = new Vector2(0f, -top);
+        }
+
+        /// <summary>Removes every child, so a screen can draw its state again.</summary>
+        public static void Clear(RectTransform parent)
+        {
+            for (int i = parent.childCount - 1; i >= 0; i--)
+            {
+                GameObject child = parent.GetChild(i).gameObject;
+                child.SetActive(false);
+                Object.Destroy(child);
+            }
+        }
+
         /// <summary>
         /// A profile picture: a square in a colour of its own with the picture's name on it. Placeholder art until the
         /// art style is chosen (functional spec open question 6); the colour is what tells the pictures apart.

@@ -26,9 +26,6 @@ namespace Znalica.Presentation
         private const float FeedbackFontSize = 60f;
         private const float LineTop = 480f;
         private const float LineHeight = 260f;
-        private const float LineCellWidth = 52f;
-        private const float LineCellHeight = 60f;
-        private const float LineFontSize = 34f;
         private const float LineBarY = 110f;
         private const float LineBarHeight = 14f;
         private const float LineChangeY = 140f;
@@ -38,18 +35,9 @@ namespace Znalica.Presentation
         private const float WideButtonHeight = 130f;
         private const float WideButtonFontSize = 56f;
         private const float ReplayBottomMargin = 60f;
-        private const float ScoreFontSize = 200f;
-        private const float ScoreY = 160f;
-        private const float EndButtonWidth = 480f;
-        private const float EndButtonHeight = 170f;
-        private const float EndButtonSpacing = 60f;
-        private const float EndButtonsY = -170f;
 
         private static readonly Color BoxColor = Color.white;
-        private static readonly Color StartColor = new Color(0.62f, 0.78f, 0.95f);
-        private static readonly Color EndColor = new Color(0.62f, 0.88f, 0.62f);
         private static readonly Color JumpColor = new Color(0.95f, 0.62f, 0.2f);
-        private static readonly Color TickColor = new Color(0.4f, 0.4f, 0.4f);
 
         private PhraseCatalog _catalog;
         private VoicePlayer _voice;
@@ -68,8 +56,7 @@ namespace Znalica.Presentation
         private RectTransform _next;
         private CanvasGroup _pad;
         private RectTransform _taskGroup;
-        private RectTransform _roundEnd;
-        private TextMeshProUGUI _score;
+        private RoundEndPanel _roundEnd;
 
         public RectTransform Panel => (RectTransform)transform;
 
@@ -171,24 +158,18 @@ namespace Znalica.Presentation
             left.anchorMax = new Vector2(TaskAreaRight, 1f);
             left.offsetMin = left.offsetMax = Vector2.zero;
 
-            _equation = TopRow("Equation", left, EquationTop, EquationHeight);
-            HorizontalLayoutGroup equationLayout = _equation.gameObject.AddComponent<HorizontalLayoutGroup>();
-            equationLayout.spacing = TokenSpacing;
-            equationLayout.childAlignment = TextAnchor.MiddleCenter;
-            equationLayout.childControlWidth = false;
-            equationLayout.childControlHeight = false;
-            equationLayout.childForceExpandWidth = false;
-            equationLayout.childForceExpandHeight = false;
+            _equation = UiBuilder.TopRow("Equation", left, EquationTop, EquationHeight);
+            UiBuilder.CentreRow(_equation, TokenSpacing);
 
-            RectTransform feedbackRow = TopRow("Feedback", left, FeedbackTop, FeedbackHeight);
+            RectTransform feedbackRow = UiBuilder.TopRow("Feedback", left, FeedbackTop, FeedbackHeight);
             _feedback = UiBuilder.NewLabel("Text", feedbackRow, string.Empty, FeedbackFontSize);
             UiBuilder.Stretch(_feedback.rectTransform);
 
-            _line = TopRow("NumberLine", left, LineTop, LineHeight);
+            _line = UiBuilder.TopRow("NumberLine", left, LineTop, LineHeight);
 
             _next = UiBuilder.NewButton(
                 "Next", left, _catalog.Text(PhraseKey.ButtonNext), WideButtonFontSize, () => Press(AnswerKey.Continue));
-            CentreTop(_next, NextTop, WideButtonWidth, WideButtonHeight);
+            UiBuilder.CentreTop(_next, NextTop, WideButtonWidth, WideButtonHeight);
 
             RectTransform replay = UiBuilder.NewButton(
                 "Replay", left, _catalog.Text(PhraseKey.ButtonReplay), WideButtonFontSize, _voice.ReplayLast);
@@ -201,52 +182,7 @@ namespace Znalica.Presentation
             pad.anchorMin = pad.anchorMax = new Vector2((1f + TaskAreaRight) / 2f, 0.5f);
             pad.pivot = new Vector2(0.5f, 0.5f);
             pad.anchoredPosition = Vector2.zero;
-            BuildRoundEnd(panel);
-        }
-
-        private void BuildRoundEnd(RectTransform panel)
-        {
-            _roundEnd = UiBuilder.NewChild("RoundEnd", panel);
-            UiBuilder.Stretch(_roundEnd);
-            _roundEnd.gameObject.AddComponent<Image>().color = UiBuilder.BackgroundColor;
-
-            _score = UiBuilder.NewLabel("Score", _roundEnd, string.Empty, ScoreFontSize);
-            _score.rectTransform.anchorMin = _score.rectTransform.anchorMax = new Vector2(0.5f, 0.5f);
-            _score.rectTransform.sizeDelta = new Vector2(1400f, 300f);
-            _score.rectTransform.anchoredPosition = new Vector2(0f, ScoreY);
-
-            RectTransform playAgain = UiBuilder.NewButton(
-                "PlayAgain", _roundEnd, _catalog.Text(PhraseKey.ButtonPlayAgain), WideButtonFontSize, BeginRound);
-            EndButton(playAgain, -(EndButtonWidth + EndButtonSpacing) / 2f);
-            RectTransform stop = UiBuilder.NewButton(
-                "Stop", _roundEnd, _catalog.Text(PhraseKey.ButtonStop), WideButtonFontSize, () => _onStop());
-            EndButton(stop, (EndButtonWidth + EndButtonSpacing) / 2f);
-        }
-
-        private static void EndButton(RectTransform button, float x)
-        {
-            button.anchorMin = button.anchorMax = new Vector2(0.5f, 0.5f);
-            button.sizeDelta = new Vector2(EndButtonWidth, EndButtonHeight);
-            button.anchoredPosition = new Vector2(x, EndButtonsY);
-        }
-
-        private static RectTransform TopRow(string name, RectTransform parent, float top, float height)
-        {
-            RectTransform row = UiBuilder.NewChild(name, parent);
-            row.anchorMin = new Vector2(0f, 1f);
-            row.anchorMax = new Vector2(1f, 1f);
-            row.pivot = new Vector2(0.5f, 1f);
-            row.sizeDelta = new Vector2(0f, height);
-            row.anchoredPosition = new Vector2(0f, -top);
-            return row;
-        }
-
-        private static void CentreTop(RectTransform rect, float top, float width, float height)
-        {
-            rect.anchorMin = rect.anchorMax = new Vector2(0.5f, 1f);
-            rect.pivot = new Vector2(0.5f, 1f);
-            rect.sizeDelta = new Vector2(width, height);
-            rect.anchoredPosition = new Vector2(0f, -top);
+            _roundEnd = new RoundEndPanel(panel, _catalog, BeginRound, () => _onStop());
         }
 
         /// <summary>Draws everything from the play's current state.</summary>
@@ -254,17 +190,17 @@ namespace Znalica.Presentation
         {
             bool ended = _play.IsEnded;
             _taskGroup.gameObject.SetActive(!ended);
-            _roundEnd.gameObject.SetActive(ended);
+            _roundEnd.SetActive(ended);
             if (ended)
             {
-                _score.text = _catalog.Text(PhraseKey.RoundEndScore, _play.SummaryArgs);
+                _roundEnd.SetScore( _catalog.Text(PhraseKey.RoundEndScore, _play.SummaryArgs));
                 return;
             }
 
             RenderEquation();
             Feedback feedback = _play.Feedback;
             _feedback.text = feedback == null ? string.Empty : _catalog.Text(feedback.Phrase, feedback.Args);
-            Clear(_line);
+            UiBuilder.Clear(_line);
             if (feedback != null && feedback.Explanation != null)
             {
                 DrawJump(feedback.Explanation);
@@ -276,7 +212,7 @@ namespace Znalica.Presentation
 
         private void RenderEquation()
         {
-            Clear(_equation);
+            UiBuilder.Clear(_equation);
             foreach (ItemToken token in ItemFormatter.Tokens(_play.CurrentItem))
             {
                 string text = token.IsUnknown ? (_play.Entered.HasValue ? _play.Entered.Value.ToString() : string.Empty) : token.Text;
@@ -300,32 +236,13 @@ namespace Znalica.Presentation
         /// </summary>
         private void DrawJump(Explanation explanation)
         {
-            for (int number = NumberRange.Min; number <= NumberRange.Max; number++)
-            {
-                float x = LineX(number);
-                RectTransform cell = UiBuilder.NewChild("Number" + number, _line);
-                cell.anchorMin = cell.anchorMax = new Vector2(0.5f, 0f);
-                cell.pivot = new Vector2(0.5f, 0f);
-                cell.sizeDelta = new Vector2(LineCellWidth - 4f, LineCellHeight);
-                cell.anchoredPosition = new Vector2(x, 0f);
-                if (number == explanation.Start || number == explanation.End)
-                {
-                    cell.gameObject.AddComponent<Image>().color = number == explanation.End ? EndColor : StartColor;
-                }
+            NumberLineDrawing.Draw(_line, number =>
+                number == explanation.End ? NumberLineDrawing.EndColor
+                : number == explanation.Start ? NumberLineDrawing.StartColor
+                : (Color?)null);
 
-                TextMeshProUGUI label = UiBuilder.NewLabel("Text", cell, number.ToString(), LineFontSize);
-                UiBuilder.Stretch(label.rectTransform);
-                label.alignment = TextAlignmentOptions.Center;
-                RectTransform tick = UiBuilder.NewChild("Tick", _line);
-                tick.anchorMin = tick.anchorMax = new Vector2(0.5f, 0f);
-                tick.pivot = new Vector2(0.5f, 0f);
-                tick.sizeDelta = new Vector2(3f, 18f);
-                tick.anchoredPosition = new Vector2(x, LineCellHeight + 4f);
-                tick.gameObject.AddComponent<Image>().color = TickColor;
-            }
-
-            float startX = LineX(explanation.Start);
-            float endX = LineX(explanation.End);
+            float startX = NumberLineDrawing.X(explanation.Start);
+            float endX = NumberLineDrawing.X(explanation.End);
             RectTransform bar = UiBuilder.NewChild("Jump", _line);
             bar.anchorMin = bar.anchorMax = new Vector2(0.5f, 0f);
             bar.pivot = new Vector2(0.5f, 0f);
@@ -338,22 +255,6 @@ namespace Znalica.Presentation
             change.rectTransform.pivot = new Vector2(0.5f, 0f);
             change.rectTransform.sizeDelta = new Vector2(240f, 80f);
             change.rectTransform.anchoredPosition = new Vector2((startX + endX) / 2f, LineChangeY);
-        }
-
-        /// <summary>The horizontal position of a number on the line, from the line's centre, which is the middle number.</summary>
-        private static float LineX(int number)
-        {
-            return LineCellWidth * (number - (NumberRange.Min + NumberRange.Max) / 2f);
-        }
-
-        private static void Clear(RectTransform parent)
-        {
-            for (int i = parent.childCount - 1; i >= 0; i--)
-            {
-                GameObject child = parent.GetChild(i).gameObject;
-                child.SetActive(false);
-                Destroy(child);
-            }
         }
     }
 }
