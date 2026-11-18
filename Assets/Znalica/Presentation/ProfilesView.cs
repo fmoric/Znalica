@@ -9,7 +9,7 @@ using Znalica.Storage;
 namespace Znalica.Presentation
 {
     /// <summary>
-    /// The parent area's profiles and settings screen: the list of profiles with Rename and Delete (the delete asks once
+    /// The parent area's profiles and settings screen: the list of profiles with Progress, Rename and Delete (the delete asks once
     /// more, since it removes all of a child's progress), a form that adds a profile or renames the one being edited, and
     /// the voice volume. Everything is stored through the <see cref="ProfileStore"/> and the settings through the callback.
     /// </summary>
@@ -21,11 +21,13 @@ namespace Znalica.Presentation
         private const float ListLeft = 60f;
         private const float ListTop = 170f;
         private const float ListWidth = 900f;
-        private const float RowHeight = 130f;
+        private const float RowHeight = 190f;
         private const float RowSpacing = 14f;
         private const float RowPictureSize = 110f;
         private const float RowNameFontSize = 48f;
-        private const float RowButtonWidth = 250f;
+        private const float RowButtonWidth = 230f;
+        private const float RowButtonHeight = 70f;
+        private const float RowNameHeight = 90f;
         private const float RowButtonFontSize = 34f;
         private const float FormLeft = 1020f;
         private const float FormWidth = 840f;
@@ -57,6 +59,7 @@ namespace Znalica.Presentation
         private readonly ProfileStore _store;
         private readonly IProblemLog _problems;
         private readonly Action<float> _volumeChanged;
+        private readonly Action<Profile> _showProgress;
         private readonly Action _back;
 
         private RectTransform _list;
@@ -72,13 +75,15 @@ namespace Znalica.Presentation
         private float _volume;
 
         /// <param name="volumeChanged">Called with the new volume (0.0 to 1.0) each time the parent changes it; the app plays and stores it.</param>
+        /// <param name="showProgress">Called with the profile whose Napredak button was pressed; the app opens its progress screen.</param>
         /// <param name="back">Called by the Natrag button.</param>
-        public ProfilesView(PhraseCatalog catalog, ProfileStore store, IProblemLog problems, Action<float> volumeChanged, Action back)
+        public ProfilesView(PhraseCatalog catalog, ProfileStore store, IProblemLog problems, Action<float> volumeChanged, Action<Profile> showProgress, Action back)
         {
             _catalog = catalog;
             _store = store;
             _problems = problems;
             _volumeChanged = volumeChanged;
+            _showProgress = showProgress;
             _back = back;
         }
 
@@ -257,12 +262,15 @@ namespace Znalica.Presentation
 
             TextMeshProUGUI name = UiBuilder.NewLabel("Name", row, profile.DisplayName, RowNameFontSize);
             name.alignment = TextAlignmentOptions.MidlineLeft;
-            name.rectTransform.anchorMin = Vector2.zero;
-            name.rectTransform.anchorMax = Vector2.one;
-            name.rectTransform.offsetMin = new Vector2(RowPictureSize + 20f, 0f);
-            name.rectTransform.offsetMax = new Vector2(-(2f * RowButtonWidth + 30f), 0f);
+            name.rectTransform.anchorMin = new Vector2(0f, 1f);
+            name.rectTransform.anchorMax = new Vector2(1f, 1f);
+            name.rectTransform.offsetMin = new Vector2(RowPictureSize + 20f, -RowNameHeight);
+            name.rectTransform.offsetMax = Vector2.zero;
 
+            // The three buttons share the lower line of the row, so a long name keeps the width beside the picture.
             Profile target = profile;
+            RectTransform progress = UiBuilder.NewButton("Progress", row, _catalog.Text(PhraseKey.ButtonProgress), RowButtonFontSize, () => _showProgress(target));
+            RowButton(progress, -2f * (RowButtonWidth + 10f));
             RectTransform rename = UiBuilder.NewButton("Rename", row, _catalog.Text(PhraseKey.ButtonRename), RowButtonFontSize, () => StartRename(target));
             RowButton(rename, -(RowButtonWidth + 10f));
             RectTransform delete = UiBuilder.NewButton("Delete", row, _catalog.Text(PhraseKey.ButtonDelete), RowButtonFontSize, () => AskDelete(target));
@@ -271,9 +279,9 @@ namespace Znalica.Presentation
 
         private static void RowButton(RectTransform button, float rightOffset)
         {
-            button.anchorMin = button.anchorMax = new Vector2(1f, 0.5f);
-            button.pivot = new Vector2(1f, 0.5f);
-            button.sizeDelta = new Vector2(RowButtonWidth, RowHeight * 0.7f);
+            button.anchorMin = button.anchorMax = new Vector2(1f, 0f);
+            button.pivot = new Vector2(1f, 0f);
+            button.sizeDelta = new Vector2(RowButtonWidth, RowButtonHeight);
             button.anchoredPosition = new Vector2(rightOffset, 0f);
         }
 

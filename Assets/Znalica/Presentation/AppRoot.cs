@@ -46,12 +46,14 @@ namespace Znalica.Presentation
             ProfilePickView pick = null;
             GateScreen gateScreen = null;
             ProfilesView profiles = null;
+            ProgressView progress = null;
             ArithmeticScreen arithmetic = null;
             ComparisonScreen comparison = null;
             NumberLineScreen numberLine = null;
             RectTransform pickPanel = null;
             RectTransform menuPanel = null;
             RectTransform profilesPanel = null;
+            RectTransform progressPanel = null;
 
             // The picked profile's answer log and session number, fixed when the profile is picked.
             IAnswerLog activeLog = null;
@@ -109,8 +111,21 @@ namespace Znalica.Presentation
                     voice.Volume = volume;
                     settingsStore.Save(new Settings { VoiceVolume = volume });
                 },
+                shown =>
+                {
+                    progress.Begin(shown, profileStore.AnswerLog(shown.ProfileId));
+                    navigator.Show(progressPanel);
+                },
                 ShowStart);
             profilesPanel = profiles.Build(canvas);
+
+            // Back from the progress screen returns to the profiles screen it was opened from, still behind the parent gate.
+            progress = new ProgressView(
+                catalog,
+                clock,
+                new IItemSet[] { new ArithmeticItemSet(), new ComparisonItemSet(), new NumberLineItemSet() },
+                () => navigator.Show(profilesPanel));
+            progressPanel = progress.Build(canvas);
 
             var menu = new ActivityMenuView(
                 catalog,
@@ -144,6 +159,7 @@ namespace Znalica.Presentation
             navigator.Add(pickPanel);
             navigator.Add(gateScreen.Panel);
             navigator.Add(profilesPanel);
+            navigator.Add(progressPanel);
             navigator.Add(menuPanel);
             navigator.Add(arithmetic.Panel);
             navigator.Add(comparison.Panel);
