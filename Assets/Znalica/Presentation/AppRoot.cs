@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem.UI;
@@ -20,9 +22,17 @@ namespace Znalica.Presentation
         {
             IProblemLog problems = new UnityProblemLog();
             PhraseCatalog catalog = PhraseCatalogFile.Read(PhraseCatalogFile.PathIn(Application.streamingAssetsPath), problems);
+            var clock = new SystemClock();
 
             var voice = gameObject.AddComponent<VoicePlayer>();
             voice.Initialize(_voiceLibrary, problems);
+
+            var dataFolder = new DataFolder(Application.persistentDataPath);
+            var settingsStore = new SettingsStore(dataFolder, problems);
+            var profileStore = new ProfileStore(dataFolder, clock, problems);
+            voice.Volume = settingsStore.Load().VoiceVolume;
+            // One gate for the app's whole run, so its 30-second wait cannot be escaped by leaving the screen and coming back.
+            var gate = new ParentGate(clock, new SeededRandom(Environment.TickCount));
 
             EnsureEventSystem();
             RectTransform canvas = NewCanvas();
@@ -32,24 +42,95 @@ namespace Znalica.Presentation
                 navigator = gameObject.AddComponent<ScreenNavigator>();
             }
 
-            // The menu opens the arithmetic screen and the screen returns to the menu, so each is built before the other is used.
+            // The screens lead to one another, so each is declared first and filled in below.
+            ProfilePickView pick = null;
+            GateScreen gateScreen = null;
+            ProfilesView profiles = null;
             ArithmeticScreen arithmetic = null;
-            var menu = new ActivityMenuView(catalog, voice, picked =>
-            {
-                if (picked == PhraseKey.ActivityNameArithmetic)
-                {
-                    arithmetic.Begin();
-                    navigator.Show(arithmetic.Panel);
-                }
-            });
-            RectTransform menuPanel = menu.Build(canvas, _activityPictures);
-            // Until step 4, answers live in memory for as long as the app runs.
-            arithmetic = ArithmeticScreen.Create(
-                canvas, catalog, voice, new ArithmeticItemSet(), new InMemoryAnswerLog(), new SystemClock(), () => navigator.Show(menuPanel));
+            RectTransform pickPanel = null;
+            RectTransform menuPanel = null;
+            RectTransform profilesPanel = null;
 
+            // The picked profile's answer log and session number, fixed when the profile is picked.
+            IAnswerLog activeLog = null;
+            int activeSession = 0;
+
+            // The start of the app, and where every way out of a session and of the parent area leads. With no profile yet,
+            // the first start asks for the parent gate and then for the first profile (the profiles screen).
+            void ShowStart()
+            {
+                activeLog = null;
+                IReadOnlyList<Profile> existing = profileStore.List();
+                if (existing.Count == 0)
+                {
+                    gateScreen.Begin();
+                    navigator.Show(gateScreen.Panel);
+                    return;
+                }
+
+                pick.Refresh(existing);
+                navigator.Show(pickPanel);
+            }
+
+            pick = new ProfilePickView(
+                catalog,
+                picked =>
+                {
+                    activeLog = profileStore.AnswerLog(picked.ProfileId);
+                    activeSession = SessionNumber.Next(activeLog.ReadAll());
+                    navigator.Show(menuPanel);
+                },
+                () =>
+                {
+                    gateScreen.Begin();
+                    navigator.Show(gateScreen.Panel);
+                });
+            pickPanel = pick.Build(canvas);
+
+            gateScreen = GateScreen.Create(
+                canvas,
+                catalog,
+                gate,
+                () =>
+                {
+                    profiles.Begin(voice.Volume);
+                    navigator.Show(profilesPanel);
+                },
+                ShowStart);
+
+            profiles = new ProfilesView(
+                catalog,
+                profileStore,
+                problems,
+                volume =>
+                {
+                    voice.Volume = volume;
+                    settingsStore.Save(new Settings { VoiceVolume = volume });
+                },
+                ShowStart);
+            profilesPanel = profiles.Build(canvas);
+
+            var menu = new ActivityMenuView(
+                catalog,
+                voice,
+                picked =>
+                {
+                    if (picked == PhraseKey.ActivityNameArithmetic)
+                    {
+                        arithmetic.Begin(activeLog, activeSession);
+                        navigator.Show(arithmetic.Panel);
+                    }
+                },
+                ShowStart);
+            menuPanel = menu.Build(canvas, _activityPictures);
+            arithmetic = ArithmeticScreen.Create(canvas, catalog, voice, new ArithmeticItemSet(), clock, problems, () => navigator.Show(menuPanel));
+
+            navigator.Add(pickPanel);
+            navigator.Add(gateScreen.Panel);
+            navigator.Add(profilesPanel);
             navigator.Add(menuPanel);
             navigator.Add(arithmetic.Panel);
-            navigator.Show(menuPanel);
+            ShowStart();
         }
 
         private static void EnsureEventSystem()

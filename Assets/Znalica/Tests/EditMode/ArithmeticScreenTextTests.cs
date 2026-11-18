@@ -27,7 +27,7 @@ namespace Znalica.Tests.EditMode
                 new ArithmeticItem(2, Operation.Addition, 1, 3, Unknown.Result),
                 new ArithmeticItem(3, Operation.Addition, 1, 4, Unknown.Result),
             };
-            var play = new ArithmeticPlay(new RoundSession(items, log, clock, 1, "r"), clock);
+            var play = new ArithmeticPlay(new RoundSession(items, log, new ItemSchedule(), clock, 1, "r"), clock);
             play.Press(AnswerKey.Digit2);
             play.Press(AnswerKey.Confirm);
             play.Press(AnswerKey.Digit9);

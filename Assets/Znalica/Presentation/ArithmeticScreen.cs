@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -15,9 +14,6 @@ namespace Znalica.Presentation
     /// </summary>
     public sealed class ArithmeticScreen : MonoBehaviour
     {
-        // Until profiles exist (step 4) every round is session 1 of the one in-memory log.
-        private const int PlaceholderSessionNumber = 1;
-
         private const float TaskAreaRight = 0.62f;
         private const float EquationTop = 70f;
         private const float EquationHeight = 200f;
@@ -42,13 +38,6 @@ namespace Znalica.Presentation
         private const float WideButtonHeight = 130f;
         private const float WideButtonFontSize = 56f;
         private const float ReplayBottomMargin = 60f;
-        private const float PadWidth = 640f;
-        private const float PadHeight = 730f;
-        private const float PadCellWidth = 190f;
-        private const float PadCellHeight = 160f;
-        private const float PadSpacing = 25f;
-        private const float PadDigitFontSize = 90f;
-        private const float PadWordFontSize = 44f;
         private const float ScoreFontSize = 200f;
         private const float ScoreY = 160f;
         private const float EndButtonWidth = 480f;
@@ -62,39 +51,14 @@ namespace Znalica.Presentation
         private static readonly Color JumpColor = new Color(0.95f, 0.62f, 0.2f);
         private static readonly Color TickColor = new Color(0.4f, 0.4f, 0.4f);
 
-        // Written out, not computed: the Input System's digit keys are not in numeric order (Digit0 follows Digit9).
-        private static readonly KeyValuePair<Key, AnswerKey>[] KeyMap =
-        {
-            new KeyValuePair<Key, AnswerKey>(Key.Digit0, AnswerKey.Digit0),
-            new KeyValuePair<Key, AnswerKey>(Key.Digit1, AnswerKey.Digit1),
-            new KeyValuePair<Key, AnswerKey>(Key.Digit2, AnswerKey.Digit2),
-            new KeyValuePair<Key, AnswerKey>(Key.Digit3, AnswerKey.Digit3),
-            new KeyValuePair<Key, AnswerKey>(Key.Digit4, AnswerKey.Digit4),
-            new KeyValuePair<Key, AnswerKey>(Key.Digit5, AnswerKey.Digit5),
-            new KeyValuePair<Key, AnswerKey>(Key.Digit6, AnswerKey.Digit6),
-            new KeyValuePair<Key, AnswerKey>(Key.Digit7, AnswerKey.Digit7),
-            new KeyValuePair<Key, AnswerKey>(Key.Digit8, AnswerKey.Digit8),
-            new KeyValuePair<Key, AnswerKey>(Key.Digit9, AnswerKey.Digit9),
-            new KeyValuePair<Key, AnswerKey>(Key.Numpad0, AnswerKey.Digit0),
-            new KeyValuePair<Key, AnswerKey>(Key.Numpad1, AnswerKey.Digit1),
-            new KeyValuePair<Key, AnswerKey>(Key.Numpad2, AnswerKey.Digit2),
-            new KeyValuePair<Key, AnswerKey>(Key.Numpad3, AnswerKey.Digit3),
-            new KeyValuePair<Key, AnswerKey>(Key.Numpad4, AnswerKey.Digit4),
-            new KeyValuePair<Key, AnswerKey>(Key.Numpad5, AnswerKey.Digit5),
-            new KeyValuePair<Key, AnswerKey>(Key.Numpad6, AnswerKey.Digit6),
-            new KeyValuePair<Key, AnswerKey>(Key.Numpad7, AnswerKey.Digit7),
-            new KeyValuePair<Key, AnswerKey>(Key.Numpad8, AnswerKey.Digit8),
-            new KeyValuePair<Key, AnswerKey>(Key.Numpad9, AnswerKey.Digit9),
-            new KeyValuePair<Key, AnswerKey>(Key.Backspace, AnswerKey.Erase),
-            new KeyValuePair<Key, AnswerKey>(Key.Enter, AnswerKey.Confirm),
-            new KeyValuePair<Key, AnswerKey>(Key.NumpadEnter, AnswerKey.Confirm),
-        };
-
         private PhraseCatalog _catalog;
         private VoicePlayer _voice;
         private IItemSet _items;
-        private IAnswerLog _log;
         private IClock _clock;
+        private IProblemLog _problems;
+        private IAnswerLog _log;
+        private ItemSchedule _schedule;
+        private int _sessionNumber;
         private Action _onStop;
         private ArithmeticPlay _play;
 
@@ -115,8 +79,8 @@ namespace Znalica.Presentation
             PhraseCatalog catalog,
             VoicePlayer voice,
             IItemSet items,
-            IAnswerLog log,
             IClock clock,
+            IProblemLog problems,
             Action onStop)
         {
             RectTransform panel = UiBuilder.NewChild("ArithmeticScreen", parent);
@@ -124,19 +88,31 @@ namespace Znalica.Presentation
             screen._catalog = catalog;
             screen._voice = voice;
             screen._items = items;
-            screen._log = log;
             screen._clock = clock;
+            screen._problems = problems;
             screen._onStop = onStop;
             screen.Build();
             return screen;
         }
 
-        /// <summary>Plans a new round of ten items and shows its first. Call before the screen is shown.</summary>
-        public void Begin()
+        /// <summary>
+        /// Starts the picked profile's session on this screen: its answers go to <paramref name="log"/> under
+        /// <paramref name="sessionNumber"/>, and what the log says of earlier sessions decides what is asked. Plans the first round and shows its first item; call before the screen is shown.
+        /// </summary>
+        public void Begin(IAnswerLog log, int sessionNumber)
+        {
+            _log = log ?? throw new ArgumentNullException(nameof(log));
+            _sessionNumber = sessionNumber;
+            _schedule = ItemSchedule.Build(log.ReadAll());
+            BeginRound();
+        }
+
+        /// <summary>Plans a new round of ten items and shows its first.</summary>
+        private void BeginRound()
         {
             var random = new SeededRandom(Environment.TickCount);
             var round = new RoundSession(
-                RoundPlanner.Plan(_items, random), _log, _clock, PlaceholderSessionNumber, Guid.NewGuid().ToString());
+                RoundPlanner.Plan(_items, _schedule, _sessionNumber, random), _log, _schedule, _clock, _sessionNumber, Guid.NewGuid().ToString());
             _play = new ArithmeticPlay(round, _clock);
             Render();
         }
@@ -149,31 +125,10 @@ namespace Znalica.Presentation
                 return;
             }
 
-            // At most one Confirm per frame (Enter and numpad Enter together are one press); Enter goes on after a second wrong answer.
-            bool confirmed = false;
-            foreach (KeyValuePair<Key, AnswerKey> mapping in KeyMap)
+            // Enter goes on after a second wrong answer, as the Dalje button does.
+            foreach (AnswerKey pressed in NumberPad.KeysPressed(keyboard))
             {
-                if (!keyboard[mapping.Key].wasPressedThisFrame)
-                {
-                    continue;
-                }
-
-                AnswerKey key = mapping.Value;
-                if (key == AnswerKey.Confirm)
-                {
-                    if (confirmed)
-                    {
-                        continue;
-                    }
-
-                    confirmed = true;
-                    if (_play.AwaitsContinue)
-                    {
-                        key = AnswerKey.Continue;
-                    }
-                }
-
-                Press(key);
+                Press(pressed == AnswerKey.Confirm && _play.AwaitsContinue ? AnswerKey.Continue : pressed);
             }
         }
 
@@ -185,7 +140,15 @@ namespace Znalica.Presentation
                 _voice.Stop();
             }
 
-            Feedback feedback = _play.Press(key);
+            Feedback feedback = null;
+            if (!DiskWrite.TryRun(() => feedback = _play.Press(key), _problems, "save the answer"))
+            {
+                // The answer was not kept and nothing moved: the child can press U redu again.
+                Render();
+                _feedback.text = _catalog.Text(PhraseKey.SaveFailed);
+                return;
+            }
+
             if (feedback != null)
             {
                 _voice.Play(_catalog.VoiceClips(feedback.Phrase, feedback.Args));
@@ -234,39 +197,11 @@ namespace Znalica.Presentation
             replay.sizeDelta = new Vector2(WideButtonWidth, WideButtonHeight);
             replay.anchoredPosition = new Vector2(0f, ReplayBottomMargin);
 
-            BuildPad(_taskGroup);
-            BuildRoundEnd(panel);
-        }
-
-        private void BuildPad(RectTransform parent)
-        {
-            RectTransform pad = UiBuilder.NewChild("Pad", parent);
+            RectTransform pad = NumberPad.Build(_taskGroup, _catalog, Press, out _pad);
             pad.anchorMin = pad.anchorMax = new Vector2((1f + TaskAreaRight) / 2f, 0.5f);
             pad.pivot = new Vector2(0.5f, 0.5f);
-            pad.sizeDelta = new Vector2(PadWidth, PadHeight);
             pad.anchoredPosition = Vector2.zero;
-            _pad = pad.gameObject.AddComponent<CanvasGroup>();
-            GridLayoutGroup grid = pad.gameObject.AddComponent<GridLayoutGroup>();
-            grid.cellSize = new Vector2(PadCellWidth, PadCellHeight);
-            grid.spacing = new Vector2(PadSpacing, PadSpacing);
-            grid.constraint = GridLayoutGroup.Constraint.FixedColumnCount;
-            grid.constraintCount = 3;
-            grid.childAlignment = TextAnchor.MiddleCenter;
-
-            for (int digit = 1; digit <= 9; digit++)
-            {
-                PadDigit(pad, digit);
-            }
-
-            UiBuilder.NewButton("Erase", pad, _catalog.Text(PhraseKey.ButtonErase), PadWordFontSize, () => Press(AnswerKey.Erase));
-            PadDigit(pad, 0);
-            UiBuilder.NewButton("Ok", pad, _catalog.Text(PhraseKey.ButtonOk), PadWordFontSize, () => Press(AnswerKey.Confirm));
-        }
-
-        private void PadDigit(RectTransform pad, int digit)
-        {
-            AnswerKey key = AnswerKey.Digit0 + digit;
-            UiBuilder.NewButton("Digit" + digit, pad, digit.ToString(), PadDigitFontSize, () => Press(key));
+            BuildRoundEnd(panel);
         }
 
         private void BuildRoundEnd(RectTransform panel)
@@ -281,7 +216,7 @@ namespace Znalica.Presentation
             _score.rectTransform.anchoredPosition = new Vector2(0f, ScoreY);
 
             RectTransform playAgain = UiBuilder.NewButton(
-                "PlayAgain", _roundEnd, _catalog.Text(PhraseKey.ButtonPlayAgain), WideButtonFontSize, Begin);
+                "PlayAgain", _roundEnd, _catalog.Text(PhraseKey.ButtonPlayAgain), WideButtonFontSize, BeginRound);
             EndButton(playAgain, -(EndButtonWidth + EndButtonSpacing) / 2f);
             RectTransform stop = UiBuilder.NewButton(
                 "Stop", _roundEnd, _catalog.Text(PhraseKey.ButtonStop), WideButtonFontSize, () => _onStop());

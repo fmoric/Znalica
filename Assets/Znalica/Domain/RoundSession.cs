@@ -4,8 +4,8 @@ using System.Collections.Generic;
 namespace Znalica.Domain
 {
     /// <summary>
-    /// One round, as a state machine the views render and call. Every answer is appended to the answer log before
-    /// <see cref="Submit"/> returns.
+    /// One round, as a state machine the views render and call. Every answer is appended to the answer log and applied to
+    /// the item schedule before <see cref="Submit"/> returns.
     /// <list type="bullet">
     /// <item>Right: the next item is current at once; nothing waits.</item>
     /// <item>Wrong on the first ask of an item: the explanation shows, the same item is asked again (Retry), and the item
@@ -19,6 +19,7 @@ namespace Znalica.Domain
         public const int ReturnDistance = 3;
 
         private readonly IAnswerLog _log;
+        private readonly ItemSchedule _schedule;
         private readonly IClock _clock;
         private readonly int _sessionNumber;
         private readonly string _roundId;
@@ -28,7 +29,7 @@ namespace Znalica.Domain
         private AttemptKind _currentAttempt;
         private bool _retryPending;
 
-        public RoundSession(IReadOnlyList<Item> items, IAnswerLog log, IClock clock, int sessionNumber, string roundId)
+        public RoundSession(IReadOnlyList<Item> items, IAnswerLog log, ItemSchedule schedule, IClock clock, int sessionNumber, string roundId)
         {
             if (items == null)
             {
@@ -36,6 +37,7 @@ namespace Znalica.Domain
             }
 
             _log = log ?? throw new ArgumentNullException(nameof(log));
+            _schedule = schedule ?? throw new ArgumentNullException(nameof(schedule));
             _clock = clock ?? throw new ArgumentNullException(nameof(clock));
             _sessionNumber = sessionNumber;
             _roundId = roundId ?? throw new ArgumentNullException(nameof(roundId));
@@ -97,7 +99,7 @@ namespace Znalica.Domain
             AttemptKind attempt = NextAttempt.Value;
             Item item = _current;
             bool correct = item.IsCorrect(answer);
-            _log.Append(new AnswerRecord(
+            var record = new AnswerRecord(
                 item.Activity,
                 item.Key.ToString(),
                 answer.Canonical(),
@@ -106,7 +108,9 @@ namespace Znalica.Domain
                 responseMilliseconds,
                 _clock.Now.ToString("o"),
                 _sessionNumber,
-                _roundId));
+                _roundId);
+            _log.Append(record);
+            _schedule.Apply(record);
 
             if (correct)
             {

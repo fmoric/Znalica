@@ -67,5 +67,26 @@ namespace Znalica.Domain
         ButtonPlayAgain,
         ButtonStop,
         RoundEndScore,
+
+        // Step 4: the profile pick, the parent gate's messages and the profiles and settings screen (screen only, not
+        // spoken: the spec gives no words to speak). All wording is placeholder for the Croatian review.
+        ButtonParentArea,
+        ButtonBack,
+        ButtonChangeProfile,
+        ProfilePickTitle,
+        GateWrong,
+        GateWait,
+        ProfilesTitle,
+        ProfileNamePlaceholder,
+        ProfileNameInvalid,
+        ButtonSave,
+        ButtonRename,
+        ButtonDelete,
+        ConfirmDeleteProfile,
+        ButtonYes,
+        ButtonNo,
+        VolumeLabel,
+        VolumeValue,
+        SaveFailed,
     }
 }

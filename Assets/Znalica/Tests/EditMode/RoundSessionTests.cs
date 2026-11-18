@@ -11,12 +11,14 @@ namespace Znalica.Tests.EditMode
         private static readonly DateTimeOffset Now = new DateTimeOffset(2026, 11, 17, 10, 30, 0, TimeSpan.FromHours(1));
 
         private InMemoryAnswerLog _log;
+        private ItemSchedule _schedule;
         private FixedClock _clock;
 
         [SetUp]
         public void SetUp()
         {
             _log = new InMemoryAnswerLog();
+            _schedule = new ItemSchedule();
             _clock = new FixedClock(Now);
         }
 
@@ -34,7 +36,7 @@ namespace Znalica.Tests.EditMode
 
         private RoundSession Start(IReadOnlyList<Item> items)
         {
-            return new RoundSession(items, _log, _clock, 3, "round-1");
+            return new RoundSession(items, _log, _schedule, _clock, 3, "round-1");
         }
 
         private static Answer Right(Item item)
@@ -343,7 +345,7 @@ namespace Znalica.Tests.EditMode
         [Test]
         public void ARoundPlannedFromTheItemSet_PlaysToTheEndWhateverTheChildAnswers()
         {
-            IReadOnlyList<Item> items = RoundPlanner.Plan(new ArithmeticItemSet(), new SeededRandom(7));
+            IReadOnlyList<Item> items = RoundPlanner.Plan(new ArithmeticItemSet(), new ItemSchedule(), 1, new SeededRandom(7));
             RoundSession round = Start(items);
             bool wrongOnReturn = false;
             int retries = 0;
@@ -482,6 +484,55 @@ namespace Znalica.Tests.EditMode
             SubmitRight(round);
             Assert.AreEqual(RoundState.Ended, round.State);
             Assert.IsNull(round.NextAttempt, "no stale value once the round has ended");
+        }
+
+        [Test]
+        public void Submit_MovesTheSchedule_OnFirstOnly_BeforeItReturns()
+        {
+            List<Item> items = Items(2);
+            RoundSession round = Start(items);
+            ItemKey first = items[0].Key;
+
+            SubmitWrong(round);
+            Assert.AreEqual(0, _schedule.Get(first).Value.Box);
+            Assert.AreEqual(4, _schedule.Get(first).Value.DueSession, "missed in session 3: due in 4");
+
+            SubmitRight(round); // Retry: the schedule does not move.
+            Assert.AreEqual(0, _schedule.Get(first).Value.Box);
+            Assert.AreEqual(4, _schedule.Get(first).Value.DueSession);
+
+            SubmitRight(round); // the second item, First, right.
+            Assert.AreEqual(1, _schedule.Get(items[1].Key).Value.Box);
+
+            SubmitRight(round); // Return of the first item: the schedule does not move.
+            Assert.AreEqual(0, _schedule.Get(first).Value.Box);
+            Assert.AreEqual(RoundState.Ended, round.State);
+        }
+
+        [Test]
+        public void Submit_WhenTheLogFails_ChangesNothing_AndTheSameAnswerCanBeGivenAgain()
+        {
+            var failing = new FailingAnswerLog();
+            _log = failing.Inner;
+            List<Item> items = Items(2);
+            var round = new RoundSession(items, failing, _schedule, _clock, 3, "round-1");
+
+            failing.FailNext = true;
+            Assert.Throws<System.IO.IOException>(() => SubmitRight(round));
+
+            Assert.AreEqual(RoundState.AwaitingAnswer, round.State);
+            Assert.AreSame(items[0], round.CurrentItem, "the item is still asked");
+            Assert.AreEqual(AttemptKind.First, round.NextAttempt);
+            Assert.AreEqual(0, round.FirstTimeRightCount);
+            Assert.IsNull(_schedule.Get(items[0].Key), "the schedule did not move");
+            Assert.IsEmpty(_log.ReadAll());
+
+            SubmitRight(round);
+
+            Assert.AreSame(items[1], round.CurrentItem);
+            Assert.AreEqual(1, round.FirstTimeRightCount);
+            Assert.AreEqual(1, _schedule.Get(items[0].Key).Value.Box);
+            Assert.AreEqual(1, _log.ReadAll().Count);
         }
     }
 }

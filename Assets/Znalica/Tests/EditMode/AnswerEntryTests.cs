@@ -135,5 +135,36 @@ namespace Znalica.Tests.EditMode
                 }
             }
         }
+
+        [Test]
+        public void TryType_WithAHigherLimit_TakesTwoDigitsUpToThatLimit()
+        {
+            var entry = new AnswerEntry(81);
+
+            Assert.IsTrue(entry.TryType(8));
+            Assert.IsTrue(entry.TryType(1));
+            Assert.AreEqual(81, entry.Value);
+            Assert.IsFalse(entry.TryType(0));
+        }
+
+        [Test]
+        public void TryType_WithAHigherLimit_RefusesADigitThatWouldPassIt()
+        {
+            var entry = new AnswerEntry(81);
+            entry.TryType(8);
+
+            Assert.IsFalse(entry.TryType(2));
+            Assert.AreEqual(8, entry.Value);
+        }
+
+        [Test]
+        public void Clear_EmptiesTheBox()
+        {
+            AnswerEntry entry = Typed(1, 7);
+
+            entry.Clear();
+
+            Assert.IsNull(entry.Value);
+        }
     }
 }

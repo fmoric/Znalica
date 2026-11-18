@@ -66,6 +66,24 @@ namespace Znalica.Domain
 
         public override Difficulty Difficulty { get; }
 
+        /// <summary>
+        /// The two parts and the whole (<c>5+8=13</c>, smaller part first): the four forms and three unknowns of a fact
+        /// (<c>8 + 5</c>, <c>5 + 8</c>, <c>13 - 5</c>, <c>13 - 8</c>) share it.
+        /// </summary>
+        public override string FactId
+        {
+            get
+            {
+                bool addition = Operation == Operation.Addition;
+                int whole = addition ? Result : First;
+                int partA = addition ? First : Second;
+                int partB = addition ? Second : Result;
+                return Math.Min(partA, partB).ToString(CultureInfo.InvariantCulture) + "+"
+                    + Math.Max(partA, partB).ToString(CultureInfo.InvariantCulture) + "="
+                    + whole.ToString(CultureInfo.InvariantCulture);
+            }
+        }
+
         /// <summary>The number the child has to find.</summary>
         public int Solution
         {
