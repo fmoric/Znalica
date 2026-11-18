@@ -152,7 +152,8 @@ namespace Znalica.Domain
             int step = 0;
             if (task == NumberLineTask.Jump)
             {
-                int sign = parts[2].IndexOfAny(new[] { Forwards, Backwards }, 1);
+                // The search starts after the first character, so a part shorter than two cannot be searched (and holds no jump).
+                int sign = parts[2].Length < 2 ? -1 : parts[2].IndexOfAny(new[] { Forwards, Backwards }, 1);
                 if (sign < 0 || !ItemKey.TryReadNumber(parts[2].Substring(0, sign), out target)
                     || !ItemKey.TryReadNumber(parts[2].Substring(sign + 1), out int length))
                 {

@@ -166,7 +166,7 @@ namespace Znalica.Presentation
             _roundEnd.SetActive(ended);
             if (ended)
             {
-                _roundEnd.SetScore( _catalog.Text(PhraseKey.RoundEndScore, _play.SummaryArgs));
+                _roundEnd.SetScore(_catalog.Text(PhraseKey.RoundEndScore, _play.SummaryArgs));
                 return;
             }
 

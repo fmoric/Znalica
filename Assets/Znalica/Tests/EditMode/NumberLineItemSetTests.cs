@@ -89,6 +89,7 @@ namespace Znalica.Tests.EditMode
         [TestCase("L:Place:21", Description = "A number above 20")]
         [TestCase("L:Place:07", Description = "A leading zero")]
         [TestCase("L:Place:+7", Description = "A sign")]
+        [TestCase("L:Jump:", Description = "A jump with nothing after the task")]
         [TestCase("L:Place:", Description = "No number")]
         [TestCase("L:Place", Description = "No number part")]
         [TestCase("L:Place:7:1", Description = "An extra part")]

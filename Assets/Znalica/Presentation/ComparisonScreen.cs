@@ -69,7 +69,7 @@ namespace Znalica.Presentation
 
         private PhraseCatalog _catalog;
         private VoicePlayer _voice;
-        private ComparisonItemSet _items;
+        private IItemSet _items;
         private IClock _clock;
         private IProblemLog _problems;
         private IAnswerLog _log;
@@ -95,7 +95,7 @@ namespace Znalica.Presentation
             RectTransform parent,
             PhraseCatalog catalog,
             VoicePlayer voice,
-            ComparisonItemSet items,
+            IItemSet items,
             IClock clock,
             IProblemLog problems,
             Action onStop)

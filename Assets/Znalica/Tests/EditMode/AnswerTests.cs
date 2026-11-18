@@ -17,6 +17,16 @@ namespace Znalica.Tests.EditMode
         }
 
         [Test]
+        public void Order_CannotBeChangedThroughTheListItReturns()
+        {
+            Answer answer = Answer.FromOrder(new[] { 3, 9, 14 });
+
+            Assert.IsNotInstanceOf<int[]>(answer.Order);
+            Assert.Throws<System.NotSupportedException>(() => ((System.Collections.Generic.IList<int>)answer.Order)[0] = 99);
+            Assert.AreEqual("3,9,14", answer.Canonical());
+        }
+
+        [Test]
         public void FromOrder_KeepsTheNumbersAsGiven_AndItsOwnCopy()
         {
             int[] numbers = { 9, 3 };

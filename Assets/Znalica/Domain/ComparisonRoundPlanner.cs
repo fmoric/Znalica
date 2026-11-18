@@ -17,7 +17,7 @@ namespace Znalica.Domain
 
         private const int MaxDrawAttempts = 50;
 
-        public static IReadOnlyList<Item> Plan(ComparisonItemSet set, ItemSchedule schedule, int sessionNumber, IRandom random)
+        public static IReadOnlyList<Item> Plan(IItemSet set, ItemSchedule schedule, int sessionNumber, IRandom random)
         {
             List<Item> round = RoundPlanner.Plan(set, schedule, sessionNumber, random).ToList();
             int ordering = round.Count(IsOrdering);

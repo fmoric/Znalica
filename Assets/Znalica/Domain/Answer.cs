@@ -25,7 +25,7 @@ namespace Znalica.Domain
         public Sign? Sign { get; }
 
         /// <summary>The numbers in the order they were chosen; null unless this is an ordering answer.</summary>
-        public IReadOnlyList<int> Order => _order;
+        public IReadOnlyList<int> Order => _order == null ? null : Array.AsReadOnly(_order);
 
         public static Answer FromNumber(int number)
         {
