@@ -16,7 +16,7 @@
   only) merged in PR #4 on 2026-11-17. Step 3b (the Računanje do 20 screen) merged in PR #5 on 2026-11-18; its
   manual player checks are still to do. Open question Q4 (pacing of new items) was settled on 2026-11-18. **In
   progress:** steps 4 and 5 (profiles, the parent gate, answers saved to disk; missed items return next session;
-  branch `feat/profiles-and-saved-answers`). Step 4 is committed; step 5 is next.
+  branch `feat/profiles-and-saved-answers`). Both are committed; their review and test gates are next.
 - [ ] **Make the Unity commands in `AGENTS.md` run on a machine where `Unity.exe` is not on PATH.** *(T5. New
   2026-11-16.)* The build and test commands call a bare `Unity.exe`; on this PC the editor is at
   `C:\Program Files\Unity\Hub\Editor\6000.3.28f1\Editor\Unity.exe` and not on PATH, so the developer had to call it
