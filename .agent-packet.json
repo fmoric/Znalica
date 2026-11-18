@@ -29,7 +29,7 @@
     "BUILD_CMD": "Unity.exe -batchmode -quit -projectPath . -buildTarget Win64 -executeMethod BuildScript.Build",
     "TEST_CMD": "Unity.exe -batchmode -projectPath . -runTests -testPlatform EditMode -testResults TestResults.xml",
     "RUN_CMD": "none",
-    "TEST_GLOB": "Assets/Tests/**/*.cs"
+    "TEST_GLOB": "Assets/Znalica/Tests/**/*.cs"
   },
   "rule_decisions": [],
   "delivered": "2026-11-18",
