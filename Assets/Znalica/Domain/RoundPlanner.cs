@@ -148,7 +148,8 @@ namespace Znalica.Domain
             }
         }
 
-        private static void Shuffle<T>(List<T> items, IRandom random)
+        /// <summary>Fisher-Yates shuffle in place; the same seed gives the same order. Also used by the school-like check's draw.</summary>
+        internal static void Shuffle<T>(List<T> items, IRandom random)
         {
             for (int i = items.Count - 1; i > 0; i--)
             {
