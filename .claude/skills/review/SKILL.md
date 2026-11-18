@@ -1,6 +1,6 @@
 ---
 name: review
-description: Use for a structured review of staged or recent changes, with findings by severity. A quick in-context pass; for a thorough isolated review use the code-reviewer agent.
+description: Use for a structured review of staged or recent changes, findings by severity. A quick in-context pass; for an isolated review, the code-reviewer agent.
 ---
 
 # Code Review

@@ -1,6 +1,6 @@
 # `work_while_waiting` — rationale
 
-**The rule file is what governs**; read this for why it exists.
+**The rule file and its skill `.claude/skills/work-while-waiting/SKILL.md` (full text since 0.196.0) are what govern**; read this for why it exists.
 
 ## The incident (added 0.141.0)
 

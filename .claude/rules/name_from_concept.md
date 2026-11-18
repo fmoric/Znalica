@@ -25,5 +25,5 @@ names the thing, implement that name — do not invent one. A new domain artifac
 behind it signals skipped design: where the packet has a design step (an architect or technical spec), prefer
 routing it back there.
 
-Reuse first (whether to create at all — `look_before_you_write`, where shipped); then name the new from the
+Reuse first (whether to create at all — `look_before_you_write`); then name the new from the
 concept.

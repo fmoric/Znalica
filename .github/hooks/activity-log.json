@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "hooks": {
+    "subagentStart": [
+      {
+        "type": "command",
+        "powershell": "powershell -NoProfile -ExecutionPolicy Bypass -File \".claude/scripts/activity_log.ps1\" -Event start; exit 0",
+        "bash": "command -v powershell.exe >/dev/null 2>&1 && powershell.exe -NoProfile -ExecutionPolicy Bypass -File .claude/scripts/activity_log.ps1 -Event start || true",
+        "cwd": ".",
+        "timeoutSec": 15
+      }
+    ],
+    "subagentStop": [
+      {
+        "type": "command",
+        "powershell": "powershell -NoProfile -ExecutionPolicy Bypass -File \".claude/scripts/activity_log.ps1\" -Event stop; exit 0",
+        "bash": "command -v powershell.exe >/dev/null 2>&1 && powershell.exe -NoProfile -ExecutionPolicy Bypass -File .claude/scripts/activity_log.ps1 -Event stop || true",
+        "cwd": ".",
+        "timeoutSec": 15
+      }
+    ]
+  }
+}

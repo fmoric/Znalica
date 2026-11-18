@@ -17,7 +17,8 @@ paths:
   one step, **confirm first**. Check the narrower rules first; they carry their own procedure:
   `pr_merge_approval` (landing on the protected branch), `external_tool_state_change` (state shared beyond this
   repository), `production_is_read_only` (ends in a refusal), `no_personal_data_recorded` (ends in a
-  substitution, and a yes does not change it). This clause governs whatever none of them names.
+  substitution, and a yes does not change it), `knowledge_before_framework_code` (a generic knowledge-gap
+  request, filed without a yes). This clause governs whatever none of them names.
 - **The discussion phases** — on a non-trivial feature or change, before researching, planning or writing code:
   **Phase 1**, understand the problem with the user — ask what is wrong, not what to build; likely answers may be
   offered as options, none marked recommended. **Phase 2**, research to answer the questions the conversation

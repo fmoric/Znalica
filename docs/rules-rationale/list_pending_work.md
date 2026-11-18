@@ -1,6 +1,6 @@
 # `list_pending_work` — rationale
 
-Moved verbatim out of the `list_pending_work` rule (both mirrors) at 0.105.0, to keep the instruction files every session loads under Claude Code's total limit. **The rule file is what governs**; read this for why it exists and how it composes with the rules around it.
+Moved verbatim out of the `list_pending_work` rule (both mirrors) at 0.105.0, to keep the instruction files every session loads under Claude Code's total limit. **The rule file and its skill `.claude/skills/list-pending-work/SKILL.md` (full text since 0.196.0) are what govern**; read this for why it exists and how it composes with the rules around it.
 
 ## Field notes moved from the rule body
 

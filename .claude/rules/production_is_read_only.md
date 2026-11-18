@@ -28,12 +28,9 @@ to build or check something is refused too.
 spec's open question or a script, is refused as it stands; the request is the signal, and *no signal* does not apply.
 
 **Look once, before an operation whose target the tool resolves itself** — an inherited `DATABASE_URL`, a CLI
-profile or context, an MCP server's registration. Prefer a status command that only reads local config
-(`kubectl config current-context`, `az account show`), never one that connects to the target; otherwise read the
-variable or the config file the tool loads (its `.env`), its host or database only — **never print a password or
-token.** For a command you write rather than run, look where that run gets
-its target (a CI workflow's `env:` and `environment:`), never your own shell. Do not go hunting further; what
-one look cannot resolve, report as unresolved.
+profile or context, an MCP server's registration: read local config only, never connect, host or database only,
+**never print a password or token**; for a command you write, look where that run gets its target. What one look
+cannot resolve, report as unresolved.
 
 **Both true: stop, before the call.** Quote the signal, say what the operation would change, destroy or expose, and
 lead with the way forward: invented data or a local reproduction. Where a real fact seems needed, ask what the answer

@@ -25,11 +25,12 @@ Every literal you are about to write gets one question:
 
 The answer sorts it into exactly one of three:
 
-| Bucket | Means | Do |
-|---|---|---|
-| **Correctly a constant** | Two installs both want the same value, forever. It is part of the code's meaning. | Write the literal. |
-| **Should read config** | The value varies by environment or deployment, but two installs do not fight over it. | **If something already reads it — call that reader. Never re-derive it.** If nothing reads it yet, **create the read here**, one reader, at the point of definition. Do not write the literal and defer. |
-| **Must be per-install** | The value is a **key in a namespace outside this process** — an OS service registry, a shared config file's top-level key, a path a second install would also claim. Two installs **collide**. | Derive it per install. This is a design change, not a rename — **stop and discuss** before building (`discussion_first`). |
+- **Correctly a constant** — two installs want the same value forever: write the literal.
+- **Should read config** — it varies by environment, but installs do not fight over it: **call the reader that
+  already reads it, never re-derive it**; if none does, create the one read here, not the literal.
+- **Must be per-install** — a key in a namespace outside this process (an OS service registry, a shared config
+  file's top-level key, a path a second install would claim), so two installs **collide**: derive it per install.
+  That is a design change — **stop and discuss** first (`discussion_first`).
 
 **Bucket 2 covers the first write too** — "nothing reads it yet" is not a reason to hardcode; it is the moment
 the reader gets created.
@@ -58,11 +59,9 @@ or date formatter. Re-read what this change has already added before you add to 
 
 When there is genuinely nothing to reuse, what you write is a **counting** question, never a feeling:
 
-| Callers | Do |
-|---|---|
-| **One** | Write it plainly, where it is used. **Do not build an abstraction for a caller that does not exist.** |
-| **Two** — a second call site, *or a second copy inside your own change* | **One thing, in one place.** The second caller calls it. |
-| **Three or more** | You are already late. Extract now, instead of adding a fourth. |
+**One caller** — write it plainly where it is used, with no abstraction for a caller that does not exist. **Two**
+(a second call site, *or a second copy inside your own change*) — one thing in one place, which the second caller
+calls. **Three or more** — you are already late: extract now.
 
 **Extract at two** — both callers are in front of you and the shape is known. *"This might be needed
 elsewhere"* is a prediction, not a caller; wait for the second one.

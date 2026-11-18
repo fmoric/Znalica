@@ -55,6 +55,8 @@ stop another project's live test run that way (fixed in 0.153.2).
   when it finds nothing.
 - **Copilot CLI** ignores a session-start hook's output, so ask the agent to run the `leftover-processes` skill, or
   run it yourself: `powershell -NoProfile -ExecutionPolicy RemoteSigned -File .claude/scripts/leftover_processes.ps1`.
+- **To check a stopped test run** (0.197.4): add `-Also python,postgres` (any names; `.exe` is added) to watch them
+  too for that run. The session-start hook watches only the default names.
 
 ## Where it runs
 
@@ -64,8 +66,7 @@ stop another project's live test run that way (fixed in 0.153.2).
   an agent asks before editing the guard, `.github/hooks/` or `.claude/settings.json`.
 - **Copilot CLI:** `.github/hooks/search-guard.json`, matcher `bash|powershell|shell`. Copilot ignores a
   repository's hooks in a folder it does not trust, so trust the folder. **Copilot CLI 1.0.12 and later also runs
-  the hooks in `.claude/settings.json`.** On Windows it runs them without the `CLAUDE_PROJECT_DIR` variable, so both
-  of this guard's entries there start PowerShell and stop at once; the guard itself runs from
+  the hooks in `.claude/settings.json`**, before 1.0.112 without `CLAUDE_PROJECT_DIR`; 1.0.112 sets it and adds `COPILOT_HOOK_DEPTH`, which the gate tests (0.199.2). So both of this guard's entries there start PowerShell and stop at once; the guard itself runs from
   `.github/hooks/search-guard.json`. If Copilot ever refuses an ordinary command with *"Denied by preToolUse hook
   from "repo settings" (hook errored)"*, an entry in `.claude/settings.json` is failing: run the tests below.
   **In autopilot** (Copilot CLI 1.0.97 and later), the guard's one **ask** — when it could not check a command — is

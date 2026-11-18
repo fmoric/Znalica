@@ -73,7 +73,8 @@ procedure: `pr_merge_approval` (landing work on the protected branch), `external
 shared beyond this repository — installs, global configs, credentials, anything running someone else uses),
 `production_is_read_only` (development access to a production-signalled target; it ends in a **refusal**, this clause in a
 **confirmation**), `no_personal_data_recorded` (a real person's data in anything that persists; it ends in a
-**substitution**, and a yes does not change that). This clause governs whatever none of them names.
+**substitution**, and a yes does not change that), `knowledge_before_framework_code` (a generic knowledge-gap
+request to a store's research queue, filed without a yes, 0.197.1). This clause governs whatever none of them names.
 
 **This is not a general instruction to ask more.** The question clause fires only on work the user did not ask
 for; once they have asked, do the work, and do not ask permission to check it (`self_review`). The

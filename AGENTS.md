@@ -20,6 +20,11 @@ every agent working in it.
   you cannot read for yourself (`answer_before_you_ask`).
 - **Read the system map first.** If `docs/system-map.md` (or a map named here) exists, read it before
   searching the code. A change that moves structure refreshes it (`/system-map`, or hand it to doc-writer).
+- **Find a symbol with `serena` where it is connected:** `find_symbol` for its definition and
+  `find_referencing_symbols` for its callers come before text search. On either tool its tools may sit behind a tool
+  search: load them first. Text search is the fallback, and a report that used it for a symbol says so. An error
+  or an empty result for a symbol you know exists means the server is bound to no project: `activate_project`,
+  then retry. Serena sees the checkout it started in, so for a branch in a worktree, correct its callers by the diff.
 
 ## Standards
 
@@ -169,4 +174,5 @@ Topic- and path-scoped rules live alongside these instructions (`.claude/rules/`
 `.github/instructions/` copies if delivered). They extend — and where stricter, override — the standards above. Why a rule exists, where it has a
 rationale file: `docs/rules-rationale/<rule>.md`. A skill named in these
 instructions or an agent's lives at `.claude/skills/<name>/SKILL.md` (Copilot: `.github/skills/<name>/SKILL.md`):
-an agent with no skill tool reads it there.
+an agent with no skill tool reads it there. **Asked how work is going** — where the time or spend went, what
+stalled, how much rework → the `work-monitor` skill.
