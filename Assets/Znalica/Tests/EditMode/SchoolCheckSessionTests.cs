@@ -194,6 +194,28 @@ namespace Znalica.Tests.EditMode
         }
 
         [Test]
+        public void AfterAWriteFailedPartWay_ABoxAlreadyRecorded_CannotBeChanged_AndTheScoreMatchesTheRecordedLines()
+        {
+            SchoolCheckSession session = Of(NumberLineItem.Before(14), NumberLineItem.After(12), NumberLineItem.Before(7));
+            CheckAnswers.Type(session, 0, 13);
+            CheckAnswers.Type(session, 1, 13);
+            CheckAnswers.Type(session, 2, 6);
+            _log.FailOnAppend = 2;
+            Assert.Throws<IOException>(session.FinishPage);
+
+            Assert.IsFalse(session.Press(0, AnswerKey.Erase), "A recorded box was changed.");
+            Assert.IsFalse(session.Press(0, AnswerKey.Digit5));
+            Assert.AreEqual(13, session.Entered(0));
+            Assert.IsTrue(session.Press(1, AnswerKey.Erase), "A box not yet recorded can still be changed.");
+            session.FinishPage();
+
+            CheckLine[] lines = _log.ReadAll().ToArray();
+            Assert.AreEqual(session.Score(), lines.Count(line => !line.IsClosing && line.IsCorrect));
+            Assert.AreEqual(lines.Last().Score, session.Score());
+            Assert.AreEqual(2, session.Score());
+        }
+
+        [Test]
         public void WhenTheClosingLineFails_FinishingAgainWritesOnlyIt()
         {
             SchoolCheckSession session = Of(NumberLineItem.Before(14));

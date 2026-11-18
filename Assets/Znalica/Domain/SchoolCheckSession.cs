@@ -82,12 +82,13 @@ namespace Znalica.Domain
         }
 
         /// <summary>
-        /// A digit or Erase for the item's box, by the answer box's rule (no number above 20). Any other key, a sign item and an
-        /// item on another page are left alone. False when nothing changed.
+        /// A digit or Erase for the item's box, by the answer box's rule (no number above 20). Any other key, a sign item, an
+        /// item on another page and one already recorded are left alone: after a write failed part-way through a page, a box
+        /// whose line is on disk must not change, or a retry would score a state the stored line does not show. False when nothing changed.
         /// </summary>
         public bool Press(int index, AnswerKey key)
         {
-            if (_closed || !OnThisPage(index) || IsSignItem(index))
+            if (_closed || !CanChange(index) || IsSignItem(index))
             {
                 return false;
             }
@@ -102,10 +103,12 @@ namespace Znalica.Domain
             return key >= AnswerKey.Digit0 && key <= AnswerKey.Digit9 && _numbers[index].TryType(key - AnswerKey.Digit0);
         }
 
-        /// <summary>Chooses the sign of a sign item on this page; a choice already made is replaced. False for any other item.</summary>
+        /// <summary>
+        /// Chooses the sign of a sign item on this page that is not yet recorded; a choice already made is replaced. False for any other item.
+        /// </summary>
         public bool Choose(int index, Sign sign)
         {
-            if (_closed || !OnThisPage(index) || !IsSignItem(index))
+            if (_closed || !CanChange(index) || !IsSignItem(index))
             {
                 return false;
             }
@@ -117,7 +120,9 @@ namespace Znalica.Domain
         /// <summary>
         /// Records the page's answers, an item left empty as an empty answer, and goes on to the next page; after the last page
         /// closes the check with its score. If the log fails part-way (the exception comes out of here) what was written stays,
-        /// and calling this again writes only what is missing, so no line is recorded twice.
+        /// and calling this again writes only what is missing, so no line is recorded twice. The exception: if the failure is
+        /// the flush to disk after the bytes already reached the file, that answer line is written again by the retry (the score
+        /// is unaffected, it comes from the closing line).
         /// </summary>
         public void FinishPage()
         {
@@ -155,6 +160,11 @@ namespace Znalica.Domain
             }
 
             return score;
+        }
+
+        private bool CanChange(int index)
+        {
+            return OnThisPage(index) && index >= _recorded;
         }
 
         private bool OnThisPage(int index)
