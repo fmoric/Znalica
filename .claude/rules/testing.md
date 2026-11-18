@@ -1,6 +1,6 @@
 ---
 paths:
-  - "Assets/Tests/**/*.cs"
+  - "Assets/Znalica/Tests/**/*.cs"
 ---
 
 # Testing Rules
