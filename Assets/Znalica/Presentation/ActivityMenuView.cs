@@ -29,17 +29,24 @@ namespace Znalica.Presentation
         private const float ReplayHeight = 120f;
         private const float ReplayBottomMargin = 80f;
         private const float ReplayFontSize = 48f;
+        private const float ProfileWidth = 380f;
+        private const float ProfileHeight = 100f;
+        private const float ProfileMargin = 50f;
+        private const float ProfileFontSize = 40f;
 
         private readonly PhraseCatalog _catalog;
         private readonly VoicePlayer _voice;
         private readonly Action<PhraseKey> _picked;
+        private readonly Action _changeProfile;
 
         /// <param name="picked">Called with a picture's name key after its name has been spoken; the app opens that activity.</param>
-        public ActivityMenuView(PhraseCatalog catalog, VoicePlayer voice, Action<PhraseKey> picked)
+        /// <param name="changeProfile">Called by the small Promijeni profil button: the session ends and the profile pick opens.</param>
+        public ActivityMenuView(PhraseCatalog catalog, VoicePlayer voice, Action<PhraseKey> picked, Action changeProfile)
         {
             _catalog = catalog;
             _voice = voice;
             _picked = picked;
+            _changeProfile = changeProfile;
         }
 
         /// <returns>The menu's panel, for the navigator.</returns>
@@ -65,6 +72,7 @@ namespace Znalica.Presentation
             }
 
             BuildReplayButton(panel);
+            BuildChangeProfileButton(panel);
             return panel;
         }
 
@@ -100,6 +108,16 @@ namespace Znalica.Presentation
             replay.pivot = new Vector2(0.5f, 0f);
             replay.sizeDelta = new Vector2(ReplayWidth, ReplayHeight);
             replay.anchoredPosition = new Vector2(0f, ReplayBottomMargin);
+        }
+
+        private void BuildChangeProfileButton(RectTransform panel)
+        {
+            RectTransform change = UiBuilder.NewButton(
+                "ChangeProfile", panel, _catalog.Text(PhraseKey.ButtonChangeProfile), ProfileFontSize, () => _changeProfile());
+            change.anchorMin = change.anchorMax = new Vector2(0f, 0f);
+            change.pivot = new Vector2(0f, 0f);
+            change.sizeDelta = new Vector2(ProfileWidth, ProfileHeight);
+            change.anchoredPosition = new Vector2(ProfileMargin, ProfileMargin);
         }
 
         private UnityAction Speak(PhraseKey key)

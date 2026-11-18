@@ -43,5 +43,22 @@
   {"Key": "ButtonOk", "Text": "U redu", "Voice": []},
   {"Key": "ButtonPlayAgain", "Text": "Igraj opet", "Voice": []},
   {"Key": "ButtonStop", "Text": "Završi", "Voice": []},
-  {"Key": "RoundEndScore", "Text": "{Right} / {Total}", "Voice": []}
+  {"Key": "RoundEndScore", "Text": "{Right} / {Total}", "Voice": []},
+  {"Key": "ButtonParentArea", "Text": "Za roditelje", "Voice": []},
+  {"Key": "ButtonBack", "Text": "Natrag", "Voice": []},
+  {"Key": "ButtonChangeProfile", "Text": "Promijeni profil", "Voice": []},
+  {"Key": "ProfilePickTitle", "Text": "Tko igra?", "Voice": []},
+  {"Key": "GateWrong", "Text": "Pokušaj ponovno.", "Voice": []},
+  {"Key": "GateWait", "Text": "Pričekaj {Seconds} s.", "Voice": []},
+  {"Key": "ProfilesTitle", "Text": "Profili i postavke", "Voice": []},
+  {"Key": "ProfileNamePlaceholder", "Text": "Ime ili nadimak", "Voice": []},
+  {"Key": "ProfileNameInvalid", "Text": "Ime može imati do 20 slova, razmaka i crtica.", "Voice": []},
+  {"Key": "ButtonSave", "Text": "Spremi", "Voice": []},
+  {"Key": "ButtonRename", "Text": "Preimenuj", "Voice": []},
+  {"Key": "ButtonDelete", "Text": "Obriši profil", "Voice": []},
+  {"Key": "ConfirmDeleteProfile", "Text": "Obrisati profil {Name} i sav njegov napredak?", "Voice": []},
+  {"Key": "ButtonYes", "Text": "Da", "Voice": []},
+  {"Key": "ButtonNo", "Text": "Ne", "Voice": []},
+  {"Key": "VolumeLabel", "Text": "Glasnoća", "Voice": []},
+  {"Key": "VolumeValue", "Text": "{Percent} %", "Voice": []}
 ] }

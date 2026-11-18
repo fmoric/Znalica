@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using Znalica.Domain;
 
 namespace Znalica.Presentation
 {
@@ -64,6 +65,55 @@ namespace Znalica.Presentation
             TextMeshProUGUI label = NewLabel("Label", rect, text, fontSize);
             Stretch(label.rectTransform);
             return rect;
+        }
+
+        /// <summary>
+        /// A profile picture: a square in a colour of its own with the picture's name on it. Placeholder art until the
+        /// art style is chosen (functional spec open question 6); the colour is what tells the pictures apart.
+        /// </summary>
+        public static RectTransform NewPictureTile(string name, RectTransform parent, string pictureId, float size)
+        {
+            RectTransform tile = NewChild(name, parent);
+            tile.sizeDelta = new Vector2(size, size);
+            int index = Mathf.Max(0, ProfilePictures.IndexOf(pictureId));
+            tile.gameObject.AddComponent<Image>().color = Color.HSVToRGB(index / (float)ProfilePictures.Ids.Count, 0.45f, 0.95f);
+            TextMeshProUGUI label = NewLabel("Name", tile, pictureId, size * 0.2f);
+            Stretch(label.rectTransform);
+            return tile;
+        }
+
+        /// <summary>A single-line text field with a white box and a grey hint that shows while it is empty.</summary>
+        public static TMP_InputField NewInputField(string name, RectTransform parent, string hint, float fontSize, int characterLimit)
+        {
+            RectTransform rect = NewChild(name, parent);
+            // Inactive while it is assembled: the field reads its text component when it is enabled.
+            rect.gameObject.SetActive(false);
+            Image background = rect.gameObject.AddComponent<Image>();
+            background.color = Color.white;
+
+            RectTransform area = NewChild("TextArea", rect);
+            Stretch(area);
+            area.offsetMin = new Vector2(20f, 8f);
+            area.offsetMax = new Vector2(-20f, -8f);
+            area.gameObject.AddComponent<RectMask2D>();
+
+            TextMeshProUGUI text = NewLabel("Text", area, string.Empty, fontSize);
+            Stretch(text.rectTransform);
+            text.alignment = TextAlignmentOptions.MidlineLeft;
+            TextMeshProUGUI placeholder = NewLabel("Hint", area, hint, fontSize);
+            Stretch(placeholder.rectTransform);
+            placeholder.alignment = TextAlignmentOptions.MidlineLeft;
+            placeholder.color = new Color(0.5f, 0.5f, 0.5f);
+
+            TMP_InputField input = rect.gameObject.AddComponent<TMP_InputField>();
+            input.targetGraphic = background;
+            input.textViewport = area;
+            input.textComponent = text;
+            input.placeholder = placeholder;
+            input.lineType = TMP_InputField.LineType.SingleLine;
+            input.characterLimit = characterLimit;
+            rect.gameObject.SetActive(true);
+            return input;
         }
     }
 }
