@@ -1,12 +1,10 @@
 # Resume
 
-**Last session:** 2026-11-18: [steps 3b to 9 of the grade 1 maths build, and research on a warmer look and a PIN gate](2026-11-18-steps-3b-to-9.md)
+**Last session:** 2026-11-18: [agent packet 0.199.3, its assessment, and the testing-rule glob](2026-11-18-agent-packet-0.199.3.md)
 
-**Written at:** `docs/research-look-and-parent-pin` @ `1dc2cc5`
+**Written at:** `master` @ `83c1756`
 
-**Push state:** `master` is pushed through `e3e3a1a` (PR #9). The branch `docs/research-look-and-parent-pin` has no
-branch of its own on GitHub. Its one commit, `1dc2cc5` (the two research briefs under `docs/research/`), exists only
-in the checkout that wrote this pointer.
+**Push state:** `master` is pushed through `83c1756` (PRs #11, #12 and #13 merged). No other branch holds unpushed work.
 
 **PAUSED:** none.
 
@@ -14,4 +12,4 @@ in the checkout that wrote this pointer.
 1. Step 10 of `docs/specs/2026-11-16-grade-1-maths-first-version-tech.md`: the break suggestion and the release checks
    on the built player.
 2. The product owner's decisions for T10 (a warmer look) and T11 (a PIN parent gate), from the two research briefs.
-3. Push `docs/research-look-and-parent-pin` and land the briefs.
+3. T12: check the 0.199.3 hooks on Copilot CLI, and the waiting check live in Claude Code.

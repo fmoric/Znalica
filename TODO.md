@@ -5,6 +5,9 @@
 - [ ] **Decide whether the knowledge server loads at session start.** *(T3. New 2026-11-16.)* Claude Code reads
   `knowledge` from `Documents\.mcp.json`, which has no `"alwaysLoad": true`, so the main session goes through a
   tool search first. Adding the key costs context in every session and up to 5 s of startup.
+  - **A fresh clone gets no knowledge server at all.** *(Added 2026-11-18, from the 0.199.3 delivery assessment, F2.)*
+    The entry sits in a `.mcp.json` above the repository, so a teammate who clones only Znalica has none, and
+    `MCP-SETUP.md`'s knowledge section is the only record of how to add it (per user, with `"alwaysLoad": true`).
 - [ ] **Write the first functional spec for Znalica.** *(T4. New 2026-11-16.)* Draft:
   `docs/specs/2026-11-16-grade-1-maths-first-version.md` (grade 1 maths, numbers 0–20 and add/subtract to 20,
   Windows desktop). Sources: the knowledge-store articles
@@ -57,6 +60,15 @@
   - **Code facts:** the PIN cannot live in `Settings.json` (`SettingsStore.Save` writes only the volume,
     `SettingsStore.cs:48`); the 30-second wait is held in memory (`ParentGate.cs:25`), so a restart skips it;
     `AnswerEntry` holds an integer, so `0123` would become `123`.
+- [ ] **Check the 0.199.3 hooks where no session has run them yet.** *(T12. New 2026-11-18.)* The delivery and its
+  assessment (`2026-11-18-deliver-packet-other-assess.md`) checked the search guard and the activity log live in Claude
+  Code only; on Copilot CLI only their test suites ran (search guard 186/186, activity log 20/20).
+  - **Copilot CLI:** an agent's `find / -name x` must be refused with the guard's reason, `git status` must still run
+    (*hook errored* from "repo settings" means a `.claude/settings.json` entry fails there), and one subagent must add a
+    `start` and a `stop` line with `tool: copilot` to `.agent-activity/<date>.jsonl`.
+  - **Claude Code:** end a turn on a bare `WAITING:` line (start a background `sleep 120` and stop); the waiting check
+    must send the turn back with its reason.
+  - **Fix direction:** a failure on either is a library finding for ai-agent-templates, reported with the command and output.
 
 ## Done
 
