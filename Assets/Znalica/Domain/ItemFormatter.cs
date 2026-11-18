@@ -14,6 +14,19 @@ namespace Znalica.Domain
         public const string MinusSign = "−";
         public const string PlusSign = "+";
         public const string EqualsSign = "=";
+        public const string LessSign = "<";
+        public const string GreaterSign = ">";
+
+        /// <summary>The sign as drawn on a comparison button and between two quantities.</summary>
+        public static string SignText(Sign sign)
+        {
+            switch (sign)
+            {
+                case Sign.Less: return LessSign;
+                case Sign.Greater: return GreaterSign;
+                default: return EqualsSign;
+            }
+        }
 
         /// <summary><c>8 + 5 = ?</c> as five tokens: first, operation, second, equals sign, result.</summary>
         /// <exception cref="ArgumentException">An item that is not an arithmetic item.</exception>

@@ -88,5 +88,23 @@ namespace Znalica.Domain
         VolumeLabel,
         VolumeValue,
         SaveFailed,
+
+        // Step 6: Veće, manje, jednako. The explanations are spoken (a wrong answer always is: FS:42); the single-clip
+        // words are keys of their own, as ThenMore and Is are, so VoiceScript.csv lists them. The instruction is screen
+        // only: no spoken instruction until the voice method is chosen (Q5). All wording is placeholder for the Croatian review.
+        ExplainLess,
+        ExplainMore,
+        ExplainSame,
+        ExplainGroups,
+        ExplainOrder3,
+        ExplainOrder4,
+        ExplainOrder5,
+        LessThan,
+        MoreThan,
+        SameAs,
+        Here,
+        There,
+        InOrder,
+        InstructionOrder,
     }
 }
