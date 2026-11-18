@@ -5,7 +5,7 @@ namespace Znalica.Storage
 {
     /// <summary>
     /// The layout of the data folder: <c>Settings.json</c> and, per profile, a folder named by the profile's id holding
-    /// <c>Profile.json</c> and <c>Answers.jsonl</c>. The only place that builds these paths. A profile id is checked to be a
+    /// <c>Profile.json</c>, <c>Answers.jsonl</c> and <c>Checks.jsonl</c>. The only place that builds these paths. A profile id is checked to be a
     /// GUID before it becomes part of a path, so an id read from anywhere cannot point outside the folder.
     /// </summary>
     public sealed class DataFolder
@@ -14,6 +14,7 @@ namespace Znalica.Storage
         private const string ProfilesFolderName = "Profiles";
         private const string ProfileFileName = "Profile.json";
         private const string AnswersFileName = "Answers.jsonl";
+        private const string ChecksFileName = "Checks.jsonl";
 
         private readonly string _root;
 
@@ -39,6 +40,11 @@ namespace Znalica.Storage
         public string AnswersPath(string profileId)
         {
             return Path.Combine(ProfileFolder(profileId), AnswersFileName);
+        }
+
+        public string ChecksPath(string profileId)
+        {
+            return Path.Combine(ProfileFolder(profileId), ChecksFileName);
         }
 
         /// <summary>The id in its one written form, or an <see cref="ArgumentException"/> if it is not a GUID.</summary>

@@ -11,10 +11,12 @@ namespace Znalica.Tests.EditMode
             string answer = "13",
             bool isCorrect = true,
             AttemptKind attempt = AttemptKind.First,
-            string roundId = "round-1")
+            string roundId = "round-1",
+            Activity activity = Activity.Arithmetic,
+            string answeredAt = "2026-11-17T10:30:00.0000000+01:00")
         {
             return new AnswerRecord(
-                Activity.Arithmetic, itemKey, answer, isCorrect, attempt, 1234, "2026-11-17T10:30:00.0000000+01:00", sessionNumber, roundId);
+                activity, itemKey, answer, isCorrect, attempt, 1234, answeredAt, sessionNumber, roundId);
         }
     }
 }

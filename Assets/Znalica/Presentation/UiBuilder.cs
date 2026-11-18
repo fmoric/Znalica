@@ -100,6 +100,27 @@ namespace Znalica.Presentation
             rect.anchoredPosition = new Vector2(0f, -top);
         }
 
+        /// <summary>Anchors the rectangle to its parent's top left, at the given offset and size.</summary>
+        public static void PlaceTopLeft(RectTransform rect, float left, float top, float width, float height)
+        {
+            rect.anchorMin = rect.anchorMax = new Vector2(0f, 1f);
+            rect.pivot = new Vector2(0f, 1f);
+            rect.sizeDelta = new Vector2(width, height);
+            rect.anchoredPosition = new Vector2(left, -top);
+        }
+
+        /// <summary>
+        /// Anchors the rectangle to the bottom edge of its parent, <paramref name="y"/> pixels above it and <paramref name="x"/> in
+        /// from the left edge (<paramref name="anchorX"/> 0) or from the right edge (1; a negative x then moves left).
+        /// </summary>
+        public static void PlaceBottom(RectTransform rect, float anchorX, float x, float y, float width, float height)
+        {
+            rect.anchorMin = rect.anchorMax = new Vector2(anchorX, 0f);
+            rect.pivot = new Vector2(anchorX, 0f);
+            rect.sizeDelta = new Vector2(width, height);
+            rect.anchoredPosition = new Vector2(x, y);
+        }
+
         /// <summary>Removes every child, so a screen can draw its state again.</summary>
         public static void Clear(RectTransform parent)
         {

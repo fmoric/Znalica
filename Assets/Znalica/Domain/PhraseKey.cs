@@ -120,5 +120,31 @@ namespace Znalica.Domain
         InstructionBefore,
         InstructionAfter,
         InstructionJump,
+
+        // Step 8: the parent area's progress screen. All screen only (nothing here is spoken, so no clips) and all
+        // wording is placeholder for the Croatian review.
+        ButtonProgress,
+        ProgressTitle,
+        ProgressNoAnswers,
+        ProgressRounds,
+        ProgressFirstTimeRight,
+        ProgressStillMissedTitle,
+        ProgressNoneMissed,
+        ProgressWeeksTitle,
+        ProgressWeekRow,
+
+        // Step 9: the parent area's school-like check. All screen only (the spoken instruction per section waits for the
+        // voice method, Q5, so no clips) and all wording is placeholder for the Croatian review.
+        ButtonCheck,
+        CheckTitle,
+        ButtonNewCheck,
+        CheckNoResults,
+        CheckResultFinished,
+        CheckResultUnfinished,
+        CheckInstructionResult,
+        CheckInstructionMissing,
+        CheckInstructionSign,
+        CheckInstructionNeighbour,
+        CheckPage,
     }
 }

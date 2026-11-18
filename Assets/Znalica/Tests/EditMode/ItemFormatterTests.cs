@@ -70,6 +70,28 @@ namespace Znalica.Tests.EditMode
             Assert.AreEqual(expected, ItemFormatter.ChangeText(explanation));
         }
 
+        [Test]
+        public void Text_OfAnArithmeticAndANumberLineItem_JoinsTheTokensWithSpaces()
+        {
+            Assert.AreEqual("8 + 5 = ?", ItemFormatter.Text(new ArithmeticItem(8, Operation.Addition, 5, 13, Unknown.Result)));
+            Assert.AreEqual("6 +3 = ?", ItemFormatter.Text(NumberLineItem.Jump(6, 3)));
+            Assert.AreEqual("? , 14", ItemFormatter.Text(NumberLineItem.Before(14)));
+            Assert.AreEqual("14", ItemFormatter.Text(NumberLineItem.Place(14)));
+        }
+
+        [Test]
+        public void Text_OfAComparisonItem_ShowsTheQuantitiesAndAMarkForTheSign()
+        {
+            Assert.AreEqual("7 ? 12", ItemFormatter.Text(ComparisonItem.ChooseSign(Representation.Numbers, 7, 12)));
+            Assert.AreEqual("(12) ? (7)", ItemFormatter.Text(ComparisonItem.ChooseSign(Representation.Groups, 12, 7)));
+        }
+
+        [Test]
+        public void Text_OfAnOrderingItem_ListsTheNumbersInTheOrderTheyAreShown()
+        {
+            Assert.AreEqual("14, 3, 9", ItemFormatter.Text(ComparisonItem.PutInOrder(new[] { 9, 3, 14 })));
+        }
+
         private sealed class OtherItem : Item
         {
             public override ItemKey Key

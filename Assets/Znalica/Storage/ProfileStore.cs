@@ -103,6 +103,12 @@ namespace Znalica.Storage
             return new FileAnswerLog(_folder.AnswersPath(profileId), _problems);
         }
 
+        /// <summary>The profile's school-like checks, on disk in the profile's folder and never in its answer log.</summary>
+        public ICheckLog CheckLog(string profileId)
+        {
+            return new FileCheckLog(_folder.ChecksPath(profileId), _problems);
+        }
+
         private static string ValidName(string displayName)
         {
             if (!ProfileName.TryNormalize(displayName, out string name))
