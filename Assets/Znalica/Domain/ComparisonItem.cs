@@ -178,7 +178,7 @@ namespace Znalica.Domain
                 }
 
                 string[] parts = body.Split(SignSeparator);
-                if (parts.Length != 2 || !TryReadNumber(parts[0], out int left) || !TryReadNumber(parts[1], out int right))
+                if (parts.Length != 2 || !ItemKey.TryReadNumber(parts[0], out int left) || !ItemKey.TryReadNumber(parts[1], out int right))
                 {
                     return false;
                 }
@@ -198,7 +198,7 @@ namespace Znalica.Domain
                 var numbers = new List<int>();
                 foreach (string part in parts)
                 {
-                    if (!TryReadNumber(part, out int number) || (numbers.Count > 0 && number <= numbers[numbers.Count - 1]))
+                    if (!ItemKey.TryReadNumber(part, out int number) || (numbers.Count > 0 && number <= numbers[numbers.Count - 1]))
                     {
                         return false;
                     }
@@ -211,14 +211,6 @@ namespace Znalica.Domain
             }
 
             return false;
-        }
-
-        /// <summary>A canonical number of the key: digits only, no leading zero, within 0-20.</summary>
-        private static bool TryReadNumber(string text, out int number)
-        {
-            return int.TryParse(text, NumberStyles.None, CultureInfo.InvariantCulture, out number)
-                && number.ToString(CultureInfo.InvariantCulture) == text
-                && NumberRange.Contains(number);
         }
 
         private PhraseKey SignPhrase()

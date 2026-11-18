@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 
 namespace Znalica.Domain
 {
@@ -48,6 +49,17 @@ namespace Znalica.Domain
             }
 
             return key;
+        }
+
+        /// <summary>
+        /// A number as a key writes it: digits only, no leading zero, within 0-20. The item classes read the numbers of a
+        /// key with this, so a key written another way (<c>07</c>, <c>+7</c>, <c>21</c>) names no item.
+        /// </summary>
+        internal static bool TryReadNumber(string text, out int number)
+        {
+            return int.TryParse(text, NumberStyles.None, CultureInfo.InvariantCulture, out number)
+                && number.ToString(CultureInfo.InvariantCulture) == text
+                && NumberRange.Contains(number);
         }
 
         public bool Equals(ItemKey other)

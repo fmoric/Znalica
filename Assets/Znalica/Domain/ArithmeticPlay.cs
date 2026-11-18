@@ -3,8 +3,9 @@ using System.Collections.Generic;
 namespace Znalica.Domain
 {
     /// <summary>
-    /// The child's side of one arithmetic round: what the pad and the keys do to the answer box, when an answer is
-    /// given, and what feedback is current. The screen draws this and calls <see cref="Press"/>; it holds no rules.
+    /// The child's side of one round whose answer is a typed number (arithmetic, and the number line's before, after
+    /// and jump): what the pad and the keys do to the answer box, when an answer is given, and what feedback is
+    /// current. The screen draws this and calls <see cref="Press"/>; it holds no rules.
     /// <list type="bullet">
     /// <item>A digit goes into the box if <see cref="AnswerEntry"/> takes it; Erase removes the last one.</item>
     /// <item>Confirm with an empty box does nothing. Otherwise the answer goes to the round, the box is emptied, and the
@@ -85,16 +86,26 @@ namespace Znalica.Domain
             return Submit();
         }
 
-        private Feedback Submit()
+        /// <summary>
+        /// Gives the number as the answer without the box: a click on the number line. Does nothing at the end of the round
+        /// and after a second wrong answer (only Continue goes on). The box is emptied, as after Confirm. Returns the
+        /// feedback, or null if nothing was given.
+        /// </summary>
+        public Feedback Give(int number)
         {
-            if (!_entry.Value.HasValue)
+            if (IsEnded || AwaitsContinue)
             {
                 return null;
             }
 
-            Feedback feedback = _play.Submit(Answer.FromNumber(_entry.Value.Value));
+            Feedback feedback = _play.Submit(Answer.FromNumber(number));
             _entry = new AnswerEntry();
             return feedback;
+        }
+
+        private Feedback Submit()
+        {
+            return _entry.Value.HasValue ? Give(_entry.Value.Value) : null;
         }
     }
 }

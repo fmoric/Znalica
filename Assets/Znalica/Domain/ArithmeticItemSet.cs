@@ -29,11 +29,7 @@ namespace Znalica.Domain
                 }
             }
 
-            _all.Sort((x, y) =>
-            {
-                int byDifficulty = x.Difficulty.CompareTo(y.Difficulty);
-                return byDifficulty != 0 ? byDifficulty : string.CompareOrdinal(x.Key.ToString(), y.Key.ToString());
-            });
+            ItemOrder.SortEasiestFirst(_all);
         }
 
         public Activity Activity => Activity.Arithmetic;

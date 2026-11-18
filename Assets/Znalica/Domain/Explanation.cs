@@ -15,6 +15,9 @@ namespace Znalica.Domain
 
         /// <summary>The numbers of an ordering item in order on the line.</summary>
         OrderedSequence,
+
+        /// <summary>The right place for a number on the 0-20 line (placing, and the number before or after one).</summary>
+        PositionOnLine,
     }
 
     /// <summary>
@@ -39,7 +42,9 @@ namespace Znalica.Domain
             int left,
             int right,
             Representation representation,
-            IReadOnlyList<int> numbers)
+            IReadOnlyList<int> numbers,
+            int target,
+            int given)
         {
             Kind = kind;
             Phrase = phrase;
@@ -51,11 +56,13 @@ namespace Znalica.Domain
             Right = right;
             Representation = representation;
             Numbers = numbers;
+            Target = target;
+            Given = given;
         }
 
         /// <summary>A jump on the number line.</summary>
         public Explanation(ExplanationKind kind, PhraseKey phrase, int start, int change, int end, bool backwards)
-            : this(kind, phrase, start, change, end, backwards, 0, 0, Representation.Numbers, NoNumbers)
+            : this(kind, phrase, start, change, end, backwards, 0, 0, Representation.Numbers, NoNumbers, 0, 0)
         {
         }
 
@@ -91,15 +98,27 @@ namespace Znalica.Domain
         /// <summary>The numbers of an <see cref="ExplanationKind.OrderedSequence"/>, smallest first.</summary>
         public IReadOnlyList<int> Numbers { get; }
 
+        /// <summary>The number the child should have found, marked at its place on a <see cref="ExplanationKind.PositionOnLine"/> picture.</summary>
+        public int Target { get; }
+
+        /// <summary>The number the task named, which the answer was found from: the same as <see cref="Target"/> when placing.</summary>
+        public int Given { get; }
+
         public static Explanation SideBySide(PhraseKey phrase, int left, int right, Representation representation)
         {
-            return new Explanation(ExplanationKind.SideBySide, phrase, 0, 0, 0, false, left, right, representation, NoNumbers);
+            return new Explanation(ExplanationKind.SideBySide, phrase, 0, 0, 0, false, left, right, representation, NoNumbers, 0, 0);
         }
 
         public static Explanation OrderedSequence(PhraseKey phrase, IEnumerable<int> numbers)
         {
             return new Explanation(
-                ExplanationKind.OrderedSequence, phrase, 0, 0, 0, false, 0, 0, Representation.Numbers, numbers.ToArray());
+                ExplanationKind.OrderedSequence, phrase, 0, 0, 0, false, 0, 0, Representation.Numbers, numbers.ToArray(), 0, 0);
+        }
+
+        public static Explanation PositionOnLine(PhraseKey phrase, int target, int given)
+        {
+            return new Explanation(
+                ExplanationKind.PositionOnLine, phrase, 0, 0, 0, false, 0, 0, Representation.Numbers, NoNumbers, target, given);
         }
 
         /// <summary>
@@ -117,6 +136,12 @@ namespace Znalica.Domain
                         {
                             { "Left", Text(Left) },
                             { "Right", Text(Right) },
+                        };
+                    case ExplanationKind.PositionOnLine:
+                        return new Dictionary<string, string>
+                        {
+                            { "Target", Text(Target) },
+                            { "Given", Text(Given) },
                         };
                     case ExplanationKind.OrderedSequence:
                         var args = new Dictionary<string, string>();
