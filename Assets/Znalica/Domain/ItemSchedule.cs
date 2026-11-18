@@ -62,12 +62,12 @@ namespace Znalica.Domain
 
             if (!record.IsCorrect)
             {
-                _progress[key] = new ItemProgress(0, record.SessionNumber + IntervalsInSessions[0]);
+                _progress[key] = new ItemProgress(0, record.SessionNumber + IntervalsInSessions[0], record.SessionNumber);
                 return;
             }
 
             int box = Math.Min((_progress.TryGetValue(key, out ItemProgress before) ? before.Box : 0) + 1, MaxBox);
-            _progress[key] = new ItemProgress(box, record.SessionNumber + IntervalsInSessions[box]);
+            _progress[key] = new ItemProgress(box, record.SessionNumber + IntervalsInSessions[box], record.SessionNumber);
         }
     }
 }

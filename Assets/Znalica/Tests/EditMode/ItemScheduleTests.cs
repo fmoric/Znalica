@@ -148,5 +148,20 @@ namespace Znalica.Tests.EditMode
             Assert.AreEqual(Dump(applied), Dump(built));
             Assert.AreEqual("A:1+1=?=1/3;A:2+1=?=1/5;A:3+1=?=0/2", Dump(built));
         }
+
+        [Test]
+        public void Apply_RemembersTheSessionOfTheAnswerThatMovedTheItem()
+        {
+            var schedule = new ItemSchedule();
+
+            schedule.Apply(Answer(session: 3, correct: false));
+            Assert.AreEqual(3, schedule.Get(Key("A:8+5=?")).Value.LastSession);
+
+            schedule.Apply(Answer(session: 6, correct: true));
+            Assert.AreEqual(6, schedule.Get(Key("A:8+5=?")).Value.LastSession);
+
+            schedule.Apply(Answer(session: 9, correct: true, attempt: AttemptKind.Retry));
+            Assert.AreEqual(6, schedule.Get(Key("A:8+5=?")).Value.LastSession, "a Retry does not move the item");
+        }
     }
 }

@@ -13,7 +13,9 @@ namespace Znalica.Domain
     /// <item>Fill: items not yet due, lowest box first (a due item over the cap is not fill).</item>
     /// <item>If the round is still short (a profile with few items answered), more new items from the current level.</item>
     /// </list>
-    /// then shuffled, with no item twice. Ties are broken at random, so the same seed gives the same round.
+    /// then shuffled, with no item twice. An item already answered in this session (<see cref="ItemProgress.LastSession"/>)
+    /// is never planned again, so it moves at most one box in a session, however many rounds are played.
+    /// Ties are broken at random, so the same seed gives the same round.
     /// </summary>
     public static class RoundPlanner
     {
@@ -55,7 +57,7 @@ namespace Znalica.Domain
             var scheduled = new List<ScheduledItem>();
             foreach (KeyValuePair<ItemKey, ItemProgress> entry in schedule.Entries.OrderBy(e => e.Key.ToString(), StringComparer.Ordinal))
             {
-                if (set.TryFind(entry.Key, out Item item))
+                if (entry.Value.LastSession != sessionNumber && set.TryFind(entry.Key, out Item item))
                 {
                     scheduled.Add(new ScheduledItem(item, entry.Value));
                 }

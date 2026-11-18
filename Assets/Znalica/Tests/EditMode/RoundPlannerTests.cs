@@ -43,6 +43,15 @@ namespace Znalica.Tests.EditMode
             }
         }
 
+        /// <summary>Brings the item to <paramref name="box"/> with right answers in the sessions up to and including <paramref name="lastSession"/>.</summary>
+        private static void RaiseToBoxIn(ItemSchedule schedule, Item item, int box, int lastSession)
+        {
+            for (int session = lastSession - box + 1; session <= lastSession; session++)
+            {
+                schedule.Apply(TestRecords.Make(sessionNumber: session, itemKey: item.Key.ToString(), isCorrect: true));
+            }
+        }
+
         private static void Miss(ItemSchedule schedule, Item item, int session)
         {
             schedule.Apply(TestRecords.Make(sessionNumber: session, itemKey: item.Key.ToString(), isCorrect: false));
@@ -245,7 +254,7 @@ namespace Znalica.Tests.EditMode
             List<Item> notDue = WithinTen(2);
             foreach (Item item in notDue)
             {
-                Miss(schedule, item, Session);
+                RaiseToBoxIn(schedule, item, 2, Session - 1); // answered last session, due in session 6: fill now
             }
 
             IReadOnlyList<Item> round = PlanWith(FullSet, schedule);
@@ -331,7 +340,7 @@ namespace Znalica.Tests.EditMode
             List<Item> notDue = WithinTen(8);
             foreach (Item item in notDue)
             {
-                Miss(schedule, item, Session); // due next session
+                RaiseToBoxIn(schedule, item, 2, Session - 1); // due in session 6: not yet due, and not answered in this session
             }
 
             IReadOnlyList<Item> round = PlanWith(FullSet, schedule);
@@ -348,16 +357,12 @@ namespace Znalica.Tests.EditMode
             var schedule = new ItemSchedule();
             List<Item> items = WithinTen(9);
 
-            // Three each in box 1, 2 and 3, the last right answer in session 5 (the planning session): not yet due.
+            // Three each in box 2, 3 and 4, the last right answer in session 4: not yet due in session 5 (box 1 is due the
+            // session after its answer, so it is never fill).
             for (int i = 0; i < 9; i++)
             {
-                int box = i / 3 + 1;
-                for (int step = 1; step < box; step++)
-                {
-                    schedule.Apply(TestRecords.Make(sessionNumber: Session - 1, itemKey: items[i].Key.ToString()));
-                }
-
-                schedule.Apply(TestRecords.Make(sessionNumber: Session, itemKey: items[i].Key.ToString()));
+                int box = i / 3 + 2;
+                RaiseToBoxIn(schedule, items[i], box, Session - 1);
                 Assert.AreEqual(box, schedule.Get(items[i].Key).Value.Box);
                 Assert.Greater(schedule.Get(items[i].Key).Value.DueSession, Session);
             }
@@ -366,12 +371,12 @@ namespace Znalica.Tests.EditMode
 
             for (int i = 0; i < 6; i++)
             {
-                Assert.IsTrue(inRound.Contains(items[i].Key), "box " + (i / 3 + 1) + " item fills");
+                Assert.IsTrue(inRound.Contains(items[i].Key), "box " + (i / 3 + 2) + " item fills");
             }
 
             for (int i = 6; i < 9; i++)
             {
-                Assert.IsFalse(inRound.Contains(items[i].Key), "box 3 items are left out");
+                Assert.IsFalse(inRound.Contains(items[i].Key), "box 4 items are left out");
             }
         }
 
@@ -557,6 +562,33 @@ namespace Znalica.Tests.EditMode
                 "the new items come from the next level");
             Assert.IsFalse(round.Any(item => item.Difficulty == Difficulty.WithinTen && !schedule.Get(item.Key).HasValue),
                 "an easy item never answered does not come as new once the level is promoted");
+        }
+
+        [Test]
+        public void Plan_TwoRoundsInOneSession_NeverAskAnItemTwice_AndNoItemClimbsTwo()
+        {
+            var schedule = new ItemSchedule();
+            var log = new InMemoryAnswerLog();
+            var clock = new FixedClock(new System.DateTimeOffset(2026, 11, 17, 10, 30, 0, System.TimeSpan.FromHours(1)));
+
+            HashSet<ItemKey> PlayRound(int seed, string roundId)
+            {
+                IReadOnlyList<Item> planned = RoundPlanner.Plan(FullSet, schedule, 1, new SeededRandom(seed));
+                var session = new RoundSession(planned, log, schedule, clock, 1, roundId);
+                while (session.State != RoundState.Ended)
+                {
+                    session.Submit(Answer.FromNumber(((ArithmeticItem)session.CurrentItem).Solution), 1000);
+                }
+
+                return Keys(planned);
+            }
+
+            HashSet<ItemKey> first = PlayRound(1, "round-1");
+            HashSet<ItemKey> second = PlayRound(2, "round-2");
+
+            Assert.AreEqual(RoundPlanner.RoundSize, second.Count);
+            Assert.IsFalse(second.Overlaps(first), "no item of round 1 comes again in the same session");
+            Assert.IsTrue(schedule.Entries.All(entry => entry.Value.Box == 1), "every item answered moved once: box 1, none in box 2");
         }
 
         [Test]
