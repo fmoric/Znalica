@@ -34,9 +34,9 @@
 - [ ] **Send the hand-off-a-change proof-run fix to the agent-packet library.** *(T8. New 2026-11-18.)* Commit
   `abb78a9` (branch `fix/proof-runs-by-name`) adds to both copies of `hand-off-a-change/SKILL.md` that a developer
   proves tests with runs selected by name, never the unselected suite, and that the brief does not quote the full
-  suite's time; the step 5 developer had run the unselected EditMode suite about 22 times. The library session
-  `ai-agent-templates-01` was not reachable on 2026-11-18, so the fix is local only and the next packet delivery would
-  overwrite it.
+  suite's time; the step 5 developer had run the unselected EditMode suite about 22 times. On 2026-11-18 the library session
+  (now `retire-stale-rule-files`) received it and queued it for the user's decision in ai-agent-templates; the fix is
+  local until it lands there.
 
 ## Done
 
