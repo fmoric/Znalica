@@ -101,6 +101,7 @@ namespace Znalica.Presentation
             profiles = new ProfilesView(
                 catalog,
                 profileStore,
+                problems,
                 volume =>
                 {
                     voice.Volume = volume;
@@ -122,7 +123,7 @@ namespace Znalica.Presentation
                 },
                 ShowStart);
             menuPanel = menu.Build(canvas, _activityPictures);
-            arithmetic = ArithmeticScreen.Create(canvas, catalog, voice, new ArithmeticItemSet(), clock, () => navigator.Show(menuPanel));
+            arithmetic = ArithmeticScreen.Create(canvas, catalog, voice, new ArithmeticItemSet(), clock, problems, () => navigator.Show(menuPanel));
 
             navigator.Add(pickPanel);
             navigator.Add(gateScreen.Panel);

@@ -413,5 +413,26 @@ namespace Znalica.Tests.EditMode
             Assert.IsNull(play.Press(AnswerKey.Confirm));
             Assert.AreEqual(records, _log.ReadAll().Count);
         }
+
+        [Test]
+        public void Press_Confirm_WhenTheLogFails_KeepsTheTypedAnswer_AndGivesNoFeedback()
+        {
+            var failing = new FailingAnswerLog();
+            List<Item> items = Items(2);
+            var play = new ArithmeticPlay(new RoundSession(items, failing, new ItemSchedule(), _clock, 1, "round-1"), _clock);
+            play.Press(Digit(Solution(items[0])));
+
+            failing.FailNext = true;
+            Assert.Throws<System.IO.IOException>(() => play.Press(AnswerKey.Confirm));
+
+            Assert.AreEqual(Solution(items[0]), play.Entered, "the box still holds the answer");
+            Assert.IsNull(play.Feedback);
+            Assert.AreSame(items[0], play.CurrentItem);
+
+            Feedback again = play.Press(AnswerKey.Confirm);
+
+            Assert.AreEqual(FeedbackKind.Praise, again.Kind);
+            Assert.AreSame(items[1], play.CurrentItem);
+        }
     }
 }

@@ -55,6 +55,7 @@ namespace Znalica.Presentation
         private VoicePlayer _voice;
         private IItemSet _items;
         private IClock _clock;
+        private IProblemLog _problems;
         private IAnswerLog _log;
         private ItemSchedule _schedule;
         private int _sessionNumber;
@@ -79,6 +80,7 @@ namespace Znalica.Presentation
             VoicePlayer voice,
             IItemSet items,
             IClock clock,
+            IProblemLog problems,
             Action onStop)
         {
             RectTransform panel = UiBuilder.NewChild("ArithmeticScreen", parent);
@@ -87,6 +89,7 @@ namespace Znalica.Presentation
             screen._voice = voice;
             screen._items = items;
             screen._clock = clock;
+            screen._problems = problems;
             screen._onStop = onStop;
             screen.Build();
             return screen;
@@ -137,7 +140,15 @@ namespace Znalica.Presentation
                 _voice.Stop();
             }
 
-            Feedback feedback = _play.Press(key);
+            Feedback feedback = null;
+            if (!DiskWrite.TryRun(() => feedback = _play.Press(key), _problems, "save the answer"))
+            {
+                // The answer was not kept and nothing moved: the child can press U redu again.
+                Render();
+                _feedback.text = _catalog.Text(PhraseKey.SaveFailed);
+                return;
+            }
+
             if (feedback != null)
             {
                 _voice.Play(_catalog.VoiceClips(feedback.Phrase, feedback.Args));

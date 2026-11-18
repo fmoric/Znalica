@@ -60,5 +60,6 @@
   {"Key": "ButtonYes", "Text": "Da", "Voice": []},
   {"Key": "ButtonNo", "Text": "Ne", "Voice": []},
   {"Key": "VolumeLabel", "Text": "Glasnoća", "Voice": []},
-  {"Key": "VolumeValue", "Text": "{Percent} %", "Voice": []}
+  {"Key": "VolumeValue", "Text": "{Percent} %", "Voice": []},
+  {"Key": "SaveFailed", "Text": "Nije uspjelo spremanje. Pokušaj ponovno.", "Voice": []}
 ] }

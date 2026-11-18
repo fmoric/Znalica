@@ -508,5 +508,31 @@ namespace Znalica.Tests.EditMode
             Assert.AreEqual(0, _schedule.Get(first).Value.Box);
             Assert.AreEqual(RoundState.Ended, round.State);
         }
+
+        [Test]
+        public void Submit_WhenTheLogFails_ChangesNothing_AndTheSameAnswerCanBeGivenAgain()
+        {
+            var failing = new FailingAnswerLog();
+            _log = failing.Inner;
+            List<Item> items = Items(2);
+            var round = new RoundSession(items, failing, _schedule, _clock, 3, "round-1");
+
+            failing.FailNext = true;
+            Assert.Throws<System.IO.IOException>(() => SubmitRight(round));
+
+            Assert.AreEqual(RoundState.AwaitingAnswer, round.State);
+            Assert.AreSame(items[0], round.CurrentItem, "the item is still asked");
+            Assert.AreEqual(AttemptKind.First, round.NextAttempt);
+            Assert.AreEqual(0, round.FirstTimeRightCount);
+            Assert.IsNull(_schedule.Get(items[0].Key), "the schedule did not move");
+            Assert.IsEmpty(_log.ReadAll());
+
+            SubmitRight(round);
+
+            Assert.AreSame(items[1], round.CurrentItem);
+            Assert.AreEqual(1, round.FirstTimeRightCount);
+            Assert.AreEqual(1, _schedule.Get(items[0].Key).Value.Box);
+            Assert.AreEqual(1, _log.ReadAll().Count);
+        }
     }
 }

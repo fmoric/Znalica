@@ -55,6 +55,7 @@ namespace Znalica.Presentation
 
         private readonly PhraseCatalog _catalog;
         private readonly ProfileStore _store;
+        private readonly IProblemLog _problems;
         private readonly Action<float> _volumeChanged;
         private readonly Action _back;
 
@@ -72,10 +73,11 @@ namespace Znalica.Presentation
 
         /// <param name="volumeChanged">Called with the new volume (0.0 to 1.0) each time the parent changes it; the app plays and stores it.</param>
         /// <param name="back">Called by the Natrag button.</param>
-        public ProfilesView(PhraseCatalog catalog, ProfileStore store, Action<float> volumeChanged, Action back)
+        public ProfilesView(PhraseCatalog catalog, ProfileStore store, IProblemLog problems, Action<float> volumeChanged, Action back)
         {
             _catalog = catalog;
             _store = store;
+            _problems = problems;
             _volumeChanged = volumeChanged;
             _back = back;
         }
@@ -293,19 +295,25 @@ namespace Znalica.Presentation
 
         private void ConfirmDelete()
         {
+            bool deleted = true;
             if (_deleting != null)
             {
-                _store.Delete(_deleting);
+                string profileId = _deleting;
+                deleted = DiskWrite.TryRun(() => _store.Delete(profileId), _problems, "delete the profile");
             }
 
             _deleting = null;
             _confirm.gameObject.SetActive(false);
-            if (_editing != null)
+            if (deleted && _editing != null)
             {
                 ResetForm();
             }
 
             RefreshList();
+            if (!deleted)
+            {
+                _message.text = _catalog.Text(PhraseKey.SaveFailed);
+            }
         }
 
         private void Save()
@@ -316,13 +324,28 @@ namespace Znalica.Presentation
                 return;
             }
 
-            if (_editing == null)
+            string editing = _editing;
+            string picture = _selectedPicture;
+            bool saved = DiskWrite.TryRun(
+                () =>
+                {
+                    if (editing == null)
+                    {
+                        _store.Create(name, picture);
+                    }
+                    else
+                    {
+                        _store.Rename(editing, name);
+                    }
+                },
+                _problems,
+                "save the profile");
+            if (!saved)
             {
-                _store.Create(name, _selectedPicture);
-            }
-            else
-            {
-                _store.Rename(_editing, name);
+                // The form keeps what the parent typed, so Spremi can be pressed again.
+                _message.text = _catalog.Text(PhraseKey.SaveFailed);
+                RefreshList();
+                return;
             }
 
             ResetForm();
@@ -350,7 +373,9 @@ namespace Znalica.Presentation
         {
             _volume = VoiceVolume.Clamp(Mathf.Round((_volume + step) * PercentFull) / PercentFull);
             ShowVolume();
-            _volumeChanged(_volume);
+            _message.text = DiskWrite.TryRun(() => _volumeChanged(_volume), _problems, "save the settings")
+                ? string.Empty
+                : _catalog.Text(PhraseKey.SaveFailed);
         }
 
         private void ShowVolume()
