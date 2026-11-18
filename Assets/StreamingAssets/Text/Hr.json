@@ -93,5 +93,16 @@
   {"Key": "ProgressStillMissedTitle", "Text": "Još se griješi (zadnjih 28 dana)", "Voice": []},
   {"Key": "ProgressNoneMissed", "Text": "Nijedan zadatak.", "Voice": []},
   {"Key": "ProgressWeeksTitle", "Text": "Zadnjih šest tjedana", "Voice": []},
-  {"Key": "ProgressWeekRow", "Text": "Tjedan od {Date}: rundi {Rounds}, odgovora {Answers}", "Voice": []}
+  {"Key": "ProgressWeekRow", "Text": "Tjedan od {Date}: rundi {Rounds}, odgovora {Answers}", "Voice": []},
+  {"Key": "ButtonCheck", "Text": "Provjera", "Voice": []},
+  {"Key": "CheckTitle", "Text": "Provjera znanja: {Name}", "Voice": []},
+  {"Key": "ButtonNewCheck", "Text": "Nova provjera", "Voice": []},
+  {"Key": "CheckNoResults", "Text": "Još nema provjera.", "Voice": []},
+  {"Key": "CheckResultFinished", "Text": "{Date}: {Score} od {Total}", "Voice": []},
+  {"Key": "CheckResultUnfinished", "Text": "{Date}: nije završena", "Voice": []},
+  {"Key": "CheckInstructionResult", "Text": "Izračunaj.", "Voice": []},
+  {"Key": "CheckInstructionMissing", "Text": "Upiši broj koji nedostaje.", "Voice": []},
+  {"Key": "CheckInstructionSign", "Text": "Upiši znak: manje, veće ili jednako.", "Voice": []},
+  {"Key": "CheckInstructionNeighbour", "Text": "Koji broj nedostaje u nizu?", "Voice": []},
+  {"Key": "CheckPage", "Text": "Stranica {Page} od {Pages}", "Voice": []}
 ] }

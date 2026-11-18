@@ -141,10 +141,10 @@ namespace Znalica.Presentation
         private void BuildForm(RectTransform panel)
         {
             _name = UiBuilder.NewInputField("Name", panel, _catalog.Text(PhraseKey.ProfileNamePlaceholder), FieldFontSize, ProfileName.MaxLength);
-            Place(_name.GetComponent<RectTransform>(), FormLeft, FormTop, FormWidth, FieldHeight);
+            UiBuilder.PlaceTopLeft(_name.GetComponent<RectTransform>(), FormLeft, FormTop, FormWidth, FieldHeight);
 
             RectTransform pictures = UiBuilder.NewChild("Pictures", panel);
-            Place(pictures, FormLeft, FormTop + FieldHeight + 30f, FormWidth, PickSize + 20f);
+            UiBuilder.PlaceTopLeft(pictures, FormLeft, FormTop + FieldHeight + 30f, FormWidth, PickSize + 20f);
             for (int i = 0; i < ProfilePictures.Ids.Count; i++)
             {
                 BuildPictureChoice(pictures, ProfilePictures.Ids[i], i);
@@ -152,10 +152,10 @@ namespace Znalica.Presentation
 
             _message = UiBuilder.NewLabel("Message", panel, string.Empty, MessageFontSize);
             _message.alignment = TextAlignmentOptions.MidlineLeft;
-            Place(_message.rectTransform, FormLeft, FormTop + FieldHeight + PickSize + 70f, FormWidth, 60f);
+            UiBuilder.PlaceTopLeft(_message.rectTransform, FormLeft, FormTop + FieldHeight + PickSize + 70f, FormWidth, 60f);
 
             RectTransform save = UiBuilder.NewButton("Save", panel, _catalog.Text(PhraseKey.ButtonSave), SaveFontSize, Save);
-            Place(save, FormLeft, FormTop + FieldHeight + PickSize + 150f, SaveWidth, SaveHeight);
+            UiBuilder.PlaceTopLeft(save, FormLeft, FormTop + FieldHeight + PickSize + 150f, SaveWidth, SaveHeight);
         }
 
         private void BuildPictureChoice(RectTransform parent, string pictureId, int index)
@@ -190,14 +190,14 @@ namespace Znalica.Presentation
         {
             TextMeshProUGUI label = UiBuilder.NewLabel("VolumeLabel", panel, _catalog.Text(PhraseKey.VolumeLabel), VolumeFontSize);
             label.alignment = TextAlignmentOptions.MidlineLeft;
-            Place(label.rectTransform, FormLeft, VolumeTop, 300f, VolumeStepButton);
+            UiBuilder.PlaceTopLeft(label.rectTransform, FormLeft, VolumeTop, 300f, VolumeStepButton);
 
             RectTransform down = UiBuilder.NewButton("VolumeDown", panel, "-", VolumeFontSize, () => ChangeVolume(-VolumeStep));
-            Place(down, FormLeft + 320f, VolumeTop, VolumeStepButton, VolumeStepButton);
+            UiBuilder.PlaceTopLeft(down, FormLeft + 320f, VolumeTop, VolumeStepButton, VolumeStepButton);
             _volumeText = UiBuilder.NewLabel("VolumeValue", panel, string.Empty, VolumeFontSize);
-            Place(_volumeText.rectTransform, FormLeft + 320f + VolumeStepButton + 10f, VolumeTop, 200f, VolumeStepButton);
+            UiBuilder.PlaceTopLeft(_volumeText.rectTransform, FormLeft + 320f + VolumeStepButton + 10f, VolumeTop, 200f, VolumeStepButton);
             RectTransform up = UiBuilder.NewButton("VolumeUp", panel, "+", VolumeFontSize, () => ChangeVolume(VolumeStep));
-            Place(up, FormLeft + 320f + VolumeStepButton + 220f, VolumeTop, VolumeStepButton, VolumeStepButton);
+            UiBuilder.PlaceTopLeft(up, FormLeft + 320f + VolumeStepButton + 220f, VolumeTop, VolumeStepButton, VolumeStepButton);
         }
 
         private void BuildConfirm(RectTransform panel)
@@ -223,15 +223,6 @@ namespace Znalica.Presentation
             button.anchorMin = button.anchorMax = new Vector2(0.5f, 0.5f);
             button.sizeDelta = new Vector2(ConfirmButtonWidth, ConfirmButtonHeight);
             button.anchoredPosition = new Vector2(x, -120f);
-        }
-
-        /// <summary>Anchors the rectangle to the panel's top left, at the given offset and size.</summary>
-        private static void Place(RectTransform rect, float left, float top, float width, float height)
-        {
-            rect.anchorMin = rect.anchorMax = new Vector2(0f, 1f);
-            rect.pivot = new Vector2(0f, 1f);
-            rect.sizeDelta = new Vector2(width, height);
-            rect.anchoredPosition = new Vector2(left, -top);
         }
 
         private void RefreshList()

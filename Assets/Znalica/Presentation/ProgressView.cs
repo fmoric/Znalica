@@ -33,6 +33,7 @@ namespace Znalica.Presentation
         private const float BackHeight = 110f;
         private const float BackMargin = 50f;
         private const float BackFontSize = 48f;
+        private const float CheckGap = 30f;
         private const int PercentFull = 100;
         private const string WeekDateFormat = "dd.MM.";
 
@@ -47,17 +48,21 @@ namespace Znalica.Presentation
         private readonly IClock _clock;
         private readonly Dictionary<Activity, IItemSet> _itemSets = new Dictionary<Activity, IItemSet>();
         private readonly Action _back;
+        private readonly Action<Profile> _showCheck;
 
+        private Profile _profile;
         private TextMeshProUGUI _title;
         private RectTransform _columns;
 
         /// <param name="itemSets">The item sets of the three activities, to turn an item key into the text shown for it.</param>
         /// <param name="back">Called by the Natrag button.</param>
-        public ProgressView(PhraseCatalog catalog, IClock clock, IEnumerable<IItemSet> itemSets, Action back)
+        /// <param name="showCheck">Called with the profile shown when the Provjera button is pressed; the app opens its school-like checks.</param>
+        public ProgressView(PhraseCatalog catalog, IClock clock, IEnumerable<IItemSet> itemSets, Action back, Action<Profile> showCheck)
         {
             _catalog = catalog;
             _clock = clock;
             _back = back;
+            _showCheck = showCheck;
             foreach (IItemSet set in itemSets)
             {
                 _itemSets[set.Activity] = set;
@@ -95,12 +100,16 @@ namespace Znalica.Presentation
             back.pivot = new Vector2(0f, 0f);
             back.sizeDelta = new Vector2(BackWidth, BackHeight);
             back.anchoredPosition = new Vector2(BackMargin, BackMargin);
+
+            RectTransform check = UiBuilder.NewButton("Check", panel, _catalog.Text(PhraseKey.ButtonCheck), BackFontSize, () => _showCheck(_profile));
+            UiBuilder.PlaceBottom(check, 0f, BackMargin + BackWidth + CheckGap, BackMargin, BackWidth, BackHeight);
             return panel;
         }
 
         /// <summary>Works the profile's progress out from its answer log and draws it. Call before the screen is shown.</summary>
         public void Begin(Profile profile, IAnswerLog log)
         {
+            _profile = profile;
             _title.text = _catalog.Text(PhraseKey.ProgressTitle, new Dictionary<string, string> { { "Name", profile.DisplayName } });
             IReadOnlyList<AnswerRecord> records = log.ReadAll();
             IReadOnlyList<ProgressReport> reports = ProgressCalculator.For(records, ItemSchedule.Build(records), _clock.Now);

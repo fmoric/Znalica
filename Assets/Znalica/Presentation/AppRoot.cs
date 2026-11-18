@@ -47,6 +47,8 @@ namespace Znalica.Presentation
             GateScreen gateScreen = null;
             ProfilesView profiles = null;
             ProgressView progress = null;
+            CheckResultsView checkResults = null;
+            SchoolCheckScreen schoolCheck = null;
             ArithmeticScreen arithmetic = null;
             ComparisonScreen comparison = null;
             NumberLineScreen numberLine = null;
@@ -54,6 +56,7 @@ namespace Znalica.Presentation
             RectTransform menuPanel = null;
             RectTransform profilesPanel = null;
             RectTransform progressPanel = null;
+            RectTransform checkResultsPanel = null;
 
             // The picked profile's answer log and session number, fixed when the profile is picked.
             IAnswerLog activeLog = null;
@@ -124,8 +127,36 @@ namespace Znalica.Presentation
                 catalog,
                 clock,
                 new IItemSet[] { new ArithmeticItemSet(), new ComparisonItemSet(), new NumberLineItemSet() },
-                () => navigator.Show(profilesPanel));
+                () => navigator.Show(profilesPanel),
+                shown =>
+                {
+                    checkResults.Begin(shown, profileStore.CheckLog(shown.ProfileId));
+                    navigator.Show(checkResultsPanel);
+                });
             progressPanel = progress.Build(canvas);
+
+            // Back from the list of checks returns to the progress screen it was opened from, as that screen does to the profiles screen.
+            checkResults = new CheckResultsView(
+                catalog,
+                shown =>
+                {
+                    schoolCheck.Begin(shown, profileStore.CheckLog(shown.ProfileId));
+                    navigator.Show(schoolCheck.Panel);
+                },
+                () => navigator.Show(progressPanel));
+            checkResultsPanel = checkResults.Build(canvas);
+
+            // The worksheet ends, finished or left, at the list, which then shows the check as it stands in the log.
+            schoolCheck = SchoolCheckScreen.Create(
+                canvas,
+                catalog,
+                clock,
+                problems,
+                () =>
+                {
+                    checkResults.Reload();
+                    navigator.Show(checkResultsPanel);
+                });
 
             var menu = new ActivityMenuView(
                 catalog,
@@ -160,6 +191,8 @@ namespace Znalica.Presentation
             navigator.Add(gateScreen.Panel);
             navigator.Add(profilesPanel);
             navigator.Add(progressPanel);
+            navigator.Add(checkResultsPanel);
+            navigator.Add(schoolCheck.Panel);
             navigator.Add(menuPanel);
             navigator.Add(arithmetic.Panel);
             navigator.Add(comparison.Panel);
