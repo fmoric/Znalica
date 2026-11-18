@@ -94,6 +94,9 @@ Tools: <each MCP server in the developer's tools: list, and what to use it for>.
 Shared with other work: <"nothing: no other run or agent is active" | "nothing shared with <the run or agent>" |
 "<what you share> with <the run or agent>; take turns by <the lock or cap a gate rule of the project records>">.
 Tests: <what each new test proves, and that it fails on a broken implementation>.
+Proof runs: select the tests by name (the runner's filter), one mutation at a time if you like. The test command
+with no selection is a full-suite run however fast it is, and needs the user's yes for that run (`AGENTS.md`):
+never use it to prove a test.
 Review: do not request a code review; the main session sends it when your final rebased commit lands, and that
 review is the one `self_review` asks for on this code.
 Rebase: after your last commit for the task, and before the pre-check, rebase onto the latest default branch once;
@@ -125,6 +128,9 @@ covered and the log file it wrote and, for the pre-check, what it selected, how 
 estimate and time against its budget, the default-branch commit you rebased onto, the files changed, what you verified and what you left
 unverified.
 ```
+
+Do not quote the full suite's measured time in the developer's brief: a fast full suite reads as an invitation
+to run it. The time belongs in the ask to the user (step 2).
 
 Before you start a developer, or a run of your own, while another run or agent is active (a full suite, a batch, a
 second developer in its own worktree), name what the two would share: a test server, a test database, a build output,
@@ -168,7 +174,8 @@ reviewed. <Wording-only fixes, with a run of yours still going:>
 Commit nothing until your runs end.
 Then: <if a run failed: re-run the failing tests by name until they pass, and report any that passed with nothing
 changed (`AGENTS.md`);> <for code fixes: compile, prove each new or changed test — it passes as is and fails with
-its fix reverted; a test changed with no fix to revert (a stale expectation, a fixture, a rename) is run once, and
+its fix reverted, each run selected by name, never the unselected test command; a test changed with no fix to
+revert (a stale expectation, a fixture, a rename) is run once, and
 you say why — and commit as before, without rebasing. Do not run the pre-check or the full suite: these fixes
 are reviewed first, and I will ask for the runs when that review passes. | for wording-only fixes: commit, then
 pre-commit's checks.>
