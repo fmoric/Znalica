@@ -57,9 +57,10 @@ namespace Znalica.Presentation
             return screen;
         }
 
-        /// <summary>Redraws the gate as it stands. Call before the screen is shown.</summary>
+        /// <summary>Empties the answer box and redraws the gate as it stands. Call before the screen is shown.</summary>
         public void Begin()
         {
+            _gate.ClearEntry();
             _last = GateResult.Typing;
             Render();
         }

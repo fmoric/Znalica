@@ -219,5 +219,19 @@ namespace Znalica.Tests.EditMode
 
             return new PhraseCatalog(entries, new CollectingProblemLog());
         }
+
+        [Test]
+        public void ClearEntry_EmptiesTheBox_AndKeepsTheTriesAndTheWait()
+        {
+            Answer(WrongAnswer());
+            Answer(WrongAnswer());
+            _gate.Press(AnswerKey.Digit4);
+            Assert.IsTrue(_gate.Entered.HasValue);
+
+            _gate.ClearEntry();
+
+            Assert.IsFalse(_gate.Entered.HasValue);
+            Assert.AreEqual(GateResult.Locked, Answer(WrongAnswer()), "the two wrong answers still count: the third starts the wait");
+        }
     }
 }

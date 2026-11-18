@@ -61,6 +61,12 @@ namespace Znalica.Domain
             return challenge.Answer == answer;
         }
 
+        /// <summary>Empties the answer box, for when the child leaves the gate half-way through typing. The wait and the tries are kept.</summary>
+        public void ClearEntry()
+        {
+            _entry.Clear();
+        }
+
         /// <summary>Applies a pad button or key: digits and Erase edit the box, Confirm gives the answer.</summary>
         public GateResult Press(AnswerKey key)
         {
