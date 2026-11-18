@@ -47,6 +47,8 @@ namespace Znalica.Presentation
             GateScreen gateScreen = null;
             ProfilesView profiles = null;
             ArithmeticScreen arithmetic = null;
+            ComparisonScreen comparison = null;
+            NumberLineScreen numberLine = null;
             RectTransform pickPanel = null;
             RectTransform menuPanel = null;
             RectTransform profilesPanel = null;
@@ -120,16 +122,32 @@ namespace Znalica.Presentation
                         arithmetic.Begin(activeLog, activeSession);
                         navigator.Show(arithmetic.Panel);
                     }
+                    else if (picked == PhraseKey.ActivityNameComparison)
+                    {
+                        comparison.Begin(activeLog, activeSession);
+                        navigator.Show(comparison.Panel);
+                    }
+                    else if (picked == PhraseKey.ActivityNameNumberLine)
+                    {
+                        numberLine.Begin(activeLog, activeSession);
+                        navigator.Show(numberLine.Panel);
+                    }
                 },
                 ShowStart);
             menuPanel = menu.Build(canvas, _activityPictures);
             arithmetic = ArithmeticScreen.Create(canvas, catalog, voice, new ArithmeticItemSet(), clock, problems, () => navigator.Show(menuPanel));
+
+            comparison = ComparisonScreen.Create(canvas, catalog, voice, new ComparisonItemSet(), clock, problems, () => navigator.Show(menuPanel));
+
+            numberLine = NumberLineScreen.Create(canvas, catalog, voice, new NumberLineItemSet(), clock, problems, () => navigator.Show(menuPanel));
 
             navigator.Add(pickPanel);
             navigator.Add(gateScreen.Panel);
             navigator.Add(profilesPanel);
             navigator.Add(menuPanel);
             navigator.Add(arithmetic.Panel);
+            navigator.Add(comparison.Panel);
+            navigator.Add(numberLine.Panel);
             ShowStart();
         }
 

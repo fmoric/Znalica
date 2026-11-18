@@ -8,8 +8,8 @@ using Znalica.Domain;
 namespace Znalica.Presentation
 {
     /// <summary>
-    /// The on-screen number pad (digits, Obriši, U redu) and the keys that stand for its buttons. The arithmetic screen
-    /// and the parent gate both enter numbers this way; what a button does is the caller's, through one callback.
+    /// The on-screen number pad (digits, Obriši, U redu) and the keys that stand for its buttons. The arithmetic and number-line screens
+    /// and the parent gate all enter numbers this way; what a button does is the caller's, through one callback.
     /// </summary>
     internal static class NumberPad
     {
@@ -74,6 +74,24 @@ namespace Znalica.Presentation
             Digit(pad, 0, press);
             UiBuilder.NewButton("Ok", pad, catalog.Text(PhraseKey.ButtonOk), WordFontSize, () => press(AnswerKey.Confirm));
             return pad;
+        }
+
+        /// <summary>
+        /// Passes this frame's key presses to <paramref name="press"/>. Enter goes on after a second wrong answer, as the Dalje
+        /// button does: <paramref name="awaitsContinue"/> is asked at each press, since a press can change it.
+        /// </summary>
+        public static void HandleKeys(Func<bool> awaitsContinue, Action<AnswerKey> press)
+        {
+            Keyboard keyboard = Keyboard.current;
+            if (keyboard == null)
+            {
+                return;
+            }
+
+            foreach (AnswerKey pressed in KeysPressed(keyboard))
+            {
+                press(pressed == AnswerKey.Confirm && awaitsContinue() ? AnswerKey.Continue : pressed);
+            }
         }
 
         /// <summary>

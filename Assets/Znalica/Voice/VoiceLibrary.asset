@@ -19,8 +19,20 @@ MonoBehaviour:
     Clip: {fileID: 8300000, guid: 32c9a6b08faf6a046acca820f81d9f5b, type: 3}
   - Name: ActivityNameNumberLine
     Clip: {fileID: 8300000, guid: fa54e9061c4bc26408ac6d0b0fd7d2d8, type: 3}
+  - Name: Behind
+    Clip: {fileID: 8300000, guid: 856cf223f5c5e244aa0d114fc3746fb9, type: 3}
+  - Name: Here
+    Clip: {fileID: 8300000, guid: db8497859f6dace4f895fa7184c68dd3, type: 3}
+  - Name: InFrontOf
+    Clip: {fileID: 8300000, guid: 9c4938b90bd281b419ebba2ed81e48a8, type: 3}
+  - Name: InOrder
+    Clip: {fileID: 8300000, guid: 40feab0b47fd81e4e986ac628b31d56b, type: 3}
   - Name: Is
     Clip: {fileID: 8300000, guid: 739cbaf94feb7ff40a7dc946844cfb93, type: 3}
+  - Name: LessThan
+    Clip: {fileID: 8300000, guid: bf536a25a40b6224ebc0684cb99ed5c3, type: 3}
+  - Name: MoreThan
+    Clip: {fileID: 8300000, guid: da6f038bef958c7428a0021e7279a72a, type: 3}
   - Name: Number00
     Clip: {fileID: 8300000, guid: cfb9fa134f38d624facc5e2779f9e869, type: 3}
   - Name: Number01
@@ -65,7 +77,11 @@ MonoBehaviour:
     Clip: {fileID: 8300000, guid: a97a9171f8efbe4409a749df5023bcb7, type: 3}
   - Name: PraiseRight
     Clip: {fileID: 8300000, guid: e580d9a5b8863134cb39537deda33951, type: 3}
+  - Name: SameAs
+    Clip: {fileID: 8300000, guid: 3ddc43118cd93ab469d2984d381aca52, type: 3}
   - Name: ThenLess
     Clip: {fileID: 8300000, guid: 411b2f7e6629427396ef07580ed808bf, type: 3}
   - Name: ThenMore
     Clip: {fileID: 8300000, guid: 9ec247b94e2295a479d38ce7d47203e3, type: 3}
+  - Name: There
+    Clip: {fileID: 8300000, guid: 52c8c01288c1abd4ebcf985714314064, type: 3}

@@ -17,7 +17,7 @@
   manual player checks are still to do. Open question Q4 (pacing of new items) was settled on 2026-11-18. Steps 4
   and 5 (profiles, the parent gate, answers saved to disk; missed items return next session) merged in PR #6 on
   2026-11-18; their manual player checks are still to do. **In progress:** steps 6 and 7 (Veće, manje, jednako and
-  Brojevna crta; branch `feat/comparison-and-number-line`).
+  Brojevna crta; branch `feat/comparison-and-number-line`). Both are committed; their review and test gates are next.
 - [ ] **Make the Unity commands in `AGENTS.md` run on a machine where `Unity.exe` is not on PATH.** *(T5. New
   2026-11-16.)* The build and test commands call a bare `Unity.exe`; on this PC the editor is at
   `C:\Program Files\Unity\Hub\Editor\6000.3.28f1\Editor\Unity.exe` and not on PATH, so the developer had to call it
@@ -31,15 +31,19 @@
   changes, and both were reverted by hand. The repository has no `.gitattributes`.
   - **Fix direction:** a `.gitattributes` that fixes the line endings of Unity's text assets, so a build leaves them
     unchanged.
-- [ ] **Send the hand-off-a-change proof-run fix to the agent-packet library.** *(T8. New 2026-11-18.)* Commit
-  `abb78a9` (branch `fix/proof-runs-by-name`) adds to both copies of `hand-off-a-change/SKILL.md` that a developer
-  proves tests with runs selected by name, never the unselected suite, and that the brief does not quote the full
-  suite's time; the step 5 developer had run the unselected EditMode suite about 22 times. The library session
-  `ai-agent-templates-01` was not reachable on 2026-11-18, so the fix is local only and the next packet delivery would
-  overwrite it.
+- [ ] **Merge the round code the three activity screens copy.** *(T9. New 2026-11-18.)* `ArithmeticScreen`,
+  `ComparisonScreen` and `NumberLineScreen` each carry near-identical `Begin`, `BeginRound`, save-failure handling,
+  Next/Replay buttons and key loop; the steps 6+7 code review raised it, and the product owner deferred it on
+  2026-11-18 so that PR did not rewrite untested Presentation code. Do it before a fourth activity screen adds a
+  fourth copy; the Računanje do 20 manual check then needs repeating.
 
 ## Done
 
+- [x] **Send the hand-off-a-change proof-run fix to the agent-packet library.** *(T8. Done 2026-11-18.)* Commit
+  `abb78a9` (merged in PR #7) told the developer to prove tests with runs selected by name, never the unselected
+  suite, after the step 5 developer had run the unselected EditMode suite about 22 times. The library merged the same
+  fix in its PR #411 as version 0.197.2 on 2026-11-18, so the next re-delivery brings the same text; the local copy
+  stays until then.
 - [x] **Trust the project folder in Copilot CLI.** *(T2. Done 2026-11-16.)* Added
   `C:\Users\filip.moric\Documents\GitHub\Znalica` to `~/.copilot/config.json` `trustedFolders`.
 - [x] **~~Rename the project folder to `znalica`.~~** *(T1. Dropped 2026-11-16.)* The folder keeps `Znalica`,
