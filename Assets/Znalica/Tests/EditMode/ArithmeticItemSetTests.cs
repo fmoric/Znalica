@@ -217,5 +217,24 @@ namespace Znalica.Tests.EditMode
 
             Assert.IsFalse(item.IsCorrect(default));
         }
+
+        [Test]
+        public void FactId_IsTheSameForTheFourFormsAndThreeUnknownsOfAFact_AndDiffersBetweenFacts()
+        {
+            string[] ofEightAndFive =
+            {
+                "A:8+5=?", "A:8+?=13", "A:?+5=13", "A:5+8=?", "A:5+?=13", "A:?+8=13",
+                "A:13-5=?", "A:13-?=8", "A:?-5=8", "A:13-8=?", "A:13-?=5", "A:?-8=5",
+            };
+
+            foreach (string key in ofEightAndFive)
+            {
+                Assert.IsTrue(Set.TryFind(Key(key), out Item item), key);
+                Assert.AreEqual("5+8=13", item.FactId, key);
+            }
+
+            Set.TryFind(Key("A:8+6=?"), out Item other);
+            Assert.AreEqual("6+8=14", other.FactId);
+        }
     }
 }

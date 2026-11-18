@@ -34,7 +34,7 @@ namespace Znalica.Tests.EditMode
 
         private ArithmeticPlay Play(IReadOnlyList<Item> items)
         {
-            return new ArithmeticPlay(new RoundSession(items, _log, _clock, 1, "round-1"), _clock);
+            return new ArithmeticPlay(new RoundSession(items, _log, new ItemSchedule(), _clock, 1, "round-1"), _clock);
         }
 
         private static AnswerKey Digit(int digit)
