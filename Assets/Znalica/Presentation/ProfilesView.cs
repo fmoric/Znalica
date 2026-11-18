@@ -21,13 +21,13 @@ namespace Znalica.Presentation
         private const float ListLeft = 60f;
         private const float ListTop = 170f;
         private const float ListWidth = 900f;
-        private const float RowHeight = 190f;
+        private const float RowHeight = 124f;
         private const float RowSpacing = 14f;
         private const float RowPictureSize = 110f;
-        private const float RowNameFontSize = 48f;
+        private const float RowNameFontSize = 44f;
         private const float RowButtonWidth = 230f;
-        private const float RowButtonHeight = 70f;
-        private const float RowNameHeight = 90f;
+        private const float RowButtonHeight = 60f;
+        private const float RowNameHeight = 56f;
         private const float RowButtonFontSize = 34f;
         private const float FormLeft = 1020f;
         private const float FormWidth = 840f;
