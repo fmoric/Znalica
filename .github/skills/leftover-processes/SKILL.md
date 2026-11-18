@@ -18,6 +18,8 @@ session-start hook's output, so on Copilot this skill is how the report is run.
    `powershell -NoProfile -ExecutionPolicy RemoteSigned -File .claude/scripts/leftover_processes.ps1`
    - No script at that path: the search guard was not delivered here. Say so and stop.
    - Add `-MinutesOld <n>` to change the age threshold (default 10 minutes).
+   - Add `-Also python,postgres` to watch more names for this run: a stopped test run's `python.exe` or
+     `postgres.exe` is not watched by default (0.197.4).
 2. **Show the user the table as printed:** PID, name, age, handles, memory and command line. Each tree starts with
    the process whose parent is gone; the rows under it say `[under <PID>]`, the process that started them. A command
    line *"not readable from this shell"* usually means the process runs elevated. Point at any entry that may be the

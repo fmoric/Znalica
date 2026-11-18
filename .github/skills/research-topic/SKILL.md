@@ -26,6 +26,11 @@ Where you can suggest likely answers, ask through the question tool (`AskUserQue
 (`discussion_first`) — and always keep the free answer so the user can steer.
 
 ## 2 — Gather and verify (primary sources first)
+**First, the knowledge store** *(0.197.1)*: run `knowledge-exchange` Step SEARCH for the topic; prior work it
+finds is reused as that step says. If the store lacks the topic and the brief will not be finished this session,
+file the gap as the `knowledge-before-framework-code` skill's *File the gap* says. If a request was filed, step 5
+passes its id where the contribute tool takes one, so the article closes it.
+
 Search the web, then fetch and read the **primary/official sources** (standards, official docs, RFCs,
 government/regulator portals, first-party API docs) over blogs and summaries. Pull the real values from the
 source. Every claim is either **verified against a cited source** or explicitly **flagged as unverified /

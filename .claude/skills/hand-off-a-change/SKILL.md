@@ -129,8 +129,8 @@ estimate and time against its budget, the default-branch commit you rebased onto
 unverified.
 ```
 
-Do not quote the full suite's measured time in the developer's brief: a fast full suite reads as an invitation
-to run it. The time belongs in the ask to the user (step 2).
+Do not quote the full suite's measured time in the developer's brief: a fast full suite reads as an invitation to
+run it. The time belongs in the ask to the user (step 2).
 
 Before you start a developer, or a run of your own, while another run or agent is active (a full suite, a batch, a
 second developer in its own worktree), name what the two would share: a test server, a test database, a build output,
@@ -153,6 +153,12 @@ reported while a background command of its own was still running.
 
 ## 2. To the code-reviewer — round one
 
+**Build the caller list before you send it** (0.199.1). The code-reviewer holds no `serena` (it has no read-only
+mode), so without your list its caller search is text search or a graph built before the change. Where `serena` is
+connected, run `find_referencing_symbols` yourself for each symbol whose signature or behaviour the change alters,
+and paste the result. Without it, search the text yourself and write *"text search, a graph query not run"*; where
+`graphify` is connected, add that the reviewer queries it and whether its graph predates the change.
+
 ```text
 Review <commit range> on branch <branch> (PR #<n>). You have no shell: the diff is at <absolute path to the diff
 file>.
@@ -160,6 +166,7 @@ Changed files: <list>.
 What it is for: <the problem and the fix, two or three sentences>. Already accepted by the user, do not flag: <…>.
 Look hard at: <the risky parts>.
 Tools: <each MCP server in the code-reviewer's tools: list, and what to use it for>.
+Callers of the changed symbols: <symbol: callers, from <the query, named> | text search, a graph query not run>.
 Report findings by severity with file:line, and state what you examined.
 ```
 
@@ -174,8 +181,7 @@ reviewed. <Wording-only fixes, with a run of yours still going:>
 Commit nothing until your runs end.
 Then: <if a run failed: re-run the failing tests by name until they pass, and report any that passed with nothing
 changed (`AGENTS.md`);> <for code fixes: compile, prove each new or changed test — it passes as is and fails with
-its fix reverted, each run selected by name, never the unselected test command; a test changed with no fix to
-revert (a stale expectation, a fixture, a rename) is run once, and
+its fix reverted, each run selected by name, never the unselected test command; a test changed with no fix to revert (a stale expectation, a fixture, a rename) is run once, and
 you say why — and commit as before, without rebasing. Do not run the pre-check or the full suite: these fixes
 are reviewed first, and I will ask for the runs when that review passes. | for wording-only fixes: commit, then
 pre-commit's checks.>
@@ -210,6 +216,7 @@ Second round, only what the fixes changed: <range>, diff at <absolute path>. Cha
 The fixes answer: <numbered list of the round-one findings and the failed tests they answer>.
 The developer's proof of each changed test: <how each was shown to fail without its fix, or, for one run once,
 why>.
+<If a fix changed a symbol's signature or behaviour:> Callers of the symbols a fix changed: <as in round one>.
 Check each was done correctly, that each proof holds, and that nothing else changed.
 Report findings by severity with file:line, and state what you examined.
 ```

@@ -23,7 +23,10 @@ the verified code ends. **A subagent's "cited" is a lead, not your citation:** o
 it. A behaviour you reverse-engineered from source earlier this session is never "already confirmed".
 
 **Silent is not unreachable.** Consulted and genuinely silent → reasoning from source is legitimate; tag the
-answer (`task_assessment`). Unreachable — the server absent or disconnected, the docs will not load → name it,
-and try the authoritative docs before you reason from source.
+answer (`task_assessment`). **If a connected tool's description says it files research requests or knowledge
+gaps, file the gap once, as a generic request with no client, ticket or personal detail, and name it in your
+reply** — `discussion_first` exempts it from a yes. No such tool, as in a read-only agent: name the gap and your
+searches in your report, for your caller to file. Unreachable — the server absent or disconnected, the docs
+will not load → name it, and try the authoritative docs before you reason from source.
 
 Full procedure: `.claude/skills/knowledge-before-framework-code/SKILL.md` (Copilot: `.github/skills/knowledge-before-framework-code/SKILL.md`).

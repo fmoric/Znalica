@@ -326,7 +326,7 @@ function ConvertTo-WindowsArgument([string]$Arg) {
 }
 
 function Invoke-HookShape([string]$Exe, [string[]]$Arguments, [string]$Cwd, [string]$ProjectDir, [string]$Payload,
-                          [string]$PathOverride) {
+                          [string]$PathOverride, [string]$HookDepth) {
     # $ProjectDir empty = Copilot CLI: no CLAUDE_PROJECT_DIR in the hook's environment.
     $psi = New-Object Diagnostics.ProcessStartInfo
     $psi.FileName = $Exe
@@ -340,6 +340,9 @@ function Invoke-HookShape([string]$Exe, [string[]]$Arguments, [string]$Cwd, [str
     if ($ProjectDir) { $psi.EnvironmentVariables['CLAUDE_PROJECT_DIR'] = $ProjectDir }
     else { $psi.EnvironmentVariables.Remove('CLAUDE_PROJECT_DIR') }
     if ($PathOverride) { $psi.EnvironmentVariables['PATH'] = $PathOverride }
+    # Copilot CLI 1.0.112 sets COPILOT_HOOK_DEPTH for the hooks it runs (measured 2026-11-18); nothing else does.
+    if ($HookDepth) { $psi.EnvironmentVariables['COPILOT_HOOK_DEPTH'] = $HookDepth }
+    else { $psi.EnvironmentVariables.Remove('COPILOT_HOOK_DEPTH') }
     try { $p = [Diagnostics.Process]::Start($psi) } catch { return @{ Code = 'not started'; Out = ''; Err = "$_" } }
     $out = $p.StandardOutput.ReadToEndAsync()
     $err = $p.StandardError.ReadToEndAsync()
@@ -410,12 +413,16 @@ if (-not $source -or -not ($source.Commands -match 'search_guard\.ps1')) {
             }
             $shapes += @{ Label = 'copilot, powershell, no CLAUDE_PROJECT_DIR'; Exe = $exe; Args = @('-NoProfile', '-Command', $command)
                           Cwd = $copilotCwd; Dir = ''; Payload = $he.Copilot; Expect = 'nothing' }
+            # Copilot CLI 1.0.112: CLAUDE_PROJECT_DIR set, run from the project, COPILOT_HOOK_DEPTH set (2026-11-18).
+            $shapes += @{ Label = 'copilot 1.0.112, powershell, CLAUDE_PROJECT_DIR and COPILOT_HOOK_DEPTH set'; Exe = $exe
+                          Args = @('-NoProfile', '-Command', $command); Cwd = $hookProject; Dir = $hookProject
+                          Payload = $he.Copilot; Expect = 'nothing'; Depth = '1' }
             if ($pwsh) {
                 $shapes += @{ Label = 'copilot, pwsh, no CLAUDE_PROJECT_DIR'; Exe = $pwsh; Args = @('-NoProfile', '-Command', $command)
                               Cwd = $copilotCwd; Dir = ''; Payload = $he.Copilot; Expect = 'nothing' }
             }
             foreach ($s in $shapes) {
-                $r = Invoke-HookShape $s.Exe $s.Args $s.Cwd $s.Dir $s.Payload $s.Path
+                $r = Invoke-HookShape $s.Exe $s.Args $s.Cwd $s.Dir $s.Payload $s.Path $s.Depth
                 if ($s.Expect -eq 'nothing') { $got = if ($r.Out) { $r.Out } else { 'nothing' } }
                 elseif ($s.Expect -eq 'deny') {
                     $got = 'junk'
@@ -461,6 +468,10 @@ if (-not (Test-Path -LiteralPath $reportScript)) {
         [pscustomobject]@{ ProcessId = $Id; ParentProcessId = $Parent; Name = $Name; CreationDate = $now.AddMinutes(-$AgeMin)
                            HandleCount = 100; WorkingSetSize = 1MB; CommandLine = $Cmd }
     }
+    # 0.197.4: -Also adds names to the watch list (a stopped test run's python.exe or postgres.exe).
+    $names = @(Add-WatchedNames @('find.exe') @('python', 'Postgres.exe,node', 'bad name', 'find', 'x;y'))
+    Write-Result "[report] -Also adds names with .exe, splits on commas, skips unsafe names and duplicates" `
+        (($names -join ' ') -eq 'find.exe python.exe Postgres.exe node.exe') "(got $($names -join ' '))"
     # name, watched candidates, live parents (PID -> start), every live process, expected: trees, flagged trees,
     # PIDs the stop line must name ('' = no stop line), PIDs it must not name
     $job = 'sh C:/Users/U/AppData/Local/Temp/claude/C--Development-Other/1234/scratchpad/suite/run_segments.sh'

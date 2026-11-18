@@ -53,6 +53,10 @@ withheld by design is not one that went missing.
 each changed function (`get_neighbors`), which the *Duplication* and *Seams* checks below need. It is read-only,
 and you hold only its graph tools. A graph built before the change cannot show the change's own callers: a
 changed function missing from it means the graph is stale — say so, and never conclude that nothing calls it.
+**A caller claim is checked by the graph, not by text** *(0.197.3)*: before a verdict or finding says *"the only
+caller"*, *"nothing else uses X"* or *"unused"*, run `get_neighbors` on it where `graphify` is connected, and name
+the query in the verdict. Text search alone carries the tag *"text search, a graph query not run"* beside that
+claim: a reviewer told to use the graph wrote *"Grep showed a single call site"* instead (Znalica, 2026-11-18).
 
 ## What to review
 

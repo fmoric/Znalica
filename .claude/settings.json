@@ -17,7 +17,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "powershell -NoProfile -ExecutionPolicy Bypass -Command 'if ($env:CLAUDE_PROJECT_DIR) { & (Join-Path $env:CLAUDE_PROJECT_DIR .claude/scripts/search_guard.ps1) }'; exit 0",
+            "command": "powershell -NoProfile -ExecutionPolicy Bypass -Command 'if ($env:CLAUDE_PROJECT_DIR -and -not $env:COPILOT_HOOK_DEPTH) { & (Join-Path $env:CLAUDE_PROJECT_DIR .claude/scripts/search_guard.ps1) }'; exit 0",
             "timeout": 15,
             "statusMessage": "Checking for unbounded searches"
           }
@@ -40,7 +40,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "powershell -NoProfile -ExecutionPolicy Bypass -Command 'if ($env:CLAUDE_PROJECT_DIR) { & (Join-Path $env:CLAUDE_PROJECT_DIR .claude/scripts/leftover_processes.ps1) -Hook }'; exit 0",
+            "command": "powershell -NoProfile -ExecutionPolicy Bypass -Command 'if ($env:CLAUDE_PROJECT_DIR -and -not $env:COPILOT_HOOK_DEPTH) { & (Join-Path $env:CLAUDE_PROJECT_DIR .claude/scripts/leftover_processes.ps1) -Hook }'; exit 0",
             "timeout": 30
           }
         ]
@@ -66,6 +66,28 @@
             "timeout": 20
           }
         ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "async": true,
+            "command": "powershell -NoProfile -ExecutionPolicy Bypass -Command 'if ($env:CLAUDE_PROJECT_DIR -and -not $env:COPILOT_HOOK_DEPTH) { & (Join-Path $env:CLAUDE_PROJECT_DIR .claude/scripts/activity_log.ps1) }'; exit 0",
+            "timeout": 15
+          }
+        ]
+      }
+    ],
+    "SubagentStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "async": true,
+            "command": "powershell -NoProfile -ExecutionPolicy Bypass -Command 'if ($env:CLAUDE_PROJECT_DIR -and -not $env:COPILOT_HOOK_DEPTH) { & (Join-Path $env:CLAUDE_PROJECT_DIR .claude/scripts/activity_log.ps1) }'; exit 0",
+            "timeout": 15
+          }
+        ]
       }
     ]
   },
@@ -89,6 +111,9 @@
     "trace-before-you-claim": "name-only",
     "mcp-server-setup": "name-only",
     "pre-commit": "name-only",
-    "hand-off-a-change": "name-only"
+    "hand-off-a-change": "name-only",
+    "list-pending-work": "name-only",
+    "work-while-waiting": "name-only",
+    "work-monitor": "name-only"
   }
 }

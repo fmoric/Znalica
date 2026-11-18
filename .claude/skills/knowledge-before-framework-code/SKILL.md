@@ -87,6 +87,21 @@ source-derived belief is never "already confirmed."
 - **Consulted and genuinely silent** (the article or doc has nothing on it): reasoning from source is
   legitimate — but **tag the answer** (`task_assessment` → "tag the answer, don't stop"): say you derived the
   behaviour from source, unverified against a curated source. Never present it as established fact.
+- **File the gap** *(0.197.1)*: if a connected tool's description says it files research requests or knowledge
+  gaps (on the reference knowledge server, `propose_research`), file one for what was missing, with the arguments
+  that description names. The searches you tried are the failed queries.
+  - **Once per gap.** If a tool lists open requests (the reference server's `get_research`), check it first and
+    file nothing when the gap is already there. One request per missing topic, not per sub-question.
+  - **Generic, as for a documentation server** (below): the topic, the context and the queries name the library,
+    platform or behaviour, never a client, a person, a ticket, internal host names or code. Every client of the
+    store reads the request, and the agent cannot withdraw it. `client_confidentiality` and `ticket_systems`
+    still apply where delivered.
+  - **No yes needed:** `discussion_first`'s outward-facing clause names this exemption. Name the request in your
+    reply, with its id where the tool returns one, so the user sees it and a later article can cite it (the
+    reference server's `propose_article` takes a `request_id`).
+  - **No such tool — a read-only agent, or a store without one:** put the gap and the searches you tried in your
+    report. A caller that receives such a gap files it as above. With no tool anywhere, the tag above still
+    applies.
 - **Unreachable** (the knowledge MCP is disconnected or absent, or the docs won't load): this is **not** "the
   source has nothing." Name the server and what you saw: absent from your tools, or loaded with its calls
   failing. Find the cause before you name a fix *(0.159.1)*. A missing program, a dead endpoint, an unset

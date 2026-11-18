@@ -40,6 +40,10 @@ Work from a spec, and stay in your lane — **implementation**:
    call `activate_project` with the repository path, retry, and say which of the three you were in.
    **Where a code-graph server (`graphify`) is connected, ask it who calls what** (`get_neighbors`) and how two
    parts connect (`shortest_path`); it matches names, not types, so confirm a surprising link in the code.
+   **A caller claim is checked by a symbol or graph query, not by text** *(0.197.3)*: before a report or a design
+   says *"the only caller"*, *"nothing else uses X"* or *"unused"*, run `find_referencing_symbols` (`serena`) or
+   `get_neighbors` (`graphify`) where one is connected, and name the query. Text search alone carries the tag
+   *"text search, a graph query not run"* beside that claim.
    While locating code, identify the project's existing linter/analyzer config for the affected
    app or package; read applicable rules before writing rather than learning them from failures.
    Do not assume a particular linter is installed just because this packet mentions it.

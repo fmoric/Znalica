@@ -24,7 +24,11 @@
 # Source: the ai-agent-templates developer packet (packets/developer/hooks/search-guard/), search_guard option.
 # Tests: tests/test_search_guard.ps1 ([report] cases). Needs Windows PowerShell 5.1 or later. Keep this file ASCII.
 
-param([switch]$Hook, [int]$MinutesOld = 10)
+# -Also python,postgres adds names to the watch list for this run (0.197.4): a stopped test run's python.exe or
+# postgres.exe is not an agent tool, so it is not watched by default, and a by-hand check otherwise needs a CIM query
+# that an auto-mode classifier may refuse. ".exe" is added when missing; a name with anything but letters, digits,
+# '.', '-' or '_' is skipped. The session-start hook never passes it.
+param([switch]$Hook, [int]$MinutesOld = 10, [string[]]$Also = @())
 
 $ErrorActionPreference = 'Stop'
 # Run as a script (not dot-sourced by the tests): whatever fails, exit 0. A hook that exits non-zero shows an error
@@ -39,6 +43,23 @@ $Watched = @('find.exe', 'grep.exe', 'du.exe', 'rg.exe', 'bash.exe', 'sh.exe', '
     'Microsoft.Dynamics.Nav.EditorServices.Host.exe')
 # Console hosts sit under almost every console process; a child of these names is not a sign of work.
 $NotWork = @('conhost.exe', 'OpenConsole.exe')
+
+# The watch list plus -Also's names, normalised: each split on commas, trimmed, ".exe" added, unsafe names dropped
+# (they go into a WMI filter), duplicates of a watched name ignored.
+function Add-WatchedNames([string[]]$Base, [string[]]$Extra) {
+    $out = [System.Collections.Generic.List[string]]::new()
+    foreach ($b in $Base) { $out.Add($b) }
+    foreach ($e in $Extra) {
+        foreach ($n in ($e -split ',')) {
+            $n = $n.Trim()
+            if (-not $n -or $n -notmatch '^[A-Za-z0-9._-]+$') { continue }
+            if ($n -notmatch '(?i)\.exe$') { $n += '.exe' }
+            if (-not ($out | Where-Object { $_ -ieq $n })) { $out.Add($n) }
+        }
+    }
+    return @($out)
+}
+$Watched = Add-WatchedNames $Watched $Also
 $SessionFolder = '(?i)[\\/]Temp[\\/]claude[\\/]'
 
 # The classification, kept free of process calls so the tests can feed it any shape.
@@ -204,9 +225,10 @@ function Invoke-LeftoverReport {
     $report = ''
     try {
         if ($Hook) {
-            # Copilot CLI also runs the entries in .claude/settings.json (since 1.0.12); there the entry does nothing
-            # without CLAUDE_PROJECT_DIR. As a second line, a payload in Copilot's own shape (no hook_event_name)
-            # skips the scan: Copilot ignores what a session-start hook prints.
+            # Copilot CLI also runs the entries in .claude/settings.json (since 1.0.12); there the entry's gate does
+            # nothing (no CLAUDE_PROJECT_DIR before 1.0.112, COPILOT_HOOK_DEPTH set from 1.0.112). As a second line, a
+            # payload in Copilot's own shape (no hook_event_name) skips the scan: Copilot ignores what a session-start
+            # hook prints. 1.0.112 sends a Claude-shaped payload, so this second line no longer catches it there.
             $payload = ''
             try { $payload = [Console]::In.ReadToEnd() } catch { }
             if ($payload -notmatch '"hook_event_name"') { exit 0 }

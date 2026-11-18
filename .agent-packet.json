@@ -1,6 +1,6 @@
 {
   "plugin": "ai-agent-templates",
-  "version": "0.195.16",
+  "version": "0.199.3",
   "packet": "developer",
   "language": "other",
   "options": {
@@ -17,7 +17,8 @@
     "integration_branch": false,
     "git_guard": false,
     "search_guard": true,
-    "full_suite_guard": false
+    "full_suite_guard": false,
+    "activity_log": true
   },
   "placeholders": {
     "PROJECT_NAME": "Znalica",
@@ -31,7 +32,7 @@
     "TEST_GLOB": "Assets/Tests/**/*.cs"
   },
   "rule_decisions": [],
-  "delivered": "2026-11-17",
+  "delivered": "2026-11-18",
   "files": {
     ".claude/skills/discussion/SKILL.md": {
       "hash": "2b2b3d7a10d9e7eb6b6b13b904ba26152d4402d5",
@@ -42,12 +43,12 @@
       "template": "2b2b3d7a10d9e7eb6b6b13b904ba26152d4402d5"
     },
     ".claude/skills/research-topic/SKILL.md": {
-      "hash": "1f353714b99aca9dd988354b7d6b4ff62631ea57",
-      "template": "1f353714b99aca9dd988354b7d6b4ff62631ea57"
+      "hash": "fb5b9612fa2adad4e5291efad8d2dda67f45f6d4",
+      "template": "fb5b9612fa2adad4e5291efad8d2dda67f45f6d4"
     },
     ".github/skills/research-topic/SKILL.md": {
-      "hash": "1f353714b99aca9dd988354b7d6b4ff62631ea57",
-      "template": "1f353714b99aca9dd988354b7d6b4ff62631ea57"
+      "hash": "fb5b9612fa2adad4e5291efad8d2dda67f45f6d4",
+      "template": "fb5b9612fa2adad4e5291efad8d2dda67f45f6d4"
     },
     ".claude/skills/clarify/SKILL.md": {
       "hash": "54daf9db3331ce18eb3a8605fe79dc9a4344d622",
@@ -194,12 +195,12 @@
       "template": "54b588bb9da1ffb3bbc9db2688c1577ec19b9f6a"
     },
     ".claude/skills/knowledge-before-framework-code/SKILL.md": {
-      "hash": "329430aac8a90a424832718b285b97d4e0b15d78",
-      "template": "329430aac8a90a424832718b285b97d4e0b15d78"
+      "hash": "f5acc68743de0c64bedff1111b2ece076b7b8202",
+      "template": "f5acc68743de0c64bedff1111b2ece076b7b8202"
     },
     ".github/skills/knowledge-before-framework-code/SKILL.md": {
-      "hash": "329430aac8a90a424832718b285b97d4e0b15d78",
-      "template": "329430aac8a90a424832718b285b97d4e0b15d78"
+      "hash": "f5acc68743de0c64bedff1111b2ece076b7b8202",
+      "template": "f5acc68743de0c64bedff1111b2ece076b7b8202"
     },
     ".claude/skills/task-assessment/SKILL.md": {
       "hash": "1ff633bc149b633cebaabbaa86c3291ba16081ee",
@@ -210,12 +211,12 @@
       "template": "1ff633bc149b633cebaabbaa86c3291ba16081ee"
     },
     ".claude/skills/discussion-first/SKILL.md": {
-      "hash": "2764bce57b4c0bcd574826a08fd6ca29a6f8b928",
-      "template": "2764bce57b4c0bcd574826a08fd6ca29a6f8b928"
+      "hash": "2ba131e14e83c072aa859bd31d3731062902a4e4",
+      "template": "2ba131e14e83c072aa859bd31d3731062902a4e4"
     },
     ".github/skills/discussion-first/SKILL.md": {
-      "hash": "2764bce57b4c0bcd574826a08fd6ca29a6f8b928",
-      "template": "2764bce57b4c0bcd574826a08fd6ca29a6f8b928"
+      "hash": "2ba131e14e83c072aa859bd31d3731062902a4e4",
+      "template": "2ba131e14e83c072aa859bd31d3731062902a4e4"
     },
     ".claude/skills/self-review/SKILL.md": {
       "hash": "1849a7edf624f31e4d9d0e3198fe555595d3cd8c",
@@ -294,8 +295,8 @@
       "template": "b8b0bbdcc7ef6d769b5f5adb4456ceb5488df41d"
     },
     "docs/rules-rationale/list_pending_work.md": {
-      "hash": "e7a69389d25cd953e9e9bc5a02097255cc1054d7",
-      "template": "e7a69389d25cd953e9e9bc5a02097255cc1054d7"
+      "hash": "0b3ba9cb91d42e552d3d43216b9f78b62517fc57",
+      "template": "0b3ba9cb91d42e552d3d43216b9f78b62517fc57"
     },
     "docs/rules-rationale/mcp_server_setup.md": {
       "hash": "80471796c8f3a54c776eec6462b598d88863e2b4",
@@ -354,8 +355,8 @@
       "template": "5bd088669c9041435582c4b88fface914fa1247e"
     },
     "docs/rules-rationale/work_while_waiting.md": {
-      "hash": "40b21901180e08cb4acf27ec420dd9326a44e7c2",
-      "template": "40b21901180e08cb4acf27ec420dd9326a44e7c2"
+      "hash": "cc97dd568007450afe51c434fa659dff176a5d81",
+      "template": "cc97dd568007450afe51c434fa659dff176a5d81"
     },
     "docs/rules-rationale/write_for_the_reader.md": {
       "hash": "0da3099b1792dbb7e512d400232a2eb4b27c95a2",
@@ -374,20 +375,20 @@
       "template": "a7beee3e4461a8cee63a7729534deb16568a6a06"
     },
     ".claude/agents/developer.md": {
-      "hash": "a074bc2476c97e2b28947f9d5afaf2557dac6b04",
-      "template": "a074bc2476c97e2b28947f9d5afaf2557dac6b04"
+      "hash": "0f3466d38cc364a6ac3d0405a0873578aa33fc91",
+      "template": "0f3466d38cc364a6ac3d0405a0873578aa33fc91"
     },
     ".github/agents/developer.agent.md": {
-      "hash": "61fc531af70387982dc988bdab85600a488db2f6",
-      "template": "61fc531af70387982dc988bdab85600a488db2f6"
+      "hash": "a14d19c95bfec78668fe2429ee1d209b0b9321a3",
+      "template": "a14d19c95bfec78668fe2429ee1d209b0b9321a3"
     },
     ".claude/agents/code-reviewer.md": {
-      "hash": "c395b12ede3e5b06d345157c65d8d029466c0243",
-      "template": "c395b12ede3e5b06d345157c65d8d029466c0243"
+      "hash": "ed4ec031c6fccea5dc65587567c8a8b48077b7ee",
+      "template": "ed4ec031c6fccea5dc65587567c8a8b48077b7ee"
     },
     ".github/agents/code-reviewer.agent.md": {
-      "hash": "eaabd37d9de094dc5b9828decb5da50e3874b329",
-      "template": "eaabd37d9de094dc5b9828decb5da50e3874b329"
+      "hash": "50ff494e5b9af78472d6b8c89de8dd73197f7bba",
+      "template": "50ff494e5b9af78472d6b8c89de8dd73197f7bba"
     },
     ".claude/agents/reader.md": {
       "hash": "5347d6d057bc87dca26b9fc2d0817eb62c34dfdb",
@@ -442,8 +443,8 @@
       "template": "7ce57ddeee3a9ab79eacdc11e3cdbaff0b4666c3"
     },
     "AGENTS.md": {
-      "hash": "70c55b4100f890a2136a9ceec78bfeef752d3b35",
-      "template": "70c55b4100f890a2136a9ceec78bfeef752d3b35"
+      "hash": "56702dbc0eb929745ce67621574c7d52a8de99f4",
+      "template": "56702dbc0eb929745ce67621574c7d52a8de99f4"
     },
     ".github/copilot-instructions.md": {
       "hash": "1ada9d53cf61194443a92083979aad84df232566",
@@ -458,12 +459,12 @@
       "template": "c5c9ed3eceed7cea9e24937468300e0af4e70ed5"
     },
     ".claude/skills/review/SKILL.md": {
-      "hash": "e18e508e34927776286fb2de0f7b5edaa65993c1",
-      "template": "e18e508e34927776286fb2de0f7b5edaa65993c1"
+      "hash": "7f375176898039c2180ccb479eb17a60fb3e1596",
+      "template": "7f375176898039c2180ccb479eb17a60fb3e1596"
     },
     ".github/skills/review/SKILL.md": {
-      "hash": "e18e508e34927776286fb2de0f7b5edaa65993c1",
-      "template": "e18e508e34927776286fb2de0f7b5edaa65993c1"
+      "hash": "7f375176898039c2180ccb479eb17a60fb3e1596",
+      "template": "7f375176898039c2180ccb479eb17a60fb3e1596"
     },
     ".claude/skills/review/references/security-lens.md": {
       "hash": "309d9c13de3fbd6ac4a27fc3850e7af5428e3250",
@@ -530,12 +531,12 @@
       "template": "9064ed0089b3b15e862ae34eb44bd2b94d89653b"
     },
     ".claude/skills/hand-off-a-change/SKILL.md": {
-      "hash": "80422f0d810fa5a022eb696d0049a5d662ef9260",
-      "template": "80422f0d810fa5a022eb696d0049a5d662ef9260"
+      "hash": "132d36201a4dd8b1419fb4239d1b7c044b840db8",
+      "template": "132d36201a4dd8b1419fb4239d1b7c044b840db8"
     },
     ".github/skills/hand-off-a-change/SKILL.md": {
-      "hash": "80422f0d810fa5a022eb696d0049a5d662ef9260",
-      "template": "80422f0d810fa5a022eb696d0049a5d662ef9260"
+      "hash": "132d36201a4dd8b1419fb4239d1b7c044b840db8",
+      "template": "132d36201a4dd8b1419fb4239d1b7c044b840db8"
     },
     ".claude/skills/retro/SKILL.md": {
       "hash": "f6443f563adb196718b49e5a6c4e76c4a190eaf5",
@@ -554,12 +555,12 @@
       "template": "f4bfdce40100f45c42691ed9588da9691899d8c8"
     },
     ".claude/skills/leftover-processes/SKILL.md": {
-      "hash": "ed412d3dc800946a120b24ff770751787d6b3190",
-      "template": "ed412d3dc800946a120b24ff770751787d6b3190"
+      "hash": "7de71201bd08bda8651634f0c2bde86711d620ca",
+      "template": "7de71201bd08bda8651634f0c2bde86711d620ca"
     },
     ".github/skills/leftover-processes/SKILL.md": {
-      "hash": "ed412d3dc800946a120b24ff770751787d6b3190",
-      "template": "ed412d3dc800946a120b24ff770751787d6b3190"
+      "hash": "7de71201bd08bda8651634f0c2bde86711d620ca",
+      "template": "7de71201bd08bda8651634f0c2bde86711d620ca"
     },
     "docs/rules-rationale/look_before_you_write.md": {
       "hash": "435f3d6c8270715dad8b16aa4deafee1f213c68b",
@@ -570,28 +571,68 @@
       "template": "67c25161c283d1bea89f07f2ad1e14fd076f25ed"
     },
     ".claude/scripts/leftover_processes.ps1": {
-      "hash": "d52643690183aea6d7f140fbf1958f4f416dcacd",
-      "template": "d52643690183aea6d7f140fbf1958f4f416dcacd"
+      "hash": "6eb32103720084184db0ddd8aac01d2e261a239a",
+      "template": "6eb32103720084184db0ddd8aac01d2e261a239a"
     },
     ".claude/scripts/tests/test_search_guard.ps1": {
-      "hash": "508f3eb54532edad9b3d34645b54e6348a5aecf6",
-      "template": "508f3eb54532edad9b3d34645b54e6348a5aecf6"
+      "hash": "ba043aca56c53b9c9438c5a4eaf9c73c3533cb26",
+      "template": "ba043aca56c53b9c9438c5a4eaf9c73c3533cb26"
     },
     ".github/hooks/search-guard.json": {
       "hash": "34bad448646c3f95ddb4e20069f0bd856a9e5469",
       "template": "34bad448646c3f95ddb4e20069f0bd856a9e5469"
     },
     ".claude/scripts/SEARCH-GUARD.md": {
-      "hash": "b33d3b80509556167865d0d82864803b3f194f07",
-      "template": "b33d3b80509556167865d0d82864803b3f194f07"
+      "hash": "fba1c54044e52d5f948457c654fc6f96edc605be",
+      "template": "fba1c54044e52d5f948457c654fc6f96edc605be"
     },
     ".mcp.json": {
       "hash": "8728b28009f25d8df4cd37f2cf7e337091f5660a",
       "template": "8728b28009f25d8df4cd37f2cf7e337091f5660a"
     },
     "MCP-SETUP.md": {
-      "hash": "13c90c14256f3d71cea0d5a8375d391b8db495f4",
-      "template": "13c90c14256f3d71cea0d5a8375d391b8db495f4"
+      "hash": "9fda52449bf2a544adbc41909499370db048429e",
+      "template": "9fda52449bf2a544adbc41909499370db048429e"
+    },
+    ".claude/skills/list-pending-work/SKILL.md": {
+      "hash": "c2257f3245d13bfd5e02394861f75a252bd3dbb6",
+      "template": "c2257f3245d13bfd5e02394861f75a252bd3dbb6"
+    },
+    ".github/skills/list-pending-work/SKILL.md": {
+      "hash": "c2257f3245d13bfd5e02394861f75a252bd3dbb6",
+      "template": "c2257f3245d13bfd5e02394861f75a252bd3dbb6"
+    },
+    ".claude/skills/work-while-waiting/SKILL.md": {
+      "hash": "0e5eb97d709c769c9cfa5eada3f3a6fe30f3d79f",
+      "template": "0e5eb97d709c769c9cfa5eada3f3a6fe30f3d79f"
+    },
+    ".github/skills/work-while-waiting/SKILL.md": {
+      "hash": "0e5eb97d709c769c9cfa5eada3f3a6fe30f3d79f",
+      "template": "0e5eb97d709c769c9cfa5eada3f3a6fe30f3d79f"
+    },
+    ".claude/skills/work-monitor/SKILL.md": {
+      "hash": "a7b38477fc54dfb7f01f6642046001d05eb3f4e6",
+      "template": "a7b38477fc54dfb7f01f6642046001d05eb3f4e6"
+    },
+    ".github/skills/work-monitor/SKILL.md": {
+      "hash": "a7b38477fc54dfb7f01f6642046001d05eb3f4e6",
+      "template": "a7b38477fc54dfb7f01f6642046001d05eb3f4e6"
+    },
+    ".claude/scripts/activity_log.ps1": {
+      "hash": "886c92cda9fdb2f3246e0ed2c4642b9664e1e93f",
+      "template": "886c92cda9fdb2f3246e0ed2c4642b9664e1e93f"
+    },
+    ".claude/scripts/tests/test_activity_log.ps1": {
+      "hash": "169256055f56486b494aab5032db28336304b087",
+      "template": "169256055f56486b494aab5032db28336304b087"
+    },
+    ".github/hooks/activity-log.json": {
+      "hash": "d824aaafb0d658f876a27a006186ebc6e2527e61",
+      "template": "d824aaafb0d658f876a27a006186ebc6e2527e61"
+    },
+    ".claude/scripts/ACTIVITY-LOG.md": {
+      "hash": "ad42ffd1d2f3936c36c21a17595c2220c3c8915f",
+      "template": "ad42ffd1d2f3936c36c21a17595c2220c3c8915f"
     }
   },
   "preflight": {
@@ -605,13 +646,13 @@
       "outcome": "present",
       "runtime_version": "2.1.0",
       "version_check": "serena 2.1.0 — latest on PyPI",
-      "project_setup": "done"
+      "project_setup": "skipped"
     },
     "graphify": {
       "check": "uv --version",
       "outcome": "present",
       "runtime_version": "uv 0.10.6",
-      "project_setup": "done"
+      "project_setup": "skipped"
     }
   }
 }
