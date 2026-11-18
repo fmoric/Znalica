@@ -575,11 +575,14 @@ need only step 3b). Parallel work goes in a separate worktree, as `AGENTS.md` �
   and the round-end (AC2) are not spoken by step 3b: `InstructionArithmetic` and a round-end phrase have no clips yet. They
   are added once the voice method is chosen.
 
-- **Q4 — Pacing of new items. Open, a product decision due before step 5.** With "at most 4 new items per round, easiest
+- **Q4 — Pacing of new items. Resolved 2026-11-18 by the product owner: option (a).** New items come from the next
+  `Difficulty` level once at least 80% of the current level's facts are in box 3 or higher; until then they come from
+  the current level, easiest first, as before. The 80% is one named constant, a proposal like the R6 constants; (b) was
+  not chosen. Step 5 builds it. The reasoning that led there: with "at most 4 new items per round, easiest
   first" (*Approach* 7), the `WithinTen` pool is 66 ordered pairs with a sum of 10 or less, times 2 operations times 3
   unknown positions = 396 items, so at 4 new items a round it takes about 100 rounds before the first
   `BeyondTenWithoutCrossing` or `CrossingTen` item can be new. Until step 5, `RoundPlanner` never leaves `WithinTen`, so step 3b's
-  screen shows nothing beyond 10. Options named by the code review, none chosen: (a) promote a level once most of its
+  screen shows nothing beyond 10. The options the code review named: (a) promote a level once most of its
   facts are in box 3 or higher; (b) cap new items per unknown form so a round does not spend its new slots on one form.
   The count of 396 is the review's; it matches 66 x 6 from the enumeration in `ArithmeticItemSet` and is pinned by `ArithmeticItemSetTests.All_HoldsThreeHundredNinetySixWithinTenItems`.
 
