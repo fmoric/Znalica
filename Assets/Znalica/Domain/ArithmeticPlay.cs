@@ -1,6 +1,4 @@
-using System;
 using System.Collections.Generic;
-using System.Globalization;
 
 namespace Znalica.Domain
 {
@@ -15,43 +13,34 @@ namespace Znalica.Domain
     /// <item>After a second wrong answer the digits and Confirm do nothing: only <see cref="AnswerKey.Continue"/> goes on
     /// to the next item. A repeated click on the pad's U redu therefore cannot skip the explanation unseen.</item>
     /// </list>
-    /// The response time of an answer runs from when its item was last put in front of the child (the round start,
-    /// the previous answer, or Continue) to the Confirm.
+    /// The response time is <see cref="RoundPlay"/>'s.
     /// </summary>
     public sealed class ArithmeticPlay
     {
-        private readonly RoundSession _session;
-        private readonly IClock _clock;
+        private readonly RoundPlay _play;
         private AnswerEntry _entry = new AnswerEntry();
-        private DateTimeOffset _shownAt;
 
         public ArithmeticPlay(RoundSession session, IClock clock)
         {
-            _session = session ?? throw new ArgumentNullException(nameof(session));
-            _clock = clock ?? throw new ArgumentNullException(nameof(clock));
-            _shownAt = clock.Now;
+            _play = new RoundPlay(session, clock);
         }
 
         /// <summary>The item to draw, or null once the round has ended.</summary>
-        public Item CurrentItem => _session.CurrentItem;
+        public Item CurrentItem => _play.CurrentItem;
 
         /// <summary>The number typed so far, or null while the box is empty.</summary>
         public int? Entered => _entry.Value;
 
         /// <summary>The feedback to keep on screen: praise or an explanation; null at the start and after Continue.</summary>
-        public Feedback Feedback { get; private set; }
+        public Feedback Feedback => _play.Feedback;
 
-        public bool IsEnded => _session.State == RoundState.Ended;
+        public bool IsEnded => _play.IsEnded;
 
         /// <summary>True after a second wrong answer to an item: only going on is left, and the screen shows the Dalje button.</summary>
-        public bool AwaitsContinue => _session.State == RoundState.ShowingExplanation && !_session.CanRetry;
+        public bool AwaitsContinue => _play.AwaitsContinue;
 
         /// <summary>The round-end screen's numbers, for the <c>Right</c> and <c>Total</c> slots of its phrase.</summary>
-        public IReadOnlyDictionary<string, string> SummaryArgs => new Dictionary<string, string>
-        {
-            { "Right", _session.FirstTimeRightCount.ToString(CultureInfo.InvariantCulture) },
-            { "Total", _session.PlannedCount.ToString(CultureInfo.InvariantCulture) },
-        };
+        public IReadOnlyDictionary<string, string> SummaryArgs => _play.SummaryArgs;
 
         /// <summary>Does what the key means. Returns the feedback this press produced, or null if it produced none.</summary>
         public Feedback Press(AnswerKey key)
@@ -65,9 +54,7 @@ namespace Znalica.Domain
             {
                 if (key == AnswerKey.Continue)
                 {
-                    _session.Continue();
-                    Feedback = null;
-                    _shownAt = _clock.Now;
+                    _play.Continue();
                 }
 
                 return null;
@@ -78,9 +65,9 @@ namespace Znalica.Domain
                 return null;
             }
 
-            if (key != AnswerKey.Confirm && Feedback != null && Feedback.Kind == FeedbackKind.Praise)
+            if (key != AnswerKey.Confirm)
             {
-                Feedback = null;
+                _play.ClearPraise();
             }
 
             if (key >= AnswerKey.Digit0 && key <= AnswerKey.Digit9)
@@ -105,13 +92,9 @@ namespace Znalica.Domain
                 return null;
             }
 
-            DateTimeOffset now = _clock.Now;
-            double elapsed = Math.Max(0, (now - _shownAt).TotalMilliseconds);
-            AttemptOutcome outcome = _session.Submit(Answer.FromNumber(_entry.Value.Value), (int)Math.Min(elapsed, int.MaxValue));
+            Feedback feedback = _play.Submit(Answer.FromNumber(_entry.Value.Value));
             _entry = new AnswerEntry();
-            _shownAt = now;
-            Feedback = outcome.IsCorrect ? Feedback.Praise(outcome.PraisePhrase.Value) : Feedback.Explain(outcome.Explanation);
-            return Feedback;
+            return feedback;
         }
     }
 }
