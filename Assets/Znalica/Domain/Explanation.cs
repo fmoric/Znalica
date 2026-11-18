@@ -16,13 +16,14 @@ namespace Znalica.Domain
     /// </summary>
     public sealed class Explanation
     {
-        public Explanation(ExplanationKind kind, PhraseKey phrase, int start, int change, int end)
+        public Explanation(ExplanationKind kind, PhraseKey phrase, int start, int change, int end, bool backwards)
         {
             Kind = kind;
             Phrase = phrase;
             Start = start;
             Change = change;
             End = end;
+            Backwards = backwards;
         }
 
         public ExplanationKind Kind { get; }
@@ -38,6 +39,12 @@ namespace Znalica.Domain
 
         /// <summary>Where the jump lands.</summary>
         public int End { get; }
+
+        /// <summary>
+        /// True for a jump back (a subtraction). Kept apart from the sign of <see cref="Change"/>, because taking 0 away
+        /// is still a jump back and has no sign to show it.
+        /// </summary>
+        public bool Backwards { get; }
 
         /// <summary>
         /// The arguments for the phrase's text and voice slots. A spoken number is a bare numeral, so

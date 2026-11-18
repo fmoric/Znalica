@@ -38,5 +38,10 @@
   {"Key": "Number19", "Text": "devetnaest", "Voice": ["Number19"]},
   {"Key": "Number20", "Text": "dvadeset", "Voice": ["Number20"]},
   {"Key": "ExplainJumpBack", "Text": "{Start}, pa manje za {Change}, to je {End}.", "Voice": ["{Start}", "ThenLess", "{Change}", "Is", "{End}"]},
-  {"Key": "ThenLess", "Text": "pa manje za", "Voice": ["ThenLess"]}
+  {"Key": "ThenLess", "Text": "pa manje za", "Voice": ["ThenLess"]},
+  {"Key": "ButtonErase", "Text": "Obriši", "Voice": []},
+  {"Key": "ButtonOk", "Text": "U redu", "Voice": []},
+  {"Key": "ButtonPlayAgain", "Text": "Igraj opet", "Voice": []},
+  {"Key": "ButtonStop", "Text": "Završi", "Voice": []},
+  {"Key": "RoundEndScore", "Text": "{Right} / {Total}", "Voice": []}
 ] }

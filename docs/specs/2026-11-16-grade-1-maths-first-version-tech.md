@@ -410,8 +410,8 @@ line, snapped to the nearest whole number; ordering answers are clicks in order 
    crash.
 5. **One folder per profile.** Progress never mixes (FS:113), and deleting a profile is deleting one folder (AC13).
 6. **uGUI with TextMeshPro, one scene.** `ScreenNavigator` shows one panel at a time; feedback is drawn inside the
-   activity panel (FS:92). *Considered:* UI Toolkit — fine for menus and the pad, less direct for the animated
-   number-line jump; one UI system for everything is simpler. A Canvas Scaler set to scale with screen size at a
+   activity panel (FS:92). *Considered:* UI Toolkit — fine for menus and the pad, less direct for the number-line
+   jump; one UI system for everything is simpler. The jump is drawn static, at once, with no animation (step 3b). A Canvas Scaler set to scale with screen size at a
    1920×1080 reference keeps targets large; buttons start at the 2 cm the touch guidance gives for under-nines, applied
    to the mouse by analogy (the functional spec's open question 2).
 7. **Easy first, few new items per round.** At most 4 new items per round keeps new load small; the difficulty order
@@ -463,6 +463,40 @@ Each step is a vertical slice for one session, names its check, and lists what b
    *Check:* a round played with the mouse only and one with the keys only; a wrong answer shows and speaks the jump
    before the retry.
    *Blocked by:* 2, 3a.
+   **Step 3b findings (2026-11-17; by EditMode tests, a batch build and a throwaway editor probe that drove the screen's
+   code; the screen was not seen, so its manual checks are open).** Built as specified, with these choices where the spec
+   was silent, each open to the product owner or the next step: (1) **Where the rules sit.** `ArithmeticPlay`, with
+   `AnswerKey` (pad button or key) and `Feedback`, in `Znalica.Domain`: what a key does to the answer box, when an answer
+   is given, the feedback that follows, the response time (from the moment the item was last put in front of the child),
+   and the round-end numbers. `ArithmeticScreen` (Presentation) only draws it and maps buttons and keys to `AnswerKey`.
+   `ItemFormatter` is in `Znalica.Domain` and returns tokens (`8`, `+`, `5`, `=`, the unknown), so the screen can draw
+   the unknown as a box; it formats arithmetic items only and shows `−` (U+2212). The progress view's use of keys is not
+   built, since it has no caller yet. `SystemClock` is added to Domain (the real `IClock`). (2) **Keys and the second
+   wrong answer.** Enter (also the numpad's) confirms; after a second wrong answer Enter goes on, as the *Dalje* button does,
+   so a round can be played from the keyboard alone. **The pad's *U redu* does not continue** (it does nothing then, and
+   the pad is not interactable), so a double-click on it cannot skip the second explanation unseen; at most one Confirm
+   is handled per frame. Going on stops the explanation's voice. The round-end buttons are mouse only. (3) **Feedback has no timer.**
+   Praise stays beside the next item until the first key press of the next answer clears it; an explanation stays until the retry is answered or *Dalje*
+   is pressed. The knowledge article on 6–7-year-olds gives no duration and suggests keeping it until the child moves on
+   (an inference there, not a finding). (4) **The jump is drawn at once, not animated** (the product owner's decision; *Approach* 6 now says so): the 0–20
+   line with the start and the landing marked and a bar with the size of the jump; the spoken phrase gives the order.
+   An animation is a later addition if the manual check finds the picture hard to follow. (5) **Nothing
+   is said that the spec gives no words for:** no spoken instruction (`InstructionArithmetic`), no spoken item, no spoken
+   round-end. Clicking the picture speaks the activity's name, as in step 2, then opens the screen. New keys, screen only
+   and appended at the end of `PhraseKey`: `ButtonErase` (*Obriši*) and `ButtonOk` (*U redu*), the spec's words;
+   `ButtonPlayAgain` (*Igraj opet*), `ButtonStop` (*Završi*) and `RoundEndScore` (`{Right} / {Total}`) are placeholders for
+   the Croatian review. **Not spoken yet, waiting for the voice method (Q3):** the spoken instruction and the spoken
+   round-end (functional spec, line ~37 and AC2). **No back-to-menu button during a round** (a choice): a round is left
+   by finishing it and pressing *Završi*. **Response times include speech:** a retry's response time includes the
+   playback of the explanation, and the first item's includes the spoken activity name. (6) **Stand-ins until step 4:** every round is session 1, the answers go to one `InMemoryAnswerLog`
+   for as long as the app runs, and the planner is seeded from `Environment.TickCount`. (7) **`ScreenNavigator` now
+   works:** it is the component already in `Main.unity`, found with `FindFirstObjectByType`, with `Add` and `Show`; no
+   scene change. (8) **Unity behaviour relied on, unverified in a player:** a uGUI `Button` clicked with the mouse holds the
+   selection, and the Input System UI module would then also "click" it on Enter; every button therefore takes no
+   keyboard navigation and clears the selection after a click (`UiBuilder.NewButton`), and the navigator clears it on a
+   screen change. That the fallback font draws `−` and the layout at 1920×1080 are for the manual check, and so is this: *Ponovi* after
+   *Dalje* replays the previous item's explanation (the last phrase spoken), and on entering the screen it replays the
+   activity's name.
 4. **Profiles, the parent gate, and answers saved to disk.** `ProfileStore`, `SettingsStore`, `AtomicFileWriter`,
    `FileAnswerLog`; `ParentGate`; screens: start/profile pick, gate, first-start flow (gate then first profile),
    profiles and settings (add, rename, delete, volume); `SessionNumber`. Tests: append survives reopening; a
@@ -535,6 +569,10 @@ need only step 3b). Parallel work goes in a separate worktree, as `AGENTS.md` �
   The design does not depend on the answer: steps 2–10 run on placeholder clips under the final names, and the final
   clips replace them as files, with no code change (*Text and voice*). `VoiceScript.csv` (step 2) is the script for
   either method.
+
+- **Q5 — Spoken instruction and spoken round-end. Open, waits for Q3.** The activity instruction (functional spec, line ~37)
+  and the round-end (AC2) are not spoken by step 3b: `InstructionArithmetic` and a round-end phrase have no clips yet. They
+  are added once the voice method is chosen.
 
 - **Q4 — Pacing of new items. Open, a product decision due before step 5.** With "at most 4 new items per round, easiest
   first" (*Approach* 7), the `WithinTen` pool is 66 ordered pairs with a sum of 10 or less, times 2 operations times 3

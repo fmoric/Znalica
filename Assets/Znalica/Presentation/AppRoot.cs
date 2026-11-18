@@ -26,7 +26,30 @@ namespace Znalica.Presentation
 
             EnsureEventSystem();
             RectTransform canvas = NewCanvas();
-            new ActivityMenuView(catalog, voice).Build(canvas, _activityPictures);
+            ScreenNavigator navigator = FindFirstObjectByType<ScreenNavigator>();
+            if (navigator == null)
+            {
+                navigator = gameObject.AddComponent<ScreenNavigator>();
+            }
+
+            // The menu opens the arithmetic screen and the screen returns to the menu, so each is built before the other is used.
+            ArithmeticScreen arithmetic = null;
+            var menu = new ActivityMenuView(catalog, voice, picked =>
+            {
+                if (picked == PhraseKey.ActivityNameArithmetic)
+                {
+                    arithmetic.Begin();
+                    navigator.Show(arithmetic.Panel);
+                }
+            });
+            RectTransform menuPanel = menu.Build(canvas, _activityPictures);
+            // Until step 4, answers live in memory for as long as the app runs.
+            arithmetic = ArithmeticScreen.Create(
+                canvas, catalog, voice, new ArithmeticItemSet(), new InMemoryAnswerLog(), new SystemClock(), () => navigator.Show(menuPanel));
+
+            navigator.Add(menuPanel);
+            navigator.Add(arithmetic.Panel);
+            navigator.Show(menuPanel);
         }
 
         private static void EnsureEventSystem()

@@ -11,7 +11,9 @@ namespace Znalica.Domain
     public sealed class ArithmeticItem : Item
     {
         private const string KeyPrefix = "A:";
-        private const string UnknownMark = "?";
+
+        /// <summary>The mark of the missing number in a key (<c>A:8+?=13</c>), and in what is shown.</summary>
+        public const string UnknownMark = "?";
         private const string Number = "(\\?|0|[1-9][0-9]?)";
 
         // The one definition of the key's form; Format below writes the same shape.
@@ -92,7 +94,8 @@ namespace Znalica.Domain
                 addition ? PhraseKey.ExplainJump : PhraseKey.ExplainJumpBack,
                 First,
                 addition ? Second : -Second,
-                Result);
+                Result,
+                !addition);
         }
 
         /// <summary>

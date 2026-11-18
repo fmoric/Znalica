@@ -12,8 +12,9 @@
   `docs/articles/tools/CROATIA_PRIMARY_SCHOOL_CURRICULUM_SUBJECTS_PER_GRADE_AND_OUTCOME_CODES.md`. Next: its
   technical spec (`write-tech-spec`; graded B), `docs/specs/2026-11-16-grade-1-maths-first-version-tech.md`. Steps 1
   and 2 (project skeleton for Windows; text and voice catalog and the activity menu) merged in PR #3 on 2026-11-17;
-  their manual player checks and the Croatian reading of `Hr.json` are still to do. **In progress:** step 3a (round
-  engine, domain only; branch `feat/round-engine`, PR 2).
+  their manual player checks and the Croatian reading of `Hr.json` are still to do. Step 3a (round engine, domain
+  only) merged in PR #4 on 2026-11-17; open question Q4 (pacing of new items) is due before step 5. **In
+  progress:** step 3b (the Računanje do 20 screen; branch `feat/arithmetic-screen`, PR 3).
 - [ ] **Make the Unity commands in `AGENTS.md` run on a machine where `Unity.exe` is not on PATH.** *(T5. New
   2026-11-16.)* The build and test commands call a bare `Unity.exe`; on this PC the editor is at
   `C:\Program Files\Unity\Hub\Editor\6000.3.28f1\Editor\Unity.exe` and not on PATH, so the developer had to call it
