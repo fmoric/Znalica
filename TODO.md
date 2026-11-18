@@ -31,6 +31,11 @@
   changes, and both were reverted by hand. The repository has no `.gitattributes`.
   - **Fix direction:** a `.gitattributes` that fixes the line endings of Unity's text assets, so a build leaves them
     unchanged.
+- [ ] **Merge the round code the three activity screens copy.** *(T9. New 2026-11-18.)* `ArithmeticScreen`,
+  `ComparisonScreen` and `NumberLineScreen` each carry near-identical `Begin`, `BeginRound`, save-failure handling,
+  Next/Replay buttons and key loop; the steps 6+7 code review raised it, and the product owner deferred it on
+  2026-11-18 so that PR did not rewrite untested Presentation code. Do it before a fourth activity screen adds a
+  fourth copy; the Računanje do 20 manual check then needs repeating.
 
 ## Done
 
