@@ -56,6 +56,7 @@ namespace Znalica.Presentation
         private IItemSet _items;
         private IClock _clock;
         private IAnswerLog _log;
+        private ItemSchedule _schedule;
         private int _sessionNumber;
         private Action _onStop;
         private ArithmeticPlay _play;
@@ -93,12 +94,13 @@ namespace Znalica.Presentation
 
         /// <summary>
         /// Starts the picked profile's session on this screen: its answers go to <paramref name="log"/> under
-        /// <paramref name="sessionNumber"/>. Plans the first round and shows its first item; call before the screen is shown.
+        /// <paramref name="sessionNumber"/>, and what the log says of earlier sessions decides what is asked. Plans the first round and shows its first item; call before the screen is shown.
         /// </summary>
         public void Begin(IAnswerLog log, int sessionNumber)
         {
             _log = log ?? throw new ArgumentNullException(nameof(log));
             _sessionNumber = sessionNumber;
+            _schedule = ItemSchedule.Build(log.ReadAll());
             BeginRound();
         }
 
@@ -107,7 +109,7 @@ namespace Znalica.Presentation
         {
             var random = new SeededRandom(Environment.TickCount);
             var round = new RoundSession(
-                RoundPlanner.Plan(_items, random), _log, _clock, _sessionNumber, Guid.NewGuid().ToString());
+                RoundPlanner.Plan(_items, _schedule, _sessionNumber, random), _log, _schedule, _clock, _sessionNumber, Guid.NewGuid().ToString());
             _play = new ArithmeticPlay(round, _clock);
             Render();
         }
