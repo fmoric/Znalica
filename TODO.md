@@ -20,6 +20,8 @@
   jednako and Brojevna crta) merged in PR #8 on 2026-11-18; their manual player checks are still to do. **In
   progress:** steps 8 and 9 (the parent area's progress screen and school-like check; branch
   `feat/parent-area-progress-and-check`).
+  - **2026-11-18, end of day:** steps 8 and 9 merged in PR #9; the product owner's play-test of steps 2 to 9 in the
+    built player passed ("all looks fine"). Next: step 10.
 - [ ] **Make the Unity commands in `AGENTS.md` run on a machine where `Unity.exe` is not on PATH.** *(T5. New
   2026-11-16.)* The build and test commands call a bare `Unity.exe`; on this PC the editor is at
   `C:\Program Files\Unity\Hub\Editor\6000.3.28f1\Editor\Unity.exe` and not on PATH, so the developer had to call it
@@ -38,6 +40,23 @@
   Next/Replay buttons and key loop; the steps 6+7 code review raised it, and the product owner deferred it on
   2026-11-18 so that PR did not rewrite untested Presentation code. Do it before a fourth activity screen adds a
   fourth copy; the Računanje do 20 manual check then needs repeating.
+- [ ] **Give the game a warmer look.** *(T10. New 2026-11-18.)* The play-test on 2026-11-18 found everything working
+  but the look "so simple and not fun at all, so cold": flat colours, no characters, abstract counters, no reaction or
+  reward. Research brief: `docs/research/warmer-look-for-grade-1.md` (commit `1dc2cc5` on branch
+  `docs/research-look-and-parent-pin`, not pushed). The product owner draws the art in Claude desktop (SVG, made into PNG
+  sprites). After step 10, by the product owner's order.
+  - **Decisions first:** a mascot and who it is; what the round-end stars mean; who converts SVG to PNG; where the SVG
+    sources live; the font (Andika, if it has č ć đ š ž); a check at the next play-test.
+  - **Fix direction:** settle the functional spec's open question 6, then a tech spec in the brief's 5 slices.
+- [ ] **Replace the parent gate's maths question with a PIN.** *(T11. New 2026-11-18.)* The product owner's ask on
+  2026-11-18. Research brief: `docs/research/parent-pin-gate.md` (same commit). It changes the functional spec's "no
+  password to forget" (FS:108–109) and "no setting" (FS:78, Q1).
+  - **Decisions first:** how a forgotten PIN is reset; whether the maths question guards setting the PIN the first
+    time; whether the maths gate stays at all; 4 or 6 digits; whether the wait survives a restart; how "change PIN"
+    works.
+  - **Code facts:** the PIN cannot live in `Settings.json` (`SettingsStore.Save` writes only the volume,
+    `SettingsStore.cs:48`); the 30-second wait is held in memory (`ParentGate.cs:25`), so a restart skips it;
+    `AnswerEntry` holds an integer, so `0123` would become `123`.
 
 ## Done
 
