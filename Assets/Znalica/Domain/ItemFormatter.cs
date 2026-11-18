@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 
 namespace Znalica.Domain
 {
@@ -54,6 +55,30 @@ namespace Znalica.Domain
                 new ItemToken(EqualsSign, false),
                 Number(arithmetic.Result, arithmetic.Unknown == Unknown.Result),
             };
+        }
+
+        /// <summary>
+        /// The item as one line of plain text, for a list (the progress screen): the tokens of an arithmetic or number-line
+        /// item joined by spaces; a comparison as <c>7 ? 12</c> with the quantities of a group in brackets, <c>(7) ? (12)</c>;
+        /// an ordering item as its numbers in the order they are shown, <c>9, 3, 14</c>.
+        /// </summary>
+        public static string Text(Item item)
+        {
+            if (!(item is ComparisonItem comparison))
+            {
+                return string.Join(" ", Tokens(item).Select(token => token.Text));
+            }
+
+            if (comparison.Task == ComparisonTask.PutInOrder)
+            {
+                return string.Join(", ", comparison.ShownNumbers.Select(number => number.ToString(CultureInfo.InvariantCulture)));
+            }
+
+            string left = comparison.Numbers[0].ToString(CultureInfo.InvariantCulture);
+            string right = comparison.Numbers[1].ToString(CultureInfo.InvariantCulture);
+            return comparison.Representation == Representation.Groups
+                ? "(" + left + ") " + ArithmeticItem.UnknownMark + " (" + right + ")"
+                : left + " " + ArithmeticItem.UnknownMark + " " + right;
         }
 
         /// <summary>The size of a jump on the number line: <c>+5</c>, or <c>−6</c> for a jump back (<c>−0</c> for taking 0 away).</summary>
