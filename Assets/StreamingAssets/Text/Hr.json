@@ -61,5 +61,19 @@
   {"Key": "ButtonNo", "Text": "Ne", "Voice": []},
   {"Key": "VolumeLabel", "Text": "Glasnoća", "Voice": []},
   {"Key": "VolumeValue", "Text": "{Percent} %", "Voice": []},
-  {"Key": "SaveFailed", "Text": "Nije uspjelo spremanje. Pokušaj ponovno.", "Voice": []}
+  {"Key": "SaveFailed", "Text": "Nije uspjelo spremanje. Pokušaj ponovno.", "Voice": []},
+  {"Key": "ExplainLess", "Text": "{Left} je manje od {Right}.", "Voice": ["{Left}", "LessThan", "{Right}"]},
+  {"Key": "ExplainMore", "Text": "{Left} je veće od {Right}.", "Voice": ["{Left}", "MoreThan", "{Right}"]},
+  {"Key": "ExplainSame", "Text": "{Left} je jednako {Right}.", "Voice": ["{Left}", "SameAs", "{Right}"]},
+  {"Key": "ExplainGroups", "Text": "Ovdje {Left}, ondje {Right}.", "Voice": ["Here", "{Left}", "There", "{Right}"]},
+  {"Key": "ExplainOrder3", "Text": "Redom: {First}, {Second}, {Third}.", "Voice": ["InOrder", "{First}", "{Second}", "{Third}"]},
+  {"Key": "ExplainOrder4", "Text": "Redom: {First}, {Second}, {Third}, {Fourth}.", "Voice": ["InOrder", "{First}", "{Second}", "{Third}", "{Fourth}"]},
+  {"Key": "ExplainOrder5", "Text": "Redom: {First}, {Second}, {Third}, {Fourth}, {Fifth}.", "Voice": ["InOrder", "{First}", "{Second}", "{Third}", "{Fourth}", "{Fifth}"]},
+  {"Key": "LessThan", "Text": "je manje od", "Voice": ["LessThan"]},
+  {"Key": "MoreThan", "Text": "je veće od", "Voice": ["MoreThan"]},
+  {"Key": "SameAs", "Text": "je jednako", "Voice": ["SameAs"]},
+  {"Key": "Here", "Text": "ovdje", "Voice": ["Here"]},
+  {"Key": "There", "Text": "ondje", "Voice": ["There"]},
+  {"Key": "InOrder", "Text": "redom", "Voice": ["InOrder"]},
+  {"Key": "InstructionOrder", "Text": "Klikni brojeve od najmanjeg do najvećeg.", "Voice": []}
 ] }
