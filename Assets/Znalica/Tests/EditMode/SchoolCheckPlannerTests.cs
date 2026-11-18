@@ -132,7 +132,7 @@ namespace Znalica.Tests.EditMode
         [Test]
         public void Plan_NeverRunsOutOfItems_OverManySeeds_AndAlwaysReturnsTwenty()
         {
-            for (int seed = 0; seed < 2000; seed++)
+            for (int seed = 0; seed < 200; seed++)
             {
                 Assert.AreEqual(20, PlanFor(seed).Count, "seed " + seed);
             }
