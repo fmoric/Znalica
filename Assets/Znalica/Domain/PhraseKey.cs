@@ -106,5 +106,19 @@ namespace Znalica.Domain
         There,
         InOrder,
         InstructionOrder,
+
+        // Step 7: Brojevna crta. The three explanations are spoken (a wrong answer always is: FS:42); the jump back and
+        // forth reuses ExplainJump and ExplainJumpBack. InFrontOf and Behind are single-clip words, as Here and There are.
+        // The four instructions are screen only: no spoken instruction until the voice method is chosen (Q5). All wording
+        // is placeholder for the Croatian review.
+        ExplainPlace,
+        ExplainBefore,
+        ExplainAfter,
+        InFrontOf,
+        Behind,
+        InstructionPlace,
+        InstructionBefore,
+        InstructionAfter,
+        InstructionJump,
     }
 }

@@ -75,5 +75,14 @@
   {"Key": "Here", "Text": "ovdje", "Voice": ["Here"]},
   {"Key": "There", "Text": "ondje", "Voice": ["There"]},
   {"Key": "InOrder", "Text": "redom", "Voice": ["InOrder"]},
-  {"Key": "InstructionOrder", "Text": "Klikni brojeve od najmanjeg do najvećeg.", "Voice": []}
+  {"Key": "InstructionOrder", "Text": "Klikni brojeve od najmanjeg do najvećeg.", "Voice": []},
+  {"Key": "ExplainPlace", "Text": "Ovdje {Target}.", "Voice": ["Here", "{Target}"]},
+  {"Key": "ExplainBefore", "Text": "Ispred {Given}, to je {Target}.", "Voice": ["InFrontOf", "{Given}", "Is", "{Target}"]},
+  {"Key": "ExplainAfter", "Text": "Iza {Given}, to je {Target}.", "Voice": ["Behind", "{Given}", "Is", "{Target}"]},
+  {"Key": "InFrontOf", "Text": "ispred", "Voice": ["InFrontOf"]},
+  {"Key": "Behind", "Text": "iza", "Voice": ["Behind"]},
+  {"Key": "InstructionPlace", "Text": "Klikni na crti gdje je ovaj broj.", "Voice": []},
+  {"Key": "InstructionBefore", "Text": "Koji je broj ispred?", "Voice": []},
+  {"Key": "InstructionAfter", "Text": "Koji je broj iza?", "Voice": []},
+  {"Key": "InstructionJump", "Text": "Skoči po crti. Na kojem ćeš broju stati?", "Voice": []}
 ] }
