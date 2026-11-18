@@ -142,18 +142,12 @@ namespace Znalica.Presentation
 
         private void GiveAnswer(Func<Feedback> click)
         {
-            Feedback feedback = null;
-            if (!DiskWrite.TryRun(() => feedback = click(), _problems, "save the answer"))
+            if (!AnswerGiving.TryGive(click, _problems, _catalog, _voice))
             {
                 // The answer was not kept and nothing moved: the child can click again.
                 Render();
                 _feedback.text = _catalog.Text(PhraseKey.SaveFailed);
                 return;
-            }
-
-            if (feedback != null)
-            {
-                _voice.Play(_catalog.VoiceClips(feedback.Phrase, feedback.Args));
             }
 
             Render();

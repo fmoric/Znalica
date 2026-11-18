@@ -1,7 +1,6 @@
 using System;
 using TMPro;
 using UnityEngine;
-using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using Znalica.Domain;
 
@@ -16,28 +15,16 @@ namespace Znalica.Presentation
     {
         private const float TaskAreaRight = 0.62f;
         private const float EquationTop = 70f;
-        private const float EquationHeight = 200f;
-        private const float EquationFontSize = 150f;
-        private const float TokenWidthBase = 60f;
-        private const float TokenWidthPerCharacter = 75f;
-        private const float TokenSpacing = 20f;
         private const float FeedbackTop = 320f;
         private const float FeedbackHeight = 140f;
         private const float FeedbackFontSize = 60f;
         private const float LineTop = 480f;
         private const float LineHeight = 260f;
-        private const float LineBarY = 110f;
-        private const float LineBarHeight = 14f;
-        private const float LineChangeY = 140f;
-        private const float LineChangeFontSize = 56f;
         private const float NextTop = 750f;
         private const float WideButtonWidth = 380f;
         private const float WideButtonHeight = 130f;
         private const float WideButtonFontSize = 56f;
         private const float ReplayBottomMargin = 60f;
-
-        private static readonly Color BoxColor = Color.white;
-        private static readonly Color JumpColor = new Color(0.95f, 0.62f, 0.2f);
 
         private PhraseCatalog _catalog;
         private VoicePlayer _voice;
@@ -106,16 +93,9 @@ namespace Znalica.Presentation
 
         private void Update()
         {
-            Keyboard keyboard = Keyboard.current;
-            if (keyboard == null || _play == null)
+            if (_play != null)
             {
-                return;
-            }
-
-            // Enter goes on after a second wrong answer, as the Dalje button does.
-            foreach (AnswerKey pressed in NumberPad.KeysPressed(keyboard))
-            {
-                Press(pressed == AnswerKey.Confirm && _play.AwaitsContinue ? AnswerKey.Continue : pressed);
+                NumberPad.HandleKeys(() => _play.AwaitsContinue, Press);
             }
         }
 
@@ -127,18 +107,12 @@ namespace Znalica.Presentation
                 _voice.Stop();
             }
 
-            Feedback feedback = null;
-            if (!DiskWrite.TryRun(() => feedback = _play.Press(key), _problems, "save the answer"))
+            if (!AnswerGiving.TryGive(() => _play.Press(key), _problems, _catalog, _voice))
             {
                 // The answer was not kept and nothing moved: the child can press U redu again.
                 Render();
                 _feedback.text = _catalog.Text(PhraseKey.SaveFailed);
                 return;
-            }
-
-            if (feedback != null)
-            {
-                _voice.Play(_catalog.VoiceClips(feedback.Phrase, feedback.Args));
             }
 
             Render();
@@ -158,8 +132,7 @@ namespace Znalica.Presentation
             left.anchorMax = new Vector2(TaskAreaRight, 1f);
             left.offsetMin = left.offsetMax = Vector2.zero;
 
-            _equation = UiBuilder.TopRow("Equation", left, EquationTop, EquationHeight);
-            UiBuilder.CentreRow(_equation, TokenSpacing);
+            _equation = EquationDrawing.NewRow(left, EquationTop);
 
             RectTransform feedbackRow = UiBuilder.TopRow("Feedback", left, FeedbackTop, FeedbackHeight);
             _feedback = UiBuilder.NewLabel("Text", feedbackRow, string.Empty, FeedbackFontSize);
@@ -203,7 +176,7 @@ namespace Znalica.Presentation
             UiBuilder.Clear(_line);
             if (feedback != null && feedback.Explanation != null)
             {
-                DrawJump(feedback.Explanation);
+                NumberLineDrawing.DrawJump(_line, feedback.Explanation);
             }
 
             _next.gameObject.SetActive(_play.AwaitsContinue);
@@ -212,49 +185,7 @@ namespace Znalica.Presentation
 
         private void RenderEquation()
         {
-            UiBuilder.Clear(_equation);
-            foreach (ItemToken token in ItemFormatter.Tokens(_play.CurrentItem))
-            {
-                string text = token.IsUnknown ? (_play.Entered.HasValue ? _play.Entered.Value.ToString() : string.Empty) : token.Text;
-                RectTransform cell = UiBuilder.NewChild("Token", _equation);
-                // The answer box keeps the width of two digits, so it does not change size while the child types.
-                int width = token.IsUnknown ? 2 : text.Length;
-                cell.sizeDelta = new Vector2(TokenWidthBase + TokenWidthPerCharacter * width, EquationHeight);
-                if (token.IsUnknown)
-                {
-                    cell.gameObject.AddComponent<Image>().color = BoxColor;
-                }
-
-                TextMeshProUGUI label = UiBuilder.NewLabel("Text", cell, text, EquationFontSize);
-                UiBuilder.Stretch(label.rectTransform);
-            }
-        }
-
-        /// <summary>
-        /// The jump on the 0-20 line: every whole number labelled, the start and the landing marked, and a bar from one
-        /// to the other with the size of the jump above it. Drawn at once, with no animation.
-        /// </summary>
-        private void DrawJump(Explanation explanation)
-        {
-            NumberLineDrawing.Draw(_line, number =>
-                number == explanation.End ? NumberLineDrawing.EndColor
-                : number == explanation.Start ? NumberLineDrawing.StartColor
-                : (Color?)null);
-
-            float startX = NumberLineDrawing.X(explanation.Start);
-            float endX = NumberLineDrawing.X(explanation.End);
-            RectTransform bar = UiBuilder.NewChild("Jump", _line);
-            bar.anchorMin = bar.anchorMax = new Vector2(0.5f, 0f);
-            bar.pivot = new Vector2(0.5f, 0f);
-            bar.sizeDelta = new Vector2(Mathf.Max(Mathf.Abs(endX - startX), LineBarHeight), LineBarHeight);
-            bar.anchoredPosition = new Vector2((startX + endX) / 2f, LineBarY);
-            bar.gameObject.AddComponent<Image>().color = JumpColor;
-
-            TextMeshProUGUI change = UiBuilder.NewLabel("Change", _line, ItemFormatter.ChangeText(explanation), LineChangeFontSize);
-            change.rectTransform.anchorMin = change.rectTransform.anchorMax = new Vector2(0.5f, 0f);
-            change.rectTransform.pivot = new Vector2(0.5f, 0f);
-            change.rectTransform.sizeDelta = new Vector2(240f, 80f);
-            change.rectTransform.anchoredPosition = new Vector2((startX + endX) / 2f, LineChangeY);
+            EquationDrawing.Draw(_equation, ItemFormatter.Tokens(_play.CurrentItem), _play.Entered);
         }
     }
 }
