@@ -30,6 +30,12 @@
   changes, and both were reverted by hand. The repository has no `.gitattributes`.
   - **Fix direction:** a `.gitattributes` that fixes the line endings of Unity's text assets, so a build leaves them
     unchanged.
+- [ ] **Send the hand-off-a-change proof-run fix to the agent-packet library.** *(T8. New 2026-11-18.)* Commit
+  `abb78a9` (branch `fix/proof-runs-by-name`) adds to both copies of `hand-off-a-change/SKILL.md` that a developer
+  proves tests with runs selected by name, never the unselected suite, and that the brief does not quote the full
+  suite's time; the step 5 developer had run the unselected EditMode suite about 22 times. The library session
+  `ai-agent-templates-01` was not reachable on 2026-11-18, so the fix is local only and the next packet delivery would
+  overwrite it.
 
 ## Done
 
