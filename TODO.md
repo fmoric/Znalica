@@ -14,9 +14,10 @@
   and 2 (project skeleton for Windows; text and voice catalog and the activity menu) merged in PR #3 on 2026-11-17;
   their manual player checks and the Croatian reading of `Hr.json` are still to do. Step 3a (round engine, domain
   only) merged in PR #4 on 2026-11-17. Step 3b (the Računanje do 20 screen) merged in PR #5 on 2026-11-18; its
-  manual player checks are still to do. Open question Q4 (pacing of new items) was settled on 2026-11-18. **In
-  progress:** steps 4 and 5 (profiles, the parent gate, answers saved to disk; missed items return next session;
-  branch `feat/profiles-and-saved-answers`). Both are committed; their review and test gates are next.
+  manual player checks are still to do. Open question Q4 (pacing of new items) was settled on 2026-11-18. Steps 4
+  and 5 (profiles, the parent gate, answers saved to disk; missed items return next session) merged in PR #6 on
+  2026-11-18; their manual player checks are still to do. **In progress:** steps 6 and 7 (Veće, manje, jednako and
+  Brojevna crta; branch `feat/comparison-and-number-line`).
 - [ ] **Make the Unity commands in `AGENTS.md` run on a machine where `Unity.exe` is not on PATH.** *(T5. New
   2026-11-16.)* The build and test commands call a bare `Unity.exe`; on this PC the editor is at
   `C:\Program Files\Unity\Hub\Editor\6000.3.28f1\Editor\Unity.exe` and not on PATH, so the developer had to call it
@@ -30,6 +31,12 @@
   changes, and both were reverted by hand. The repository has no `.gitattributes`.
   - **Fix direction:** a `.gitattributes` that fixes the line endings of Unity's text assets, so a build leaves them
     unchanged.
+- [ ] **Send the hand-off-a-change proof-run fix to the agent-packet library.** *(T8. New 2026-11-18.)* Commit
+  `abb78a9` (branch `fix/proof-runs-by-name`) adds to both copies of `hand-off-a-change/SKILL.md` that a developer
+  proves tests with runs selected by name, never the unselected suite, and that the brief does not quote the full
+  suite's time; the step 5 developer had run the unselected EditMode suite about 22 times. The library session
+  `ai-agent-templates-01` was not reachable on 2026-11-18, so the fix is local only and the next packet delivery would
+  overwrite it.
 
 ## Done
 
