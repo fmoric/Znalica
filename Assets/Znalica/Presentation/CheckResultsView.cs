@@ -17,7 +17,7 @@ namespace Znalica.Presentation
     public sealed class CheckResultsView
     {
         /// <summary>How many checks the list shows: the screen has no scrolling, so older ones stay in the log but are not listed.</summary>
-        public const int MaxRows = 8;
+        public const int MaxRows = 7;
 
         private const float TitleTop = 40f;
         private const float TitleHeight = 100f;

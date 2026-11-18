@@ -130,6 +130,15 @@ namespace Znalica.Tests.EditMode
         }
 
         [Test]
+        public void Plan_NeverRunsOutOfItems_OverManySeeds_AndAlwaysReturnsTwenty()
+        {
+            for (int seed = 0; seed < 2000; seed++)
+            {
+                Assert.AreEqual(20, PlanFor(seed).Count, "seed " + seed);
+            }
+        }
+
+        [Test]
         public void Plan_NoItemAndNoFactIsOnTheWorksheetTwice()
         {
             for (int seed = 0; seed < Seeds; seed++)
