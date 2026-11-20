@@ -45,8 +45,7 @@
   fourth copy; the Računanje do 20 manual check then needs repeating.
 - [ ] **Give the game a warmer look.** *(T10. New 2026-11-18.)* The play-test on 2026-11-18 found everything working
   but the look "so simple and not fun at all, so cold": flat colours, no characters, abstract counters, no reaction or
-  reward. Research brief: `docs/research/warmer-look-for-grade-1.md` (commit `1dc2cc5` on branch
-  `docs/research-look-and-parent-pin`, not pushed). The product owner draws the art in Claude desktop (SVG, made into PNG
+  reward. Research brief: `docs/research/warmer-look-for-grade-1.md` (merged to `master` in PR #10). The product owner draws the art in Claude desktop (SVG, made into PNG
   sprites). After step 10, by the product owner's order.
   - **Decisions first:** a mascot and who it is; what the round-end stars mean; who converts SVG to PNG; where the SVG
     sources live; the font (Andika, if it has č ć đ š ž); a check at the next play-test.
@@ -91,12 +90,4 @@
 
 ## Done
 
-- [x] **Send the hand-off-a-change proof-run fix to the agent-packet library.** *(T8. Done 2026-11-18.)* Commit
-  `abb78a9` (merged in PR #7) told the developer to prove tests with runs selected by name, never the unselected
-  suite, after the step 5 developer had run the unselected EditMode suite about 22 times. The library merged the same
-  fix in its PR #411 as version 0.197.2 on 2026-11-18, so the next re-delivery brings the same text; the local copy
-  stays until then.
-- [x] **Trust the project folder in Copilot CLI.** *(T2. Done 2026-11-16.)* Added
-  `C:\Users\filip.moric\Documents\GitHub\Znalica` to `~/.copilot/config.json` `trustedFolders`.
-- [x] **~~Rename the project folder to `znalica`.~~** *(T1. Dropped 2026-11-16.)* The folder keeps `Znalica`,
-  matching the GitHub repository `fmoric/Znalica`; names start with a capital letter.
+_Completed items move to [TODO_ARCHIVE.md](TODO_ARCHIVE.md)._
