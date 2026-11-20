@@ -69,6 +69,25 @@
   - **Claude Code:** end a turn on a bare `WAITING:` line (start a background `sleep 120` and stop); the waiting check
     must send the turn back with its reason.
   - **Fix direction:** a failure on either is a library finding for ai-agent-templates, reported with the command and output.
+  - **The 0.205.6 re-delivery (2026-11-20) adds to these checks.** In-session, the guard scripts and entry commands were
+    fired directly (search guard deny; waiting check block on Stop and SubagentStop, hand-back deny once), not through a
+    live turn. Still open after it: the Copilot CLI checks above, and in a fresh session `code-reviewer` lists exactly
+    the five knowledge read tools.
+- [ ] **Ship a tested renderer with `/deliver-packet`, so a full re-scaffold does not improvise one.** *(T13. New
+  2026-11-20. packet-owned.)* `/deliver-packet` is instruction-driven with no bundled runtime, so the 0.205.6
+  re-delivery built its own renderer for the copy, assemble and comment-stripping rules. Rendering the 0.199.3 library
+  with it first and comparing with the delivered files caught four defects before anything was written: a comment
+  holding backticks emptied `testing.md`; read-only agents were not recognised, which granted them the whole knowledge
+  server; doc-writer's quoted `description:` was lost; the no-op `Run: none` line came back. The first two would have
+  shipped silently. `MCP-SETUP.md` had to be patched by hand, since it is prose generated from `servers.yaml`.
+  - **Fix direction:** a library script for §2's `copy` and `assemble` handlers, plus a step that renders the
+    manifest's own version and compares with the recorded hashes before rendering the new one.
+- [ ] **Say which review a re-delivery pull request gets.** *(T14. New 2026-11-20. packet-owned.)* `self_review`
+  sends code to the code-reviewer agent, and `/deliver-packet` §4 does not say whether a re-delivery's packet text
+  counts. PR #14 (0.205.6) merged with no review; its check was the byte-for-byte reproduction of 0.199.3 and the §4
+  checks.
+  - **Fix direction:** one line in `/deliver-packet` §4 naming the review a re-delivery PR needs, or that its §4
+    checks stand in for it.
 
 ## Done
 
