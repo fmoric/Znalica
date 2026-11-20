@@ -80,6 +80,28 @@ merged branches pile up, and the next task starts from the wrong branch.
    stop and report. In a linked worktree
    where `<primary>` is checked out elsewhere, `git switch` refuses: report it and stop there. Updating a branch
    from upstream authors nothing, so `branch_before_edit` does not fire on it.
+3b. **A linked worktree on the merged branch — keep its run logs, then remove it** (0.205.1). Find it:
+   `git worktree list --porcelain` lists `branch refs/heads/<branch>` under its `worktree <path>` line. None → go to
+   step 4. Run this step from the main checkout; if this session is working inside that worktree, report it and
+   stop here. Git deletes a worktree's ignored files with it, so a run log written there is lost unless it is copied
+   out first. *(BE-HUB-System, 2026-11-19 and 2026-11-20: a pre-check's and a full run's per-test logs in
+   `<worktree>/.test-runs/` went with the worktree.)*
+   - **Check it first:** `git -C "<worktree>" status --porcelain` must be empty. Changes there → stop and report
+     them, as step 2 does.
+   - **Copy the run log folder out.** It is the folder the project names for run logs: its gate rule, `AGENTS.md`
+     or the brief that started the run (for example `.test-runs/`). Where it exists in the worktree, copy its
+     files into the same folder of the main checkout, never over a file of the same name:
+
+     ```bash
+     mkdir -p "<main checkout>/<run log folder>" && cp -rn "<worktree>/<run log folder>/." "<main checkout>/<run log folder>/"; ls -A "<worktree>/<run log folder>" | wc -l; ls -A "<main checkout>/<run log folder>" | wc -l
+     ```
+
+     `cp -n` can exit non-zero just because it skipped a file of the same name. The second count must be at least the
+     first; a smaller one means files did not arrive: stop and report. Report how many files the worktree's folder held, and from where. **No run log folder named** → do not guess one. List what
+     would be lost (`git -C "<worktree>" status --porcelain --ignored`), show it to the user, and remove the
+     worktree only on their yes.
+   - **Remove it:** `git worktree remove "<worktree>"`, **never `--force`**. A refusal is reported, not worked
+     around.
 4. **Delete the local branch — no separate approval:**
    - **Already gone** (`git branch --list <branch>` is empty; `gh pr merge --delete-branch` deletes it) → report
      it deleted by the landing.
@@ -92,7 +114,8 @@ merged branches pile up, and the next task starts from the wrong branch.
        -D <branch>`. **Otherwise** → commits that never landed: leave it, and report it as pending with both shas.
      - **No forge:** step 1's `merge-base --is-ancestor` held → `git branch -D <branch>` (`-d` can refuse even
        then, when the branch is ahead of its upstream).
-   - **Refused because a worktree uses it** → a different case: report it.
+   - **Refused because a worktree uses it** → step 3b has not removed it: go back to step 3b, or report why it
+     could not.
    - **Report git's `(was <sha>)`**, so the delete is undone in one step: `git branch <branch> <sha>`.
    - Only the branch that just landed is in scope; a branch someone keeps on purpose is never touched.
 5. **The remote branch** goes only through the landing itself — `gh pr merge --delete-branch`, or a forge that
@@ -103,7 +126,8 @@ merged branches pile up, and the next task starts from the wrong branch.
    still open:** `gh pr list --head <branch> --state open` must be empty too, since step 1 confirmed one pull
    request and a branch can carry a later one. *(0.194.3)*
 6. **Report the new state in the same message** — *"the working copy is now on `<primary>` at `<sha>`;
-   `<branch>` deleted locally (was `<sha>`)"*, and remotely if it was — and **name** any tracker item the work
+   `<branch>` deleted locally (was `<sha>`)"*, the worktree removed with its run logs copied (*"3 files from
+   `<worktree>/.test-runs/`"*), and remotely if it was — and **name** any tracker item the work
    closed. **The cleanup writes no file:** marking the item is new work, and it needs a branch
    (`branch_before_edit`).
 7. **The next task checks the branch again** — `git branch --show-current`, not memory. After a merge you may be

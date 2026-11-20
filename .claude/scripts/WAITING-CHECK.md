@@ -35,7 +35,8 @@ bare `WAITING:` line, while ready work sat open. The hook turns the rule into a 
 - the script: `.claude/scripts/waiting_check.ps1`;
 - its tests: `.claude/scripts/tests/test_waiting_check.ps1`, which print `N/N passed`;
 - the entries in `.claude/settings.json`: one `hooks.Stop` entry and one `hooks.SubagentStop` entry with the same
-  command, and one `hooks.PreToolUse` entry with matcher `SubagentHandback`.
+  command, and one `hooks.PreToolUse` entry with matcher `SubagentHandback`; and two exact `permissions.allow` rules,
+  so an agent can run the tests without a prompt, in auto mode too.
 
 It needs Git Bash (where Claude Code runs hooks on Windows) and Windows PowerShell. The `Stop` and `SubagentStop`
 entries are a bash command that starts PowerShell only when the final message contains `WAITING:`, because PowerShell
@@ -44,5 +45,6 @@ blocks. The `PreToolUse` entry starts PowerShell on every subagent hand-back, an
 shells, because a failing tool hook can deny the call.
 
 **To turn it off**, delete the `hooks.Stop`, `hooks.SubagentStop` and `hooks.PreToolUse` (`SubagentHandback`)
-entries that name `waiting_check.ps1` from `.claude/settings.json`, and answer no to the waiting-check question on
+entries that name `waiting_check.ps1`, the two allow rules that name `test_waiting_check.ps1` and the `Edit(/.claude/scripts/tests/**)` ask rule too, if no other guard's test is left, from
+`.claude/settings.json`, and answer no to the waiting-check question on
 the next re-delivery.

@@ -1,6 +1,6 @@
 ---
 name: shutdown
-description: Use only when the user ends the session (/shutdown) — never at the end of a task, PR or branch, and never offered unprompted. Reconciles git, files findings, writes the session record, then commits and pushes that record alone to main (or master).
+description: Use only when the user ends the session (/shutdown [full]) — never at the end of a task, PR or branch, and never offered unprompted. Reconciles git, files findings, writes the session record, then commits and pushes that record alone to main.
 ---
 
 # Shutdown
@@ -24,6 +24,21 @@ block prints (the default branch, the worktree path) goes into the next as **lit
 on the session's own checkout. A session with only PowerShell runs a block through Git's own bash,
 `& (Join-Path (Split-Path (Split-Path (Get-Command git).Source)) 'bin\bash.exe') -c '<block>'` — never a bare `bash`,
 which on Windows can be the WSL launcher. With no Git Bash, say which step could not run; do not improvise it.
+
+## Modes — light and full (0.205.0)
+
+Read the text after the skill's name for a mode word: `/shutdown full` → **full**. Nothing, or anything else →
+**light**, the run described below. A request in plain words (*"full shutdown"*, *"shut down and tidy up"*) is the
+word; a missing one never is.
+
+| invocation | Steps 0–6 (the record) | Step 1c (tidy-up check) | Step 7 (tidy-up) |
+|---|---|---|---|
+| `/shutdown` | run | run, read-only | **not run**: Step 6's report names what it would do |
+| `/shutdown full` | run | run, read-only | run, each part on the user's yes |
+
+Light is the default because Step 7 can take long: a changelog or map rebuilt from history, a triage asked verdict by
+verdict. **Full changes nothing in Steps 0–6**: the record is written and landed exactly as in a light run, and
+Step 7 starts only after it has landed.
 
 Sibling: `/initialize`.
 
@@ -144,6 +159,45 @@ Session close is the only place this prevents loss.
 **Held notes.** Run `git rev-parse --path-format=absolute --git-common-dir` from the project root and note the path; if `<git dir>/pending-notes.md` holds any
 `### ` entry, `/note` wrote it on a protected branch (0.190.23). Report *"<n> held notes: Step 4 (d) carries them"*.
 
+## Step 1b — Offer a look back: `work-monitor`, then `retro`
+
+**Only where both skills are delivered** (0.201.0): `work-monitor` and `retro` each have a `SKILL.md` under
+`.claude/skills/<name>/` or `.github/skills/<name>/` at the project root. Either one missing → skip this step without
+a word; Step 4a's record says *"look back: not delivered"*.
+
+**Offer it once, as a question, before anything else is harvested:** *"Before I write the record: run `work-monitor`
+on this session, then `retro`? Both, retro only, or skip."* Skip is a whole answer: ask nothing more about it. This
+is an offer inside a `/shutdown` the user already started, not `/shutdown` offering itself.
+
+**On *both*, run them in that order, each by its own steps except where this list says otherwise.** On *retro only*,
+skip the first bullet: `retro` reads the session alone.
+
+- **`work-monitor`**, with the window *this session*: since the commit it started at where Step 1 named one on the
+  default branch, else *today*. Not a feature branch's merge-base, which can span earlier sessions whose rework is
+  not this one's to file. Its report is the evidence: runs over budget, stalls, spend and rework. **Give its report
+  without its step 3 item 3, the next steps.** `retro` runs next anyway, and stopping a process is not part of `/shutdown`.
+- **`retro`** on this session, with that report beside the session as evidence for its step 1.
+- Neither writes anything, and neither changes how this skill ends. When `retro` asks which candidates to act on,
+  the question here is **which to file**. **Apply none during `/shutdown`**: a fix the user asks for is new work,
+  started after this skill ends, and this skill commits only the files it writes.
+- **An answer the tool chose** (Copilot autopilot answering the offer or the pick) is no choice: take it as *skip*,
+  file nothing from `retro`, and say so (`write_for_the_reader` obligation 6).
+
+**What the picks become.** Each `retro` candidate the user picks is a Step 2 candidate: it gets the duplicate search,
+Step 3's confirmation and Step 4 (b)'s append like any other finding. A candidate `retro` marked **packet-owned** is
+filed with the word `packet-owned` in its body. The next `/assess-delivery` lists every open item that says so in
+its *For the library* section, which is how it reaches the packet's maintainers. A
+candidate not picked is dropped, as a finding refused in Step 3 is.
+
+## Step 1c — The tidy-up check (both modes, read-only)
+
+Run `housekeeping` Step 4c's signals **1** (done but not archived), **2** (the tracker's size), **4** (a stale system
+map), **5** (a changelog behind) and **6** (a stale roadmap), by that skill's own commands, in its `SKILL.md` beside
+this one. This step does not restate them. `housekeeping` not delivered → *"tidy-up check: not run, housekeeping not
+delivered"*. Each signal gets one state: *stale* or *over*, with its count; *current*; *none in this project*; or
+*not run*, with why. **Nothing is refreshed or edited here.** The result goes in the record (Step 4 (a), *Not done /
+left open*) and in Step 6's report, and in a full run it is what Step 7 offers.
+
 ## Step 2 — Harvest findings
 
 Go through the session for anything worth keeping that is **not already filed**: a defect found, a claim
@@ -167,12 +221,15 @@ Step 3 for confirmation like everything else.
 **Not every observation is a finding.** Something already fixed this session is history for the session
 record, not a new open item.
 
+**Step 1b's picks are candidates here too**, searched the same way.
+
 ## Step 3 — Discuss before writing
 
 Present, in plain conversation:
 
 - the proposed session record, in outline;
-- **each proposed tracker append, in full**, with the section it would land in;
+- **each proposed tracker append, in full**, with the section it would land in, and *from `retro`* on each that came
+  from Step 1b;
 - anything you judged a duplicate and dropped, with the item it duplicates;
 - **held notes** (Step 1), when there are any: they go into `docs/notes/PENDING_NOTES.md`, which Step 6 then
   commits with the record;
@@ -277,7 +334,9 @@ Sections:
   them: `subject: (the customer the user pasted; ask again)`.
 
 - **Findings filed** links each item to the section it landed in. If nothing was filed, say *"none — no
-  finding worth keeping this session"*, which is a claim rather than a blank.
+  finding worth keeping this session"*, which is a claim rather than a blank. Its last line is Step 1b's state:
+  *"look back: work-monitor + retro, <n> candidates, <m> filed"* (or *retro only*), *"look back: skipped"*, or
+  *"look back: not delivered"*.
 - **Scope caveat** states what this record does **not** cover. A record written from a compacted context
   should say so.
 
@@ -512,6 +571,7 @@ Report:
 
 - the files written, by path;
 - the before/after open-item counts from Step 5;
+- **the look-back's state** (Step 1b), as the record's *Findings filed* gives it;
 - **the size of each file appended to**, with the over-ceiling flag if it fired (Step 5) — or the
   `no tracker resolved` line, so the reader can tell a small tracker from an unmeasured one;
 - **the always-loaded instruction total** (Step 5), in characters against the 120 000 floor, the files this
@@ -525,12 +585,41 @@ Report:
   **explicitly, that nothing was committed**, with why and where the files are (a worktree or folder left in place
   is named by its full path) for the runner to commit;
 - **a worktree left in place after Step 4 printed `worktreeConfig: was unset`:** that `extensions.worktreeConfig` is
-  still on, and that once the worktree is removed, `git config --unset extensions.worktreeConfig` switches it off.
+  still on, and that once the worktree is removed, `git config --unset extensions.worktreeConfig` switches it off;
+- **the tidy-up check** (Step 1c), one line per signal. **In a light run with anything stale or done items to
+  archive, end the report with it:** *"`/shutdown full` would refresh the changelog and the system map, and offer
+  triage of 12 done items."* That names what a full run does; it is not an offer to run it now.
 
-Then **stop.** Do not commit anything else, do not open a pull request, do not offer to. A question about
-committing the session's work is not authorization to commit it.
+Then **stop**, or in a full run go on to Step 7. Do not commit anything else, do not open a pull request, do not
+offer to. A question about committing the session's work is not authorization to commit it.
 
 ---
+
+## Step 7 — Full run only: the tidy-up, after the record has landed
+
+**Only in a full run, and only after Step 6.** Typing `full` asked for this work, so it is not this skill's
+*its own files only* limit: **each tool runs by its own steps and commits by its own rules** (`branch_before_edit`,
+its own branch, never a merge, never a pull request opened). This skill still commits nothing here.
+
+1. **The documents, in one question.** List each document Step 1c found stale (multi-select): *"Refresh which?
+   changelog (14 commits behind), system map (3 commits under its roots), roadmap (5 since its build)"*. Run
+   `/changelog`, `/system-map` or `/roadmap` for each one picked, in that order, each by its own `SKILL.md`. Nothing
+   stale → say so in one line and skip to item 2.
+   **A refresh needs the whole repository.** A generator reads sources from anywhere: its notes, and the files its
+   entries link to. Run it in the session's checkout or in a **full** worktree, never a sparse one like Step 4's. A
+   sparse checkout makes a missing source look like a broken link: a roadmap refresh run with only `scripts/` and
+   its output folder gave 15 false warnings (BE-terna-Retail, 2026-11-20). Where its branch is not the session's
+   checkout, make the worktree with no `sparse-checkout` (`git worktree add -b <branch> <path> <default>`), and
+   remove it after its commit as Step 6 removes its own, never with `--force`.
+2. **The tracker, as an offer.** Only where Step 1c found done items or a tracker over its ceiling: *"Run
+   `/housekeeping archive` now? It triages with your yes on each verdict, then archives what that closed."* Offer it only
+   when Step 6 landed the record on `<default>` **and** the session's checkout is on `<default>` with a clean tree,
+   so Step 6's `git pull --ff-only` brought the record in and the tracker triage reads holds this session's findings.
+   Otherwise do not offer it, and say why. A record on another branch, or not committed, would mean triage editing
+   the tracker that record also edits, and this skill never switches the session's branch to get there.
+3. **Report:** for each tool, what it wrote, its branch and its commit, or *not committed* with why. Then stop.
+
+An answer the tool chose (Copilot autopilot) is no choice: take it as *skip*, for both items.
 
 ## Non-goals
 
@@ -539,7 +628,8 @@ committing the session's work is not authorization to commit it.
 - **Committing, pushing or merging the session's work** — Step 6 lands the record and nothing else.
 - **Deciding alone what is worth filing** — Step 3 confirms first.
 - **Rewriting tracker history** — append only.
-- **Archive sweeps and triage** — re-adjudicating items and moving completed ones out is a separate,
-  deliberate operation, and it has a home: `/housekeeping triage` and `/housekeeping archive`. This skill
+- **Archive sweeps and triage in Steps 0–6** — re-adjudicating items and moving completed ones out is a separate,
+  deliberate operation, and it has a home: `/housekeeping triage` and `/housekeeping archive`, which a full run's
+  Step 7 offers after the record has landed. This skill
   appends — plus the one confirmed near-duplicate sub-bullet Step 4b allows — and **removes nothing, ever** (taking landed entries out of the held-notes file outside the working tree is not a
   removal: Step 6).

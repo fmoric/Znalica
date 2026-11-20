@@ -51,7 +51,8 @@ done", "the tests pass", "verified": those were true once, and a later session w
 **Check who owns the file a fix would change.** A file the agent packet delivered — listed under `files` in
 `.agent-packet.json` at the project root (`AGENTS.md`, the agents, rules and skills) — is written over at the next
 re-delivery, so a local edit there is lost. Mark such a candidate **packet-owned** and propose it for the packet's
-maintainers instead: `/assess-delivery` carries it to them in its *For the library* section. A project file
+maintainers instead: filed in the project's tracker with the word `packet-owned` (by `/shutdown` Step 1b, or by the user), `/assess-delivery` carries it to
+them in its *For the library* section (0.201.0). A project file
 (its linter config, CI, README, own docs) is the project's to change.
 
 Done when every place from step 1 has a candidate, or a stated reason it has none (a one-off, already fixed), and

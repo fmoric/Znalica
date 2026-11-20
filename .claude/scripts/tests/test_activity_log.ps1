@@ -1,7 +1,7 @@
 # Tests for activity_log.ps1 - run them after every change to the script:
 #
-#   powershell -NoProfile -ExecutionPolicy Bypass -File .claude/scripts/tests/test_activity_log.ps1
-#   powershell -NoProfile -ExecutionPolicy Bypass -File .claude/scripts/tests/test_activity_log.ps1 <activity_log.ps1>
+#   powershell -NoProfile -ExecutionPolicy RemoteSigned -File .claude/scripts/tests/test_activity_log.ps1
+#   powershell -NoProfile -ExecutionPolicy RemoteSigned -File .claude/scripts/tests/test_activity_log.ps1 <activity_log.ps1>
 #
 # Every case runs the script in a new Windows PowerShell (powershell.exe), as both tools' registrations do, reading the
 # payload on stdin, in a temp

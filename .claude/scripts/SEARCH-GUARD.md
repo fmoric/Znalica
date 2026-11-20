@@ -63,7 +63,9 @@ stop another project's live test run that way (fixed in 0.153.2).
 - **Claude Code:** two hooks in `.claude/settings.json` — `PreToolUse` with matcher `Bash|PowerShell` for the guard,
   and `SessionStart` with matcher `startup` for the report — plus two `permissions.deny` rules as a backstop that
   works even if the hook cannot start, `Bash(find / *)` and `Bash(find /proc*)`, and `permissions.ask` rules so that
-  an agent asks before editing the guard, `.github/hooks/` or `.claude/settings.json`.
+  an agent asks before editing the guard, `.github/hooks/` or `.claude/settings.json`. Exact `permissions.allow`
+  rules let an agent run the tests below and the leftover report without a prompt, in auto mode too; an edit to
+  either script, or to anything under `.claude/scripts/tests/`, still asks.
 - **Copilot CLI:** `.github/hooks/search-guard.json`, matcher `bash|powershell|shell`. Copilot ignores a
   repository's hooks in a folder it does not trust, so trust the folder. **Copilot CLI 1.0.12 and later also runs
   the hooks in `.claude/settings.json`**, before 1.0.112 without `CLAUDE_PROJECT_DIR`; 1.0.112 sets it and adds `COPILOT_HOOK_DEPTH`, which the gate tests (0.199.2). So both of this guard's entries there start PowerShell and stop at once; the guard itself runs from
@@ -84,7 +86,8 @@ stop another project's live test run that way (fixed in 0.153.2).
 - **Tests:** `powershell -NoProfile -ExecutionPolicy RemoteSigned -File .claude/scripts/tests/test_search_guard.ps1`
   prints one line per case and `N/N passed`. Run it after any change to the guard.
 - **To remove it:** delete the `search_guard.ps1` and `leftover_processes.ps1` entries from `.claude/settings.json`,
-  the two `find` deny rules and the `search_guard.*` ask rule, and `.github/hooks/search-guard.json`. A re-delivery
+  the two `find` deny rules, the `search_guard.*` and `leftover_processes.ps1` ask rules, the four allow rules that
+  name `test_search_guard.ps1` or `leftover_processes.ps1`, the `Edit(/.claude/scripts/tests/**)` ask rule too, if no other guard's test is left, and `.github/hooks/search-guard.json`. A re-delivery
   asks the question again.
 
 ## What it is not

@@ -16,6 +16,8 @@ session-start hook's output, so on Copilot this skill is how the report is run.
 
 1. **Run the report** (Windows; the script ships with the project's search guard):
    `powershell -NoProfile -ExecutionPolicy RemoteSigned -File .claude/scripts/leftover_processes.ps1`
+   - Run it alone, exactly as written, with no `timeout`, pipe or `2>&1` around it: `.claude/settings.json` allows
+     only that string, and auto mode refused a wrapped form on 2026-11-20. With an option below, it may ask first.
    - No script at that path: the search guard was not delivered here. Say so and stop.
    - Add `-MinutesOld <n>` to change the age threshold (default 10 minutes).
    - Add `-Also python,postgres` to watch more names for this run: a stopped test run's `python.exe` or

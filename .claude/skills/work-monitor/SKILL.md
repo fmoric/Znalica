@@ -44,14 +44,19 @@ you did not read is never *nothing found*, and a count is good news only with wh
 - **Stall candidates.** A run file that stopped growing more than 10 minutes ago while no line says the run ended
   is a stall candidate, not a finding: the file cannot say whether its process is still alive.
 - **Live processes, on Windows.** Run the report the `leftover-processes` skill describes:
-  `powershell -NoProfile -ExecutionPolicy RemoteSigned -File .claude/scripts/leftover_processes.ps1`. With no
+  `powershell -NoProfile -ExecutionPolicy RemoteSigned -File .claude/scripts/leftover_processes.ps1`, alone and
+  exactly as written, with no `timeout`, pipe or `2>&1` around it: `.claude/settings.json` allows only that string. With no
   script at that path, the search guard was not delivered: *not run*. On another OS: *not run: Windows only*. Show
   its lists as that skill says.
 - **Subagent run times,** where the `activity_log` option is on, which `.claude/scripts/activity_log.ps1` being
-  there shows: read `.agent-activity/*.jsonl` for the window, one line per subagent start and stop. Pair each
-  `start` with the **last** `stop` of the same session and `agent_id`; a subagent the waiting check sent back
-  stops twice. Report each subagent's type and run time. A start with no stop and no later line from its session
-  is a stall candidate, never a finding: the session may have ended. No script: *not run: activity log off
+  there shows: read `.agent-activity/*.jsonl` for the window, one line per subagent start and stop. A line's keys
+  are `t` (UTC time), `tool`, `event` (`start` or `stop`), `session`, `agent_id`, `agent_type` and `parent`, and no
+  others: print one line's keys before a script reads them. Pair each `start` with the **last** `stop` of the same
+  `session` and `agent_id`; a subagent the waiting check sent back stops twice. Report each subagent's type and
+  run time. **A subagent stopped by an API error writes no stop line** (two code-reviewer runs, 2026-11-20). So a
+  start with no stop, followed by later lines from its session, is *no stop line: still running beside them, or ended by an API error*, never a stall finding: the session's own
+  report says which. A start with no stop and no later line from its session is a stall candidate, never a finding:
+  the session may have ended, or the subagent died the same way. No script: *not run: activity log off
   (`activity_log` option)*. Script there but no folder yet: *read: no subagent has run since it was delivered*.
 - **Watchers.** Name any watcher this session armed and is still running. Another session's watchers and tool calls
   are not visible from here: say so, instead of reporting none.

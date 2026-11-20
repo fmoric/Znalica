@@ -1,5 +1,5 @@
 # Tests for waiting_check.ps1. Run from anywhere:
-#   powershell -NoProfile -ExecutionPolicy Bypass -File .claude/scripts/tests/test_waiting_check.ps1
+#   powershell -NoProfile -ExecutionPolicy RemoteSigned -File .claude/scripts/tests/test_waiting_check.ps1
 # Each case pipes a Stop payload through the script in a fresh powershell process, as Claude Code does, and checks
 # whether it answered with a block. Prints one line per case and an `N/N passed` total; exits 1 on any failure.
 # The blocking cases are what prove the check is live: a script that fails to parse its input passes every
