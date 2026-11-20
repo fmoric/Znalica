@@ -93,6 +93,11 @@
   moved to `docs/assess-delivery-2026-11-20` before any commit. The 2026-11-18 assessment branched by itself.
   - **Fix direction:** one line in `/assess-delivery` §5: before writing, check the branch and create
     `docs/assess-delivery-<date>` when it is the protected one.
+- [ ] **Run `/assess-delivery`'s Copilot tool-list check on a cheap model.** *(T16. New 2026-11-20. packet-owned.)*
+  §4c signal B runs `copilot -p … --agent <name>` at each agent's pinned model, though listing tools needs no
+  judgment. The 2026-11-20 assessment spent 23.85 AI credits on three runs: code-reviewer 12.56 and design-reviewer
+  10.67 (Sonnet-pinned), reader 0.62 (Haiku-pinned).
+  - **Fix direction:** pass `--model <a low-cost model>` to signal B's runs; the tool list does not depend on the model.
 
 ## Done
 
