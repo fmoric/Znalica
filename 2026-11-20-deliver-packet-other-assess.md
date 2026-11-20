@@ -80,7 +80,7 @@ None. Every structural, semantic and runtime check below ran clean or is marked 
 
 ## For the library
 
-Tracker: `TODO.md`, 2 open packet-owned items.
+Tracker: `TODO.md`, 3 open packet-owned items (T15 was filed by this assessment).
 
 - **🟢 Ship a tested renderer with `/deliver-packet`, so a full re-scaffold does not improvise one** —
   component: `skills/deliver-packet/SKILL.md` §2 (the `copy` and `assemble` handlers) · evidence: `TODO.md`:75,
@@ -89,6 +89,10 @@ Tracker: `TODO.md`, 2 open packet-owned items.
 - **🟢 Say which review a re-delivery pull request gets** — component: `skills/deliver-packet/SKILL.md` §4 ·
   evidence: `TODO.md`:84, T14 · plugin: 0.205.6 · fix: one line naming the review a re-delivery PR needs, or that
   its §4 checks stand in for it.
+- **🟡 `/assess-delivery` writes its report without branching first** — component:
+  `skills/assess-delivery/SKILL.md` §5 · evidence: `TODO.md` T15; this report was first written on `master` and moved to
+  `docs/assess-delivery-2026-11-20` before any commit · plugin: 0.205.6 · fix: one line in §5 to check the branch and
+  create `docs/assess-delivery-<date>` when it is the protected one.
 
 ## Checks run
 
