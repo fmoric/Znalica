@@ -7,7 +7,19 @@
     "ask": [
       "Edit(/.claude/scripts/search_guard.*)",
       "Edit(/.github/hooks/**)",
-      "Edit(/.claude/settings.json)"
+      "Edit(/.claude/settings.json)",
+      "Edit(/.claude/scripts/leftover_processes.ps1)",
+      "Edit(/.claude/scripts/tests/**)"
+    ],
+    "allow": [
+      "Bash(powershell -NoProfile -ExecutionPolicy RemoteSigned -File .claude/scripts/tests/test_search_guard.ps1)",
+      "PowerShell(powershell -NoProfile -ExecutionPolicy RemoteSigned -File .claude/scripts/tests/test_search_guard.ps1)",
+      "Bash(powershell -NoProfile -ExecutionPolicy RemoteSigned -File .claude/scripts/leftover_processes.ps1)",
+      "PowerShell(powershell -NoProfile -ExecutionPolicy RemoteSigned -File .claude/scripts/leftover_processes.ps1)",
+      "Bash(powershell -NoProfile -ExecutionPolicy RemoteSigned -File .claude/scripts/tests/test_activity_log.ps1)",
+      "PowerShell(powershell -NoProfile -ExecutionPolicy RemoteSigned -File .claude/scripts/tests/test_activity_log.ps1)",
+      "Bash(powershell -NoProfile -ExecutionPolicy RemoteSigned -File .claude/scripts/tests/test_waiting_check.ps1)",
+      "PowerShell(powershell -NoProfile -ExecutionPolicy RemoteSigned -File .claude/scripts/tests/test_waiting_check.ps1)"
     ]
   },
   "hooks": {

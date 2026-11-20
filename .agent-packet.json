@@ -1,6 +1,6 @@
 {
   "plugin": "ai-agent-templates",
-  "version": "0.199.3",
+  "version": "0.205.6",
   "packet": "developer",
   "language": "other",
   "options": {
@@ -32,7 +32,7 @@
     "TEST_GLOB": "Assets/Znalica/Tests/**/*.cs"
   },
   "rule_decisions": [],
-  "delivered": "2026-11-18",
+  "delivered": "2026-11-20",
   "files": {
     ".claude/skills/discussion/SKILL.md": {
       "hash": "2b2b3d7a10d9e7eb6b6b13b904ba26152d4402d5",
@@ -67,12 +67,12 @@
       "template": "d77ce3e3fb9bb5105918145043458e7893222cf1"
     },
     ".claude/skills/housekeeping/SKILL.md": {
-      "hash": "384caa9e38668314c856880bee281cfca22af293",
-      "template": "384caa9e38668314c856880bee281cfca22af293"
+      "hash": "e6ed8fb9279118cb680d977e48e5d3a9863721f3",
+      "template": "e6ed8fb9279118cb680d977e48e5d3a9863721f3"
     },
     ".github/skills/housekeeping/SKILL.md": {
-      "hash": "384caa9e38668314c856880bee281cfca22af293",
-      "template": "384caa9e38668314c856880bee281cfca22af293"
+      "hash": "e6ed8fb9279118cb680d977e48e5d3a9863721f3",
+      "template": "e6ed8fb9279118cb680d977e48e5d3a9863721f3"
     },
     ".claude/skills/knowledge-exchange/SKILL.md": {
       "hash": "899eafae675f3b6df818c1af112f82cae1d1f08d",
@@ -91,12 +91,12 @@
       "template": "45f1e8d31e6b6e7c719af1020c10f97f11ab9592"
     },
     ".claude/skills/shutdown/SKILL.md": {
-      "hash": "cec2bd81d862a1b15d93f888c301ace3011ffc2a",
-      "template": "cec2bd81d862a1b15d93f888c301ace3011ffc2a"
+      "hash": "71d4f3268db347744ca20a9b1db3bf8b758c4cc5",
+      "template": "71d4f3268db347744ca20a9b1db3bf8b758c4cc5"
     },
     ".github/skills/shutdown/SKILL.md": {
-      "hash": "cec2bd81d862a1b15d93f888c301ace3011ffc2a",
-      "template": "cec2bd81d862a1b15d93f888c301ace3011ffc2a"
+      "hash": "71d4f3268db347744ca20a9b1db3bf8b758c4cc5",
+      "template": "71d4f3268db347744ca20a9b1db3bf8b758c4cc5"
     },
     ".claude/skills/mcp-server-setup/SKILL.md": {
       "hash": "a2b6976c0a13705c2df9a84c00a403bc9696fbd5",
@@ -179,12 +179,12 @@
       "template": "4e6f0e8456b9e5f2d395becaa2ec411d8eee6c2f"
     },
     ".claude/skills/pr-merge-approval/SKILL.md": {
-      "hash": "8ea231ebb3718df8847dc983df2d8ddfc2233798",
-      "template": "8ea231ebb3718df8847dc983df2d8ddfc2233798"
+      "hash": "93a46cff84ac3023cbc83ba8a43eae2c1c07666c",
+      "template": "93a46cff84ac3023cbc83ba8a43eae2c1c07666c"
     },
     ".github/skills/pr-merge-approval/SKILL.md": {
-      "hash": "8ea231ebb3718df8847dc983df2d8ddfc2233798",
-      "template": "8ea231ebb3718df8847dc983df2d8ddfc2233798"
+      "hash": "93a46cff84ac3023cbc83ba8a43eae2c1c07666c",
+      "template": "93a46cff84ac3023cbc83ba8a43eae2c1c07666c"
     },
     ".claude/skills/answer-before-you-ask/SKILL.md": {
       "hash": "54b588bb9da1ffb3bbc9db2688c1577ec19b9f6a",
@@ -367,12 +367,12 @@
       "template": "dd453cbc83526617d1f5d0142478e4ae51683836"
     },
     ".claude/scripts/tests/test_waiting_check.ps1": {
-      "hash": "357b9d7dfcdd77283d0286567f48656fcc841e82",
-      "template": "357b9d7dfcdd77283d0286567f48656fcc841e82"
+      "hash": "6d5052231df4d46e18067d30e8f27f1017157161",
+      "template": "6d5052231df4d46e18067d30e8f27f1017157161"
     },
     ".claude/scripts/WAITING-CHECK.md": {
-      "hash": "a7beee3e4461a8cee63a7729534deb16568a6a06",
-      "template": "a7beee3e4461a8cee63a7729534deb16568a6a06"
+      "hash": "faf74bcd5b6a41c2175aac8ba4c4bbc8e5537eb6",
+      "template": "faf74bcd5b6a41c2175aac8ba4c4bbc8e5537eb6"
     },
     ".claude/agents/developer.md": {
       "hash": "0f3466d38cc364a6ac3d0405a0873578aa33fc91",
@@ -531,20 +531,20 @@
       "template": "9064ed0089b3b15e862ae34eb44bd2b94d89653b"
     },
     ".claude/skills/hand-off-a-change/SKILL.md": {
-      "hash": "132d36201a4dd8b1419fb4239d1b7c044b840db8",
-      "template": "132d36201a4dd8b1419fb4239d1b7c044b840db8"
+      "hash": "5b4c08449a806766816f9819b6ba2cad249f5d79",
+      "template": "5b4c08449a806766816f9819b6ba2cad249f5d79"
     },
     ".github/skills/hand-off-a-change/SKILL.md": {
-      "hash": "132d36201a4dd8b1419fb4239d1b7c044b840db8",
-      "template": "132d36201a4dd8b1419fb4239d1b7c044b840db8"
+      "hash": "5b4c08449a806766816f9819b6ba2cad249f5d79",
+      "template": "5b4c08449a806766816f9819b6ba2cad249f5d79"
     },
     ".claude/skills/retro/SKILL.md": {
-      "hash": "f6443f563adb196718b49e5a6c4e76c4a190eaf5",
-      "template": "f6443f563adb196718b49e5a6c4e76c4a190eaf5"
+      "hash": "2a5636f80525a6466527e00aa03f8ae2b05e1075",
+      "template": "2a5636f80525a6466527e00aa03f8ae2b05e1075"
     },
     ".github/skills/retro/SKILL.md": {
-      "hash": "f6443f563adb196718b49e5a6c4e76c4a190eaf5",
-      "template": "f6443f563adb196718b49e5a6c4e76c4a190eaf5"
+      "hash": "2a5636f80525a6466527e00aa03f8ae2b05e1075",
+      "template": "2a5636f80525a6466527e00aa03f8ae2b05e1075"
     },
     ".claude/skills/split-ticket/SKILL.md": {
       "hash": "f4bfdce40100f45c42691ed9588da9691899d8c8",
@@ -555,12 +555,12 @@
       "template": "f4bfdce40100f45c42691ed9588da9691899d8c8"
     },
     ".claude/skills/leftover-processes/SKILL.md": {
-      "hash": "7de71201bd08bda8651634f0c2bde86711d620ca",
-      "template": "7de71201bd08bda8651634f0c2bde86711d620ca"
+      "hash": "c6f6446b4fd5631bfb5219389cc24faad853c7f8",
+      "template": "c6f6446b4fd5631bfb5219389cc24faad853c7f8"
     },
     ".github/skills/leftover-processes/SKILL.md": {
-      "hash": "7de71201bd08bda8651634f0c2bde86711d620ca",
-      "template": "7de71201bd08bda8651634f0c2bde86711d620ca"
+      "hash": "c6f6446b4fd5631bfb5219389cc24faad853c7f8",
+      "template": "c6f6446b4fd5631bfb5219389cc24faad853c7f8"
     },
     "docs/rules-rationale/look_before_you_write.md": {
       "hash": "435f3d6c8270715dad8b16aa4deafee1f213c68b",
@@ -575,24 +575,24 @@
       "template": "6eb32103720084184db0ddd8aac01d2e261a239a"
     },
     ".claude/scripts/tests/test_search_guard.ps1": {
-      "hash": "ba043aca56c53b9c9438c5a4eaf9c73c3533cb26",
-      "template": "ba043aca56c53b9c9438c5a4eaf9c73c3533cb26"
+      "hash": "2d479b2acf9ebcd5795b14bfba6e796d1c454bd1",
+      "template": "2d479b2acf9ebcd5795b14bfba6e796d1c454bd1"
     },
     ".github/hooks/search-guard.json": {
       "hash": "34bad448646c3f95ddb4e20069f0bd856a9e5469",
       "template": "34bad448646c3f95ddb4e20069f0bd856a9e5469"
     },
     ".claude/scripts/SEARCH-GUARD.md": {
-      "hash": "fba1c54044e52d5f948457c654fc6f96edc605be",
-      "template": "fba1c54044e52d5f948457c654fc6f96edc605be"
+      "hash": "7b89c6c5e991281c6aac0015b119938450a1249c",
+      "template": "7b89c6c5e991281c6aac0015b119938450a1249c"
     },
     ".mcp.json": {
       "hash": "8728b28009f25d8df4cd37f2cf7e337091f5660a",
       "template": "8728b28009f25d8df4cd37f2cf7e337091f5660a"
     },
     "MCP-SETUP.md": {
-      "hash": "9fda52449bf2a544adbc41909499370db048429e",
-      "template": "9fda52449bf2a544adbc41909499370db048429e"
+      "hash": "bf026471ae6b78c85b31def3a7bdfce3abf7cdb7",
+      "template": "bf026471ae6b78c85b31def3a7bdfce3abf7cdb7"
     },
     ".claude/skills/list-pending-work/SKILL.md": {
       "hash": "c2257f3245d13bfd5e02394861f75a252bd3dbb6",
@@ -611,28 +611,28 @@
       "template": "0e5eb97d709c769c9cfa5eada3f3a6fe30f3d79f"
     },
     ".claude/skills/work-monitor/SKILL.md": {
-      "hash": "a7b38477fc54dfb7f01f6642046001d05eb3f4e6",
-      "template": "a7b38477fc54dfb7f01f6642046001d05eb3f4e6"
+      "hash": "e00497655f7ca0d58a60d3dc80123597bac2077b",
+      "template": "e00497655f7ca0d58a60d3dc80123597bac2077b"
     },
     ".github/skills/work-monitor/SKILL.md": {
-      "hash": "a7b38477fc54dfb7f01f6642046001d05eb3f4e6",
-      "template": "a7b38477fc54dfb7f01f6642046001d05eb3f4e6"
+      "hash": "e00497655f7ca0d58a60d3dc80123597bac2077b",
+      "template": "e00497655f7ca0d58a60d3dc80123597bac2077b"
     },
     ".claude/scripts/activity_log.ps1": {
       "hash": "886c92cda9fdb2f3246e0ed2c4642b9664e1e93f",
       "template": "886c92cda9fdb2f3246e0ed2c4642b9664e1e93f"
     },
     ".claude/scripts/tests/test_activity_log.ps1": {
-      "hash": "169256055f56486b494aab5032db28336304b087",
-      "template": "169256055f56486b494aab5032db28336304b087"
+      "hash": "39e52a7105736d41458d8a3aac6136fadff5be04",
+      "template": "39e52a7105736d41458d8a3aac6136fadff5be04"
     },
     ".github/hooks/activity-log.json": {
       "hash": "d824aaafb0d658f876a27a006186ebc6e2527e61",
       "template": "d824aaafb0d658f876a27a006186ebc6e2527e61"
     },
     ".claude/scripts/ACTIVITY-LOG.md": {
-      "hash": "ad42ffd1d2f3936c36c21a17595c2220c3c8915f",
-      "template": "ad42ffd1d2f3936c36c21a17595c2220c3c8915f"
+      "hash": "cb7d5493020abab97ea023d3ca77c578faea4d04",
+      "template": "cb7d5493020abab97ea023d3ca77c578faea4d04"
     }
   },
   "preflight": {

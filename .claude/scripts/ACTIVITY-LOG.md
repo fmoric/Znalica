@@ -52,8 +52,10 @@ durations on Copilot come from its OpenTelemetry file instead (`work-monitor`, *
 ## Tests
 
 ```
-powershell -NoProfile -ExecutionPolicy Bypass -File .claude/scripts/tests/test_activity_log.ps1
+powershell -NoProfile -ExecutionPolicy RemoteSigned -File .claude/scripts/tests/test_activity_log.ps1
 ```
+
+An exact `permissions.allow` rule lets an agent run this command without a prompt, in auto mode too, so type it as shown.
 
 They run the script in a fresh Windows PowerShell (`powershell.exe`) reading the payload on stdin, as both
 registrations do: by `-File` as Copilot's does, and once through the delivered Claude entry's `-Command` form. They
@@ -63,5 +65,5 @@ line per case, then `N/N passed`.
 ## Turning it off
 
 Re-deliver and answer no to the activity-log question. Or remove the two `.claude/settings.json` entries that name
-`activity_log.ps1` and delete `.github/hooks/activity-log.json`. Either way `.agent-activity/` stays where it is:
+`activity_log.ps1`, the two allow rules that name `test_activity_log.ps1` and the `Edit(/.claude/scripts/tests/**)` ask rule too, if no other guard's test is left, and delete `.github/hooks/activity-log.json`. Either way `.agent-activity/` stays where it is:
 delete it yourself. The log keeps no retention of its own; one file per day accumulates until you remove them.

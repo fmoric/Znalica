@@ -1,7 +1,7 @@
 # Tests for search_guard.ps1 - run them after every change to the guard:
 #
-#   powershell -NoProfile -ExecutionPolicy Bypass -File .claude/scripts/tests/test_search_guard.ps1
-#   powershell -NoProfile -ExecutionPolicy Bypass -File .claude/scripts/tests/test_search_guard.ps1 <guard.ps1>
+#   powershell -NoProfile -ExecutionPolicy RemoteSigned -File .claude/scripts/tests/test_search_guard.ps1
+#   powershell -NoProfile -ExecutionPolicy RemoteSigned -File .claude/scripts/tests/test_search_guard.ps1 <guard.ps1>
 #
 # Most cases call the guard's decision function in this process. The contract group runs it the way both tools do -
 # a new powershell.exe reading the payload on stdin - and checks the answer format per tool and exit code 0 every

@@ -198,6 +198,11 @@ total.
    Release tooling that writes the changelog (`release-please`, `semantic-release`, `changesets`,
    `git-cliff`) answers this itself — report its preview instead. No changelog is a fact to report, not a
    lag. Refresh with `/changelog`.
+6. **A stale roadmap** (0.205.0). If the project has one (`docs/roadmap.md`, or the file `AGENTS.md` names), read the
+   commit its header was built at and the sources it lists, and count the commits since that touch them:
+   `git log --oneline <built-at>..HEAD -- <its sources> | wc -l`. Non-zero is stale: an item may have moved state
+   since. A header that names no sources is measured against the whole tree, and say so. No roadmap is a fact to
+   report, not a staleness. Refresh with `/roadmap`.
 
 **A census is not a sweep, and must not read like one.** *"12 items carry `- [x]`"* is a count;
 *"12 items are closeable"* is an adjudication you did not perform. On a bare run, say which one you did:
