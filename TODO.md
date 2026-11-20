@@ -87,6 +87,12 @@
   checks.
   - **Fix direction:** one line in `/deliver-packet` §4 naming the review a re-delivery PR needs, or that its §4
     checks stand in for it.
+- [ ] **Make `/assess-delivery` branch before it writes its report.** *(T15. New 2026-11-20. packet-owned.)* Its §5
+  says where to write `<slug>.md` (`docs/assessments/`, else the project root) but has no branch step, so the
+  2026-11-20 assessment wrote the report on `master`, against `branch_before_edit`; it was caught after the write and
+  moved to `docs/assess-delivery-2026-11-20` before any commit. The 2026-11-18 assessment branched by itself.
+  - **Fix direction:** one line in `/assess-delivery` §5: before writing, check the branch and create
+    `docs/assess-delivery-<date>` when it is the protected one.
 
 ## Done
 
