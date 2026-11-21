@@ -1,0 +1,15 @@
+# Unity serialized YAML text assets: always LF, so a Unity build never rewrites them.
+*.asset text eol=lf
+*.prefab text eol=lf
+*.unity text eol=lf
+*.mat text eol=lf
+*.meta text eol=lf
+*.asmdef text eol=lf
+*.anim text eol=lf
+*.controller text eol=lf
+*.physicMaterial text eol=lf
+
+# Binary assets: never touch line endings.
+*.ogg binary
+*.png binary
+*.ttf binary
