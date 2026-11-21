@@ -87,6 +87,10 @@
   shipped silently. `MCP-SETUP.md` had to be patched by hand, since it is prose generated from `servers.yaml`.
   - **Fix direction:** a library script for §2's `copy` and `assemble` handlers, plus a step that renders the
     manifest's own version and compares with the recorded hashes before rendering the new one.
+  - **Again at 0.206.6 (2026-11-21).** The changed-paths re-delivery built the renderer a second time. Rendering
+    0.205.6 first and comparing with the manifest's hashes caught three misses: a `description:` holding `"` was not
+    quoted, the `Run: none` line came back, and an apostrophe alone was quoted when the delivery does not. `MCP-SETUP.md`
+    was again patched by hand.
 - [ ] **Say which review a re-delivery pull request gets.** *(T14. New 2026-11-20. packet-owned.)* `self_review`
   sends code to the code-reviewer agent, and `/deliver-packet` §4 does not say whether a re-delivery's packet text
   counts. PR #14 (0.205.6) merged with no review; its check was the byte-for-byte reproduction of 0.199.3 and the §4
@@ -133,6 +137,12 @@
   and said so; the budget it used happened to match.
   - **Fix direction:** one line in `hand-off-a-change`'s developer brief (*Gate*): open
     `docs/process/PR_GATES_PRECHECK.md` before you select.
+- [ ] **Find out why the activity log records stops with no start and no agent type.** *(T22. New 2026-11-21.
+  packet-owned.)* The 2026-11-21 re-delivery session started no subagent, yet `.agent-activity/2026-11-21.jsonl` holds
+  four `stop` lines for it (19:40–19:45 UTC) with `agent_type: null` and no matching `start`. The likely source is the
+  harness's own background agents firing `SubagentStop`; not traced.
+  - **Fix direction:** once the cause is confirmed, have `activity_log.ps1` skip or label a stop whose agent type is
+    empty, so `work-monitor` does not count it.
 
 ## Done
 
