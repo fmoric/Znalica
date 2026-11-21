@@ -1,6 +1,6 @@
 ---
 name: shutdown
-description: Use only when the user ends the session (/shutdown [full]) — never at the end of a task, PR or branch, and never offered unprompted. Reconciles git, files findings, writes the session record, then commits and pushes that record alone to main.
+description: Use only when the user ends the session (/shutdown [full]) — never at the end of a task, PR or branch, and never offered unprompted. Reconciles git, files findings, writes the session record, then commits and pushes that record alone.
 ---
 
 # Shutdown
@@ -12,7 +12,7 @@ next session can pick up. It closes the loop `/initialize` opens.
 re-discovered later at full cost, with a person as the transport every time.
 
 **It commits its own files and nothing else** (0.190.0). A session record is not a code change, so it lands on the
-default branch, where the next session looks first: Step 4 writes in a temporary worktree on a session branch cut from
+default branch (or the integration branch a project names, Step 1), where the next session looks first: Step 4 writes in a temporary worktree on a session branch cut from
 it, and Step 6 commits and pushes **only the files this skill wrote**. The session's own branch, its commits and its
 uncommitted work are never touched. **Never force-push, never merge another branch, never open or merge a pull request,
 never commit a file this skill did not write.** That limit is an instruction, not a structural guarantee: the shell
@@ -121,6 +121,15 @@ there is no `<default>`: say so, skip every command that takes it, and Step 4 ta
 failed** (offline, credentials) → say so; `origin/<default>` is then as old as the last fetch, and Step 6 will not
 be able to push.
 
+**An integration branch takes its place** (0.206.3), whatever the command above printed. Read its name from
+`docs/process/INTEGRATION_BRANCH_GATES.md` where that file exists: its *"Pull requests target `<name>`"* line.
+Without that file, from `AGENTS.md` only where it calls a branch the integration branch or says pull requests
+target it; a branch named in passing, or in a list of protected branches, does not count. Two different names →
+ask the user which. Where `git branch -r --list origin/<name>` prints it, use **that** name as `<default>` in every
+later step: the base, the tracker search, the worktree's start point and the push. Say both in one line, such as
+*"records land on `develop`, the integration branch; `origin/HEAD` is `master`"*. The remote does not have it →
+keep what the command above printed, and say the named branch was not found.
+
 ```bash
 git status -sb                  # uncommitted work AND ahead/behind in one line
 git rev-parse --abbrev-ref HEAD # branch
@@ -128,8 +137,8 @@ git log --oneline @{u}..HEAD    # commits that exist ONLY here (errors if no ups
 git merge-base HEAD origin/<default>   # <base>, on a feature branch
 ```
 
-`<base>` is where this session's work started. On a feature branch it is the last line's output. On the default
-branch itself, or with no `<default>`, it is the commit the session started at: the `Written at:` sha in
+`<base>` is where this session's work started. On a feature branch it is the last line's output. On `<default>`
+itself (Step 1's, the integration branch where there is one), or with no `<default>`, it is the commit the session started at: the `Written at:` sha in
 `docs/sessions/RESUME.md` if it is an ancestor of `HEAD`, else ask. Then, with the sha typed in:
 
 ```bash

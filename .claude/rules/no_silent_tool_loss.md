@@ -6,7 +6,7 @@ paths:
 # Say So When a Configured Capability Is Missing — Never Degrade Silently
 
 At **first reliance** on an MCP capability this project or agent promises (symbol navigation, knowledge
-lookup, thinking server), not at session start, check **your own loaded tools**. Claude Code uses
+lookup), not at session start, check **your own loaded tools**. Claude Code uses
 `mcp__<server>__*`, Copilot CLI `<server>/*`; the other form's absence proves nothing. A status panel
 saying "No MCP servers configured" is not evidence if tools are live. Committed `.mcp.json` **declares**
 servers; it does not **install** them.

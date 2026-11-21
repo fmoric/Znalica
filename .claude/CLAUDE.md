@@ -59,7 +59,14 @@
   timeout, check the branch: if the task's final commit is there and rebased (after `git fetch`, `git merge-base
   --is-ancestor origin/<default branch> <branch>` succeeds), hand it to its reviewer and re-arm, so an overrunning
   suite run still wakes you; take that run over only as `AGENTS.md` → *Delegating to an agent* says. Otherwise, on
-  `COMMIT` re-arm; on any other wake, tell the user what the branch shows before you re-arm. Every re-arm keeps
+  `COMMIT` re-arm; on any other wake, tell the user what the branch shows before you re-arm. A `STALLED` wake with **no
+  process of the agent's alive** and no change on the branch is likely a tool call hung in the tool layer, not a slow
+  run, and a message to the agent waits for its next tool call. Check from PowerShell, since Git Bash's `ps` does not
+  list native Windows processes: `Get-Process python,uv,node,dotnet -ErrorAction SilentlyContinue | Select-Object
+  Id,Name,StartTime` (add the run's own tool names). A process started before the wake means a slow run: re-arm as
+  above. None → tell the user, and re-arm meanwhile, keeping `t0`. Stopping the agent (`TaskStop`) and resuming it by
+  a `SendMessage` to it, which continues from its transcript, freed one (2026-11-21, 0.206.5); do that on the user's
+  word. Every re-arm keeps
   `t0`, except after `TIMELIMIT`: tell the user the budget is spent, then re-arm with `t0` empty. Stop the watcher
   when the agent reports.
 - Roles and standards are defined once in `AGENTS.md` — don't restate them here; keep this file to

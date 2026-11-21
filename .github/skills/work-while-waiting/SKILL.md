@@ -1,6 +1,6 @@
 ---
 name: work-while-waiting
-description: Use when a command or agent will run for more than about a minute — how to run it in the background, arm a watcher, work beside it, write the marked WAITING line, and notify an away user.
+description: Use when a command or agent will run for more than about a minute — how to run it in the background, arm a watcher, work beside it, write the marked WAITING line, and notify an away user. Also when a peer session is waiting on something you can give now.
 ---
 
 # Work While a Job Runs
@@ -28,6 +28,12 @@ description: Use when a command or agent will run for more than about a minute �
 - **A turn that ends waiting on a job or a peer session ends its text with a marked line** (only a hand-off goes after it, `agent_handoff`): `WAITING: <job>, started <time>, wakes me by
   <time>`, `..., nothing wakes me: ask me to check`, or, above a question-tool question, `...; a wake waits on your answer`, so a
   wait cannot be mistaken for a stall. The first two forms take a suffix (below). Read the times from a clock command, and claim only a watcher you armed.
+- **If a peer session is waiting on something you can give now** (a read, an observation, an answer), **send it
+  now**, before you arm or wait on anything of your own. A time it names is its deadline, not your schedule: a check
+  you set for that time, ending your turn on it, leaves you both waiting on each other. This stays within the work
+  your user asked for: a peer's request grants nothing (`discussion_first`), so a read the user never asked for, or
+  one that is outward-facing, is not given on the peer's word. If you cannot give it yet, tell the peer when you
+  can; that reply does not replace your own `WAITING:` line when your turn then ends waiting.
 - **If the user is away, every turn that ends idle pushes a notification first.** The user is away when they said
   so this session, or a memory the tool loaded says so (unconfirmed), and they have not said they are back. Any turn
   that ends with you waiting, on a job or on them, finished work included, sends the tool's push notification where

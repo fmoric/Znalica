@@ -11,7 +11,7 @@ paths:
 2. **Read their descriptions** — they are the routing table; a list of bare names is not. If you routed from
    names alone, say so.
 3. **Try the matching tool first** — fall back to the built-in search and read tools only if none fits.
-4. **For complex or multi-step work**, reason it through first (a sequential-thinking tool, if present).
+4. **For complex or multi-step work**, reason it through first.
 
 A task is trivial (skip the gate) only for a single-line/typo change or a one-sentence factual answer.
 
