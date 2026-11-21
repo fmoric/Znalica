@@ -20,3 +20,12 @@ silently.
 ## Common cause
 
 If attempt 1 returns a non-useful result, the first hypothesis should be **wrong tool**, not wrong query.
+
+## A subagent stopped by an API error
+
+A subagent that ends with an API error instead of its report (a safeguard flag, an overload) **has not run**: it
+left no findings and no pass, and whatever waits on its result keeps waiting. **It is not an attempt under the limit
+above: nothing is sent again without a yes.** Report the error text and request ID to the user, and ask before
+sending it again; another model is an option to offer, not a fix to assume. Several stops in one batch get **one**
+question, not one per run. A subagent whose own subagent stopped puts this in its report to its caller and does not
+send the run again itself.

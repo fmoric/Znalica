@@ -173,6 +173,17 @@ that finishes or hangs waits on the user's answer. The `WAITING:` line above the
 user is away a push notification goes out first. Plain text remains only where no question tool can hold the
 turn: under Copilot autopilot, and where the tool does not exist (`write_for_the_reader` obligation 6).
 
+## The eleventh incident (added 0.206.2)
+
+Field report: BE-HUB System, 2026-11-20, in its shutdown report (its T-447). At 18:19 BE-terna Retail's session
+asked it for *"what the reads show by about 18:24"*. BE-HUB set its own check for 18:24 and ended its turn, and
+BE-terna waited on the answer. Neither moved until the user wrote, at about 18:21, *"you are waiting on each other,
+retail on hub"*. BE-HUB could have answered at any moment with one log read.
+
+The rule said how a turn that waits on a peer ends, and nothing about a peer that waits on you. BE-HUB read the
+peer's time as when to look. 0.206.2 adds one sentence: what a waiting peer asked for and you can give now goes now,
+and a time it names is its deadline, not your schedule.
+
 ## The cases the rule must decide
 
 - **Allow:** a five-minute test run executes in the background while the agent drafts the report sections it can
@@ -201,6 +212,8 @@ turn: under Copilot autopilot, and where the tool does not exist (`write_for_the
 - **Require:** the user said they are remote and not back, and the turn ends on a 30-minute batch, on a question or
   on finished work: a push notification goes out first (0.180.2).
 - **Forbid:** a push to a user who is at the terminal replying within seconds (Claude's tool skips it itself).
+- **Require:** a peer session asks for a read *"by 18:24"* that one command answers: the session sends it at once,
+  not at 18:24, and does not end its turn on a check set for that time (0.206.2).
 
 ## Neighbours
 

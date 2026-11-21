@@ -1,6 +1,6 @@
 {
   "plugin": "ai-agent-templates",
-  "version": "0.205.6",
+  "version": "0.206.6",
   "packet": "developer",
   "language": "other",
   "options": {
@@ -32,7 +32,7 @@
     "TEST_GLOB": "Assets/Znalica/Tests/**/*.cs"
   },
   "rule_decisions": [],
-  "delivered": "2026-11-20",
+  "delivered": "2026-11-21",
   "files": {
     ".claude/skills/discussion/SKILL.md": {
       "hash": "2b2b3d7a10d9e7eb6b6b13b904ba26152d4402d5",
@@ -91,12 +91,12 @@
       "template": "45f1e8d31e6b6e7c719af1020c10f97f11ab9592"
     },
     ".claude/skills/shutdown/SKILL.md": {
-      "hash": "71d4f3268db347744ca20a9b1db3bf8b758c4cc5",
-      "template": "71d4f3268db347744ca20a9b1db3bf8b758c4cc5"
+      "hash": "90d2ae743a7d6ec867a6b5306da2ce14ee0f5723",
+      "template": "90d2ae743a7d6ec867a6b5306da2ce14ee0f5723"
     },
     ".github/skills/shutdown/SKILL.md": {
-      "hash": "71d4f3268db347744ca20a9b1db3bf8b758c4cc5",
-      "template": "71d4f3268db347744ca20a9b1db3bf8b758c4cc5"
+      "hash": "90d2ae743a7d6ec867a6b5306da2ce14ee0f5723",
+      "template": "90d2ae743a7d6ec867a6b5306da2ce14ee0f5723"
     },
     ".claude/skills/mcp-server-setup/SKILL.md": {
       "hash": "a2b6976c0a13705c2df9a84c00a403bc9696fbd5",
@@ -203,12 +203,12 @@
       "template": "f5acc68743de0c64bedff1111b2ece076b7b8202"
     },
     ".claude/skills/task-assessment/SKILL.md": {
-      "hash": "1ff633bc149b633cebaabbaa86c3291ba16081ee",
-      "template": "1ff633bc149b633cebaabbaa86c3291ba16081ee"
+      "hash": "eb9d6eada7d74872e9e9912cb9d7b41c4a55741a",
+      "template": "eb9d6eada7d74872e9e9912cb9d7b41c4a55741a"
     },
     ".github/skills/task-assessment/SKILL.md": {
-      "hash": "1ff633bc149b633cebaabbaa86c3291ba16081ee",
-      "template": "1ff633bc149b633cebaabbaa86c3291ba16081ee"
+      "hash": "eb9d6eada7d74872e9e9912cb9d7b41c4a55741a",
+      "template": "eb9d6eada7d74872e9e9912cb9d7b41c4a55741a"
     },
     ".claude/skills/discussion-first/SKILL.md": {
       "hash": "2ba131e14e83c072aa859bd31d3731062902a4e4",
@@ -355,8 +355,8 @@
       "template": "5bd088669c9041435582c4b88fface914fa1247e"
     },
     "docs/rules-rationale/work_while_waiting.md": {
-      "hash": "cc97dd568007450afe51c434fa659dff176a5d81",
-      "template": "cc97dd568007450afe51c434fa659dff176a5d81"
+      "hash": "01f83ce9113530d86ec57baf2001bfec9bae3f07",
+      "template": "01f83ce9113530d86ec57baf2001bfec9bae3f07"
     },
     "docs/rules-rationale/write_for_the_reader.md": {
       "hash": "0da3099b1792dbb7e512d400232a2eb4b27c95a2",
@@ -375,20 +375,20 @@
       "template": "faf74bcd5b6a41c2175aac8ba4c4bbc8e5537eb6"
     },
     ".claude/agents/developer.md": {
-      "hash": "0f3466d38cc364a6ac3d0405a0873578aa33fc91",
-      "template": "0f3466d38cc364a6ac3d0405a0873578aa33fc91"
+      "hash": "a0cdec51624264ba351555e9c4baabf2f9f42150",
+      "template": "a0cdec51624264ba351555e9c4baabf2f9f42150"
     },
     ".github/agents/developer.agent.md": {
-      "hash": "a14d19c95bfec78668fe2429ee1d209b0b9321a3",
-      "template": "a14d19c95bfec78668fe2429ee1d209b0b9321a3"
+      "hash": "9db567e26563ffb652626cefd6d6443dd6cdd356",
+      "template": "9db567e26563ffb652626cefd6d6443dd6cdd356"
     },
     ".claude/agents/code-reviewer.md": {
-      "hash": "ed4ec031c6fccea5dc65587567c8a8b48077b7ee",
-      "template": "ed4ec031c6fccea5dc65587567c8a8b48077b7ee"
+      "hash": "972af72b55af68718aef904ee1daa176d10563ec",
+      "template": "972af72b55af68718aef904ee1daa176d10563ec"
     },
     ".github/agents/code-reviewer.agent.md": {
-      "hash": "50ff494e5b9af78472d6b8c89de8dd73197f7bba",
-      "template": "50ff494e5b9af78472d6b8c89de8dd73197f7bba"
+      "hash": "52a7c78c777d9b7a8469eeb160342565f9b14341",
+      "template": "52a7c78c777d9b7a8469eeb160342565f9b14341"
     },
     ".claude/agents/reader.md": {
       "hash": "5347d6d057bc87dca26b9fc2d0817eb62c34dfdb",
@@ -407,40 +407,40 @@
       "template": "0f78bca2a77464017703e4e356c4787922b3c8fe"
     },
     ".claude/agents/workflow.md": {
-      "hash": "687605b8558a1ebef0e996c89d15e356729d47d6",
-      "template": "687605b8558a1ebef0e996c89d15e356729d47d6"
+      "hash": "bb8200923e632a9c17d1f8d1b1d0968f10524beb",
+      "template": "bb8200923e632a9c17d1f8d1b1d0968f10524beb"
     },
     ".github/agents/workflow.agent.md": {
-      "hash": "e80dd3fa8cf78321b0d58b150998a472e6a9ba56",
-      "template": "e80dd3fa8cf78321b0d58b150998a472e6a9ba56"
+      "hash": "2c0b0dba61489609365165bf2725280bbdefbd71",
+      "template": "2c0b0dba61489609365165bf2725280bbdefbd71"
     },
     ".claude/agents/architect.md": {
-      "hash": "6ad098bc3e74600594e02fbdaac3f4fea89c6351",
-      "template": "6ad098bc3e74600594e02fbdaac3f4fea89c6351"
+      "hash": "a440f3fdebce83bafc93d781757fd0ac6c101571",
+      "template": "a440f3fdebce83bafc93d781757fd0ac6c101571"
     },
     ".github/agents/architect.agent.md": {
-      "hash": "1cbe6d5d0ba408b7522a77b3d2b1ebda2aa5bede",
-      "template": "1cbe6d5d0ba408b7522a77b3d2b1ebda2aa5bede"
+      "hash": "16088252376ea5a4c1e5acbc95675c5a26dd01bf",
+      "template": "16088252376ea5a4c1e5acbc95675c5a26dd01bf"
     },
     ".claude/agents/design-reviewer.md": {
-      "hash": "934fd7868223eba2c23e1b0f6cc5cbc2caa2a7e9",
-      "template": "934fd7868223eba2c23e1b0f6cc5cbc2caa2a7e9"
+      "hash": "802fae3729e017730185ca735c6934b1f7c235d1",
+      "template": "802fae3729e017730185ca735c6934b1f7c235d1"
     },
     ".github/agents/design-reviewer.agent.md": {
-      "hash": "3700720ab0e11183ef878f75c65f11f4b87a16bc",
-      "template": "3700720ab0e11183ef878f75c65f11f4b87a16bc"
+      "hash": "44ef885a3986b4d492ccb5321fa969d3c98d9723",
+      "template": "44ef885a3986b4d492ccb5321fa969d3c98d9723"
     },
     ".claude/agents/doc-writer.md": {
-      "hash": "434b9a8b7fa41986b043e7f759f08d71bab16bbe",
-      "template": "434b9a8b7fa41986b043e7f759f08d71bab16bbe"
+      "hash": "3442ca55608209babf90486984d84df60072f54a",
+      "template": "3442ca55608209babf90486984d84df60072f54a"
     },
     ".github/agents/doc-writer.agent.md": {
-      "hash": "c877f63198ba63be4703391b2b40e6c26d1b1c20",
-      "template": "c877f63198ba63be4703391b2b40e6c26d1b1c20"
+      "hash": "b2e35a86b37302482547c57d3fb1a7388b8738aa",
+      "template": "b2e35a86b37302482547c57d3fb1a7388b8738aa"
     },
     ".claude/CLAUDE.md": {
-      "hash": "7ce57ddeee3a9ab79eacdc11e3cdbaff0b4666c3",
-      "template": "7ce57ddeee3a9ab79eacdc11e3cdbaff0b4666c3"
+      "hash": "34a483823c4df31b6cc77ec0cca08f58aad3a697",
+      "template": "34a483823c4df31b6cc77ec0cca08f58aad3a697"
     },
     "AGENTS.md": {
       "hash": "56702dbc0eb929745ce67621574c7d52a8de99f4",
@@ -531,12 +531,12 @@
       "template": "9064ed0089b3b15e862ae34eb44bd2b94d89653b"
     },
     ".claude/skills/hand-off-a-change/SKILL.md": {
-      "hash": "5b4c08449a806766816f9819b6ba2cad249f5d79",
-      "template": "5b4c08449a806766816f9819b6ba2cad249f5d79"
+      "hash": "dcd65e4255e01188397ecada9f4d1b22a2d4c151",
+      "template": "dcd65e4255e01188397ecada9f4d1b22a2d4c151"
     },
     ".github/skills/hand-off-a-change/SKILL.md": {
-      "hash": "5b4c08449a806766816f9819b6ba2cad249f5d79",
-      "template": "5b4c08449a806766816f9819b6ba2cad249f5d79"
+      "hash": "dcd65e4255e01188397ecada9f4d1b22a2d4c151",
+      "template": "dcd65e4255e01188397ecada9f4d1b22a2d4c151"
     },
     ".claude/skills/retro/SKILL.md": {
       "hash": "2a5636f80525a6466527e00aa03f8ae2b05e1075",
@@ -587,12 +587,12 @@
       "template": "7b89c6c5e991281c6aac0015b119938450a1249c"
     },
     ".mcp.json": {
-      "hash": "8728b28009f25d8df4cd37f2cf7e337091f5660a",
-      "template": "8728b28009f25d8df4cd37f2cf7e337091f5660a"
+      "hash": "678f25445f378dd04a95af20a4a45ad7a2b126dd",
+      "template": "678f25445f378dd04a95af20a4a45ad7a2b126dd"
     },
     "MCP-SETUP.md": {
-      "hash": "bf026471ae6b78c85b31def3a7bdfce3abf7cdb7",
-      "template": "bf026471ae6b78c85b31def3a7bdfce3abf7cdb7"
+      "hash": "0f693711943810c76e0aa1d79089374f22cade2a",
+      "template": "0f693711943810c76e0aa1d79089374f22cade2a"
     },
     ".claude/skills/list-pending-work/SKILL.md": {
       "hash": "c2257f3245d13bfd5e02394861f75a252bd3dbb6",
@@ -603,12 +603,12 @@
       "template": "c2257f3245d13bfd5e02394861f75a252bd3dbb6"
     },
     ".claude/skills/work-while-waiting/SKILL.md": {
-      "hash": "0e5eb97d709c769c9cfa5eada3f3a6fe30f3d79f",
-      "template": "0e5eb97d709c769c9cfa5eada3f3a6fe30f3d79f"
+      "hash": "e58e9a850d0be341cfa5ff72c824a8e1a62fc2e0",
+      "template": "e58e9a850d0be341cfa5ff72c824a8e1a62fc2e0"
     },
     ".github/skills/work-while-waiting/SKILL.md": {
-      "hash": "0e5eb97d709c769c9cfa5eada3f3a6fe30f3d79f",
-      "template": "0e5eb97d709c769c9cfa5eada3f3a6fe30f3d79f"
+      "hash": "e58e9a850d0be341cfa5ff72c824a8e1a62fc2e0",
+      "template": "e58e9a850d0be341cfa5ff72c824a8e1a62fc2e0"
     },
     ".claude/skills/work-monitor/SKILL.md": {
       "hash": "e00497655f7ca0d58a60d3dc80123597bac2077b",
@@ -636,11 +636,6 @@
     }
   },
   "preflight": {
-    "sequential-thinking": {
-      "check": "node --version",
-      "outcome": "present",
-      "runtime_version": "v26.13.0"
-    },
     "serena": {
       "check": "serena --version",
       "outcome": "present",

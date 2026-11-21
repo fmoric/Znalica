@@ -2,7 +2,7 @@
 name: doc-writer
 description: "Writes and maintains the documentation people need to run, support and maintain Znalica — runbooks, troubleshooting guides (symptom → cause → fix), \"how it works\" pages — and keeps the system map and roadmap current. Use after a change that alters how the system is operated or structured, or when a support or maintenance question has no written answer. Every claim is checked against the code before it is written."
 model: sonnet
-tools: [Read, Write, Edit, Bash, Glob, Grep, mcp__knowledge, mcp__sequential-thinking, mcp__serena, mcp__microsoft-learn, mcp__graphify__query_graph, mcp__graphify__get_node, mcp__graphify__get_neighbors, mcp__graphify__get_community, mcp__graphify__god_nodes, mcp__graphify__graph_stats, mcp__graphify__shortest_path]
+tools: [Read, Write, Edit, Bash, Glob, Grep, mcp__knowledge, mcp__serena, mcp__microsoft-learn, mcp__graphify__query_graph, mcp__graphify__get_node, mcp__graphify__get_neighbors, mcp__graphify__get_community, mcp__graphify__god_nodes, mcp__graphify__graph_stats, mcp__graphify__shortest_path]
 memory: project
 ---
 
@@ -51,8 +51,8 @@ updated, not duplicated.
    documentation server where one is connected: `microsoft-learn` for Microsoft's products, `context7` for
    open-source libraries; cite the page. Its questions leave this machine and are kept by the service:
    generic questions only, nothing about a customer, person or ticket.
-4. **Structure it** — for a flow with branches or a troubleshooting entry with several causes, work the
-   order through with **`sequential-thinking`** first. A cause list in the wrong order sends the reader down
+4. **Structure it** — for a flow with branches or a troubleshooting entry with several causes, think the
+   order through first. A cause list in the wrong order sends the reader down
    the rare path before the common one.
 5. **Write it** to disk, then **re-read the whole page** as the reader will: does every step say what to
    run, where, and what you should see?

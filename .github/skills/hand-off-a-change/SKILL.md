@@ -49,9 +49,8 @@ itself wins over these briefs** (`AGENTS.md`): fill the blocks to match it.
    the developer re-reads it whole. **When the review of the last code fixes passes, the main session asks the
    developer for the pre-check and then, on the user's yes (step 2), runs the full suite itself or gives it to the developer** (§3b).
    **A review that returns no verdict has not run**, in any round: a reviewer stopped by an API error (a safeguard
-   flag, an overload) leaves no findings and no pass. Report it to the user with the error text and the request
-   ID, and ask before sending it again; another model is an option to offer, not a fix to assume. The gates that wait
-   for a passing review keep waiting.
+   flag, an overload) leaves no findings and no pass. Report it and ask before sending it again, as `tool_retry` says. The gates
+   that wait for a passing review keep waiting.
 5. **One full run after the last code commit, behind a passing pre-check.** That run is the local gate, and it is
    never the first run of the change's tests: the pre-check passes on that same commit before it starts. The
    pre-check takes its tests from what the project declares and stays targeted: a change to something every test

@@ -20,7 +20,7 @@ built-in tools.
    operation, fetch its description before falling back to a built-in. If none does, say you routed from
    names alone.
 3. **Try the matching tool first** — fall back to the built-in search/read tools only if no specialized tool fits.
-4. **For complex or multi-step work** — reason it through first (a sequential-thinking tool, if one is present).
+4. **For complex or multi-step work** — reason it through first.
 
 The check is tool-agnostic: a new tool's description tells you when to use it.
 
