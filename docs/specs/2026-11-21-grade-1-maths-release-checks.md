@@ -9,6 +9,8 @@ saying for each check what was run. The criteria are listed in that spec's *Cove
 - **Tests on the same commit:** the full EditMode suite, 571 of 571 passed (`Logs/test-runs/step10-full-1.xml`).
 - **States:** *checked in code* means read in the code or the tests, not seen in the player. *Open* means the
   product owner's check in the player is still to do. Each player result is added when it is reported.
+- **How to run the player checks:** step by step in
+  [2026-11-21-grade-1-maths-release-checks-how-to.md](2026-11-21-grade-1-maths-release-checks-how-to.md).
 
 | AC | Criterion | Checked in code (what was run) | Player check (what to do) | Result |
 |---|---|---|---|---|
