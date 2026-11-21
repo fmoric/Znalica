@@ -152,8 +152,8 @@ Built only by `DataFolder`, the one place that makes these paths:
 | `AnswerGiving` | `DiskWrite.TryRun` | a failed write is reported and the screen redraws (`AnswerGiving.cs`) | built |
 | `VoiceLibraryBuilder` | `Voice/` folder, `Hr.json` | regenerates `VoiceLibrary.asset` and `VoiceScript.csv`; `BuildScript.Build` runs it first | built |
 
-No planned part is shown: the tech spec's later steps (a parent PIN, `docs/research/parent-pin-gate.md`) have no code here and
-are not mapped.
+No planned part is shown: work that is only planned (a parent PIN, tracker T11, `docs/research/parent-pin-gate.md`) has no
+code here and is not mapped.
 
 ## Main flows
 
