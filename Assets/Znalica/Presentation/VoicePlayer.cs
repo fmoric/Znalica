@@ -20,6 +20,7 @@ namespace Znalica.Presentation
         private IProblemLog _problems;
         private IReadOnlyList<string> _last = new string[0];
         private Coroutine _playing;
+        private readonly Queue<string> _pending = new Queue<string>();
 
         /// <summary>Voice volume, 0.0 to 1.0.</summary>
         public float Volume
@@ -48,6 +49,7 @@ namespace Znalica.Presentation
         public void Play(IReadOnlyList<string> clipNames)
         {
             _last = clipNames;
+            _pending.Clear();
             if (_playing != null)
             {
                 StopCoroutine(_playing);
@@ -63,6 +65,32 @@ namespace Znalica.Presentation
             _playing = StartCoroutine(PlayQueue(clipNames));
         }
 
+        /// <summary>
+        /// Plays the clips after what is playing has finished, without cutting it off; at once if nothing is playing. At
+        /// volume 0 it does nothing. What <see cref="ReplayLast"/> replays then is what was playing followed by these clips.
+        /// </summary>
+        public void PlayAfterCurrent(IReadOnlyList<string> clipNames)
+        {
+            if (_playing == null)
+            {
+                Play(clipNames);
+                return;
+            }
+
+            if (VoiceVolume.IsSilent(_volume))
+            {
+                return;
+            }
+
+            var all = new List<string>(_last);
+            all.AddRange(clipNames);
+            _last = all;
+            foreach (string name in clipNames)
+            {
+                _pending.Enqueue(name);
+            }
+        }
+
         /// <summary>Stops what is playing. What <see cref="ReplayLast"/> replays is kept.</summary>
         public void Stop()
         {
@@ -72,6 +100,7 @@ namespace Znalica.Presentation
                 _playing = null;
             }
 
+            _pending.Clear();
             _source.Stop();
         }
 
@@ -82,8 +111,14 @@ namespace Znalica.Presentation
 
         private IEnumerator PlayQueue(IReadOnlyList<string> clipNames)
         {
-            foreach (string name in clipNames)
+            foreach (string first in clipNames)
             {
+                _pending.Enqueue(first);
+            }
+
+            while (_pending.Count > 0)
+            {
+                string name = _pending.Dequeue();
                 if (_library == null || !_library.TryGetClip(name, out AudioClip clip))
                 {
                     _problems.Report("No voice clip named " + name + ".");

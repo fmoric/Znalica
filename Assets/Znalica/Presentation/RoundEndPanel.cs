@@ -72,7 +72,7 @@ namespace Znalica.Presentation
         }
 
         /// <summary>
-        /// Shows the break suggestion and speaks it once for this showing of the panel; the screen may redraw as often as it
+        /// Shows the break suggestion and speaks it, after the last answer's feedback has finished, once for this showing of the panel; the screen may redraw as often as it
         /// likes. Both buttons stay as they are. With <paramref name="due"/> false it does nothing.
         /// </summary>
         public void SuggestBreak(bool due)
@@ -84,7 +84,7 @@ namespace Znalica.Presentation
 
             _breakShown = true;
             _break.text = _catalog.Text(PhraseKey.BreakSuggestion);
-            _voice.Play(_catalog.VoiceClips(PhraseKey.BreakSuggestion));
+            _voice.PlayAfterCurrent(_catalog.VoiceClips(PhraseKey.BreakSuggestion));
         }
 
         private static void EndButton(RectTransform button, float x)
