@@ -38,6 +38,7 @@ namespace Znalica.Presentation
         private VoicePlayer _voice;
         private IItemSet _items;
         private IClock _clock;
+        private SessionClock _session;
         private IProblemLog _problems;
         private IAnswerLog _log;
         private ItemSchedule _schedule;
@@ -65,6 +66,7 @@ namespace Znalica.Presentation
             VoicePlayer voice,
             IItemSet items,
             IClock clock,
+            SessionClock session,
             IProblemLog problems,
             Action onStop)
         {
@@ -74,6 +76,7 @@ namespace Znalica.Presentation
             screen._voice = voice;
             screen._items = items;
             screen._clock = clock;
+            screen._session = session;
             screen._problems = problems;
             screen._onStop = onStop;
             screen.Build();
@@ -183,7 +186,7 @@ namespace Znalica.Presentation
             _pad.anchorMin = _pad.anchorMax = new Vector2((1f + TaskAreaRightWithPad) / 2f, 0.5f);
             _pad.pivot = new Vector2(0.5f, 0.5f);
             _pad.anchoredPosition = Vector2.zero;
-            _roundEnd = new RoundEndPanel(panel, _catalog, BeginRound, () => _onStop());
+            _roundEnd = new RoundEndPanel(panel, _catalog, _voice, BeginRound, () => _onStop());
         }
 
         /// <summary>Draws everything from the play's current state.</summary>
@@ -195,6 +198,7 @@ namespace Znalica.Presentation
             if (ended)
             {
                 _roundEnd.SetScore(_catalog.Text(PhraseKey.RoundEndScore, _play.SummaryArgs));
+                _roundEnd.SuggestBreak(_session.BreakDue);
                 return;
             }
 

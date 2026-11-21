@@ -33,6 +33,7 @@ namespace Znalica.Presentation
             voice.Volume = settingsStore.Load().VoiceVolume;
             // One gate for the app's whole run, so its 30-second wait cannot be escaped by leaving the screen and coming back.
             var gate = new ParentGate(clock, new SeededRandom(Environment.TickCount));
+            var session = new SessionClock(clock);
 
             EnsureEventSystem();
             RectTransform canvas = NewCanvas();
@@ -85,6 +86,7 @@ namespace Znalica.Presentation
                 {
                     activeLog = profileStore.AnswerLog(picked.ProfileId);
                     activeSession = SessionNumber.Next(activeLog.ReadAll());
+                    session.Start();
                     navigator.Show(menuPanel);
                 },
                 () =>
@@ -181,11 +183,11 @@ namespace Znalica.Presentation
                 },
                 ShowStart);
             menuPanel = menu.Build(canvas, _activityPictures);
-            arithmetic = ArithmeticScreen.Create(canvas, catalog, voice, new ArithmeticItemSet(), clock, problems, () => navigator.Show(menuPanel));
+            arithmetic = ArithmeticScreen.Create(canvas, catalog, voice, new ArithmeticItemSet(), clock, session, problems, () => navigator.Show(menuPanel));
 
-            comparison = ComparisonScreen.Create(canvas, catalog, voice, new ComparisonItemSet(), clock, problems, () => navigator.Show(menuPanel));
+            comparison = ComparisonScreen.Create(canvas, catalog, voice, new ComparisonItemSet(), clock, session, problems, () => navigator.Show(menuPanel));
 
-            numberLine = NumberLineScreen.Create(canvas, catalog, voice, new NumberLineItemSet(), clock, problems, () => navigator.Show(menuPanel));
+            numberLine = NumberLineScreen.Create(canvas, catalog, voice, new NumberLineItemSet(), clock, session, problems, () => navigator.Show(menuPanel));
 
             navigator.Add(pickPanel);
             navigator.Add(gateScreen.Panel);

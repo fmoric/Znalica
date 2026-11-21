@@ -104,5 +104,6 @@
   {"Key": "CheckInstructionMissing", "Text": "Upiši broj koji nedostaje.", "Voice": []},
   {"Key": "CheckInstructionSign", "Text": "Upiši znak: manje, veće ili jednako.", "Voice": []},
   {"Key": "CheckInstructionNeighbour", "Text": "Koji broj nedostaje u nizu?", "Voice": []},
-  {"Key": "CheckPage", "Text": "Stranica {Page} od {Pages}", "Voice": []}
+  {"Key": "CheckPage", "Text": "Stranica {Page} od {Pages}", "Voice": []},
+  {"Key": "BreakSuggestion", "Text": "Igraš već dugo. Vrijeme je za kratku stanku.", "Voice": ["BreakSuggestion"]}
 ] }
