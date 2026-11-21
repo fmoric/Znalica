@@ -71,6 +71,7 @@ namespace Znalica.Presentation
         private VoicePlayer _voice;
         private IItemSet _items;
         private IClock _clock;
+        private SessionClock _session;
         private IProblemLog _problems;
         private IAnswerLog _log;
         private ItemSchedule _schedule;
@@ -97,6 +98,7 @@ namespace Znalica.Presentation
             VoicePlayer voice,
             IItemSet items,
             IClock clock,
+            SessionClock session,
             IProblemLog problems,
             Action onStop)
         {
@@ -106,6 +108,7 @@ namespace Znalica.Presentation
             screen._voice = voice;
             screen._items = items;
             screen._clock = clock;
+            screen._session = session;
             screen._problems = problems;
             screen._onStop = onStop;
             screen.Build();
@@ -187,7 +190,7 @@ namespace Znalica.Presentation
 
             _next = BottomButton("Next", _catalog.Text(PhraseKey.ButtonNext), BottomButtonOffset, Continue);
             BottomButton("Replay", _catalog.Text(PhraseKey.ButtonReplay), -BottomButtonOffset, _voice.ReplayLast);
-            _roundEnd = new RoundEndPanel(panel, _catalog, BeginRound, () => _onStop());
+            _roundEnd = new RoundEndPanel(panel, _catalog, _voice, BeginRound, () => _onStop());
         }
 
         private RectTransform BottomButton(string name, string text, float x, Action onClick)
@@ -209,6 +212,7 @@ namespace Znalica.Presentation
             if (ended)
             {
                 _roundEnd.SetScore(_catalog.Text(PhraseKey.RoundEndScore, _play.SummaryArgs));
+                _roundEnd.SuggestBreak(_session.BreakDue);
                 return;
             }
 

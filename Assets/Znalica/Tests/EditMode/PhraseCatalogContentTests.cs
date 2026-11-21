@@ -46,6 +46,7 @@ namespace Znalica.Tests.EditMode
         [TestCase(PhraseKey.ExplainPlace)]
         [TestCase(PhraseKey.ExplainBefore)]
         [TestCase(PhraseKey.ExplainAfter)]
+        [TestCase(PhraseKey.BreakSuggestion)]
         public void PhraseThatMustSpeak_HasVoiceInTheShippedHrJson(PhraseKey key)
         {
             PhraseCatalog catalog = PhraseCatalogFile.Read(

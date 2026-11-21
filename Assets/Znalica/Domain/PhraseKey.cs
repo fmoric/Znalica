@@ -146,5 +146,9 @@ namespace Znalica.Domain
         CheckInstructionSign,
         CheckInstructionNeighbour,
         CheckPage,
+
+        // Step 10: the break suggestion on the round-end screen after about 10 minutes of play (FS:45). Spoken (the child
+        // cannot be expected to read it), with a placeholder clip of the same name. Wording is placeholder for the Croatian review.
+        BreakSuggestion,
     }
 }
