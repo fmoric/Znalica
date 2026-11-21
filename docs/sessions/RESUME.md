@@ -1,18 +1,20 @@
 # Resume
 
-**Last session:** 2026-11-20: [agent packet 0.205.6](2026-11-20-agent-packet-0.205.6.md) and its
-[part 2: housekeeping, the assessment, branch cleanup](2026-11-20-agent-packet-0.205.6-2.md)
+**Last session:** 2026-11-21: [step 10 (break suggestion, system map, release checklist) and T7](2026-11-21-step-10-break-suggestion.md)
 
-**Written at:** `master` @ `853183d`
+**Written at:** `feat/break-suggestion` @ `b42a433`
 
-**Push state:** `master` is pushed through `853183d` (PRs #14, #15 and #16 merged). No branch holds unpushed work; the
-merged `docs/assess-delivery-2026-11-20` is still on the remote, kept because its deletion was not asked for.
+**Push state:** `feat/break-suggestion` is pushed through `b42a433` (draft PR #17), and `fix/unity-asset-line-endings`
+through `73f9876` (PR #18). Neither is merged. The only uncommitted work is `docs/roadmap.md`, `docs/roadmap.json` and
+`docs/roadmap.html`, untracked in the checkout that wrote this pointer (T17).
 
-**PAUSED:** none.
+**PAUSED:** the roadmap (T17). Two doc-writer runs were stopped by API safeguards, and the partial files are kept for
+the product owner to read. Do NOT resume without explicit user instruction.
 
 **Next, unconfirmed:**
-1. Restart Claude Code and re-run `/assess-delivery` once, so its runtime evidence comes from a post-delivery session;
-   then T12's Copilot CLI live checks.
-2. Step 10 of `docs/specs/2026-11-16-grade-1-maths-first-version-tech.md`: the break suggestion and the release checks
-   on the built player.
-3. The product owner's decisions for T10 (a warmer look) and T11 (a PIN parent gate), from the two research briefs.
+1. The product owner's player checks: the 17 steps in `docs/specs/2026-11-21-grade-1-maths-release-checks-how-to.md`
+   on PR #17's branch. Then fill in the checklist and take PR #17 out of draft.
+2. Merge PR #18 (T7), on the product owner's word.
+3. The product owner's decision on the roadmap files (T17).
+
+Still not done from the 2026-11-20 pointer: re-running `/assess-delivery` after a restart, then T12's Copilot CLI checks.

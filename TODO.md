@@ -25,6 +25,10 @@
   `feat/parent-area-progress-and-check`).
   - **2026-11-18, end of day:** steps 8 and 9 merged in PR #9; the product owner's play-test of steps 2 to 9 in the
     built player passed ("all looks fine"). Next: step 10.
+  - **2026-11-21:** step 10's code (the break suggestion), the system map and the AC1–AC13 checklist are in draft
+    PR #17 (`feat/break-suggestion`); review passed in 2 rounds and the full suite passed 571/571 on `3ba89db`. The
+    product owner's player checks are open, step by step in
+    `docs/specs/2026-11-21-grade-1-maths-release-checks-how-to.md` (on that branch).
 - [ ] **Make the Unity commands in `AGENTS.md` run on a machine where `Unity.exe` is not on PATH.** *(T5. New
   2026-11-16.)* The build and test commands call a bare `Unity.exe`; on this PC the editor is at
   `C:\Program Files\Unity\Hub\Editor\6000.3.28f1\Editor\Unity.exe` and not on PATH, so the developer had to call it
@@ -38,6 +42,8 @@
   changes, and both were reverted by hand. The repository has no `.gitattributes`.
   - **Fix direction:** a `.gitattributes` that fixes the line endings of Unity's text assets, so a build leaves them
     unchanged.
+  - **2026-11-21:** fixed by a `.gitattributes` in PR #18 (`fix/unity-asset-line-endings`, `73f9876`): review
+    passed, full suite 563/563; not merged.
 - [ ] **Merge the round code the three activity screens copy.** *(T9. New 2026-11-18.)* `ArithmeticScreen`,
   `ComparisonScreen` and `NumberLineScreen` each carry near-identical `Begin`, `BeginRound`, save-failure handling,
   Next/Replay buttons and key loop; the steps 6+7 code review raised it, and the product owner deferred it on
@@ -98,6 +104,35 @@
   judgment. The 2026-11-20 assessment spent 23.85 AI credits on three runs: code-reviewer 12.56 and design-reviewer
   10.67 (Sonnet-pinned), reader 0.62 (Haiku-pinned).
   - **Fix direction:** pass `--model <a low-cost model>` to signal B's runs; the tool list does not depend on the model.
+- [ ] **Build the roadmap the user asked for in PR #17.** *(T17. New 2026-11-21.)* Two doc-writer runs were stopped by
+  API safeguards (`[reasoning_extraction]`): on Sonnet 5.5 (`req_011ChFrXyNhqA1kfcM8B4rhY`) and on Opus 5.5
+  (`req_011ChFs8PN3VgkomD2kus8oa`). The second left `docs/roadmap.md`, `.json` and `.html` untracked on the
+  `feat/break-suggestion` checkout; the HTML is probably unfinished. The product owner kept them to read. **PAUSED**
+  until the product owner decides on them; do not resume without explicit instruction.
+  - **Fix direction:** after the read, keep and finish the files, or rebuild the roadmap in a later session.
+- [ ] **Make the break suggestion speak even when the last answer's clips are missing.** *(T18. New 2026-11-21.)* The
+  step 10 review's second round (PR #17) found that a `VoicePlayer.Play` whose clips are all missing finishes inside
+  `StartCoroutine`, which then assigns the finished coroutine to `_playing`, so `_playing` stays non-null; a later
+  `PlayAfterCurrent` only queues, nothing plays, and the suggestion is silent (`VoicePlayer.cs:74`, `122-126`). It
+  needs the feedback clips to be missing, which the game already reports as a problem. Left undone in PR #17.
+  - **Fix direction:** let `PlayQueue` clear a handle the caller checks, or also test `_source.isPlaying` in
+    `PlayAfterCurrent`.
+- [ ] **Tell the developer agent never to leave a background command running when it reports.** *(T19. New
+  2026-11-21. packet-owned.)* In the step 10 fix round the developer's hand-back was refused twice ("waiting on its
+  own background work"), though its brief said to keep every command in the foreground, so its report never reached
+  the main session, which rebuilt the results from the branch and the run logs.
+  - **Fix direction:** one line in `.claude/agents/developer.md`: start no background command, and wait for any
+    started one to end before reporting.
+- [ ] **Run the EditMode suite in CI.** *(T20. New 2026-11-21.)* The repository has no `.github/workflows`, so a local
+  full run is the only full run a pull request gets (PRs #17 and #18 on 2026-11-21).
+  - **Decisions first:** a Unity licence for CI (a secret in the repository), and which runner.
+  - **Fix direction:** a GitHub Actions workflow running the EditMode tests on each pull request (the `workflow`
+    agent).
+- [ ] **Make the developer brief say to open `PR_GATES_PRECHECK.md` before selecting a pre-check.** *(T21. New
+  2026-11-21. packet-owned.)* In step 10 the developer selected and budgeted its pre-check without opening the file,
+  and said so; the budget it used happened to match.
+  - **Fix direction:** one line in `hand-off-a-change`'s developer brief (*Gate*): open
+    `docs/process/PR_GATES_PRECHECK.md` before you select.
 
 ## Done
 
