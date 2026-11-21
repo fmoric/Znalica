@@ -1,0 +1,217 @@
+{
+  "schema": 1,
+  "project": "Znalica",
+  "commit": "3ba89db",
+  "generated": "2026-11-21",
+  "roots": [
+    "Assets/Znalica",
+    "Assets/StreamingAssets/Text"
+  ],
+  "read_with": [
+    "text scan of declared type names for the refs counts (not a language server)",
+    ".asmdef files for dependency direction",
+    "reading the source files"
+  ],
+  "cannot_see": [
+    "refs are source lines naming a type declared in the other component, from a text scan; direction is checked against the .asmdef files",
+    "Scenes/Main.unity was searched for two GUIDs only (AppRoot, VoiceLibrary.asset); its other content was not read",
+    "Unity runtime dispatch (MonoBehaviour lifecycle, button callbacks, coroutines, audio) is not traced as calls",
+    "nothing was run: whether FileStream.Flush(true) and File.Replace reach the disk in an installed player is unverified",
+    "the graphify graph was built at 060fc64, older than this map, and was used for its statistics only",
+    "outside the repository: Unity editor, packages, the player's data folder; there is no CI"
+  ],
+  "components": [
+    {
+      "id": "domain",
+      "title": "Domain",
+      "kind": "component",
+      "purpose": "The rules of the game with no Unity in it: items, rounds, schedule, progress, school check, parent gate, phrase catalog.",
+      "paths": [
+        "Assets/Znalica/Domain"
+      ],
+      "depends_on": [],
+      "tested_by": [
+        "Assets/Znalica/Tests/EditMode"
+      ],
+      "implements": [
+        "IClock",
+        "IItemSet",
+        "IRandom"
+      ]
+    },
+    {
+      "id": "storage",
+      "title": "Storage",
+      "kind": "component",
+      "purpose": "Everything written to or read from disk: profiles, settings, answer log, check log, phrase file.",
+      "paths": [
+        "Assets/Znalica/Storage"
+      ],
+      "depends_on": [
+        {
+          "id": "domain",
+          "refs": 76
+        },
+        {
+          "id": "text",
+          "refs": 1
+        }
+      ],
+      "tested_by": [
+        "Assets/Znalica/Tests/EditMode/ProfileStoreTests.cs",
+        "Assets/Znalica/Tests/EditMode/SettingsStoreTests.cs",
+        "Assets/Znalica/Tests/EditMode/FileAnswerLogTests.cs",
+        "Assets/Znalica/Tests/EditMode/FileCheckLogTests.cs",
+        "Assets/Znalica/Tests/EditMode/AtomicFileWriterTests.cs",
+        "Assets/Znalica/Tests/EditMode/PhraseCatalogFileTests.cs"
+      ],
+      "implements": [
+        "IAnswerLog",
+        "ICheckLog"
+      ]
+    },
+    {
+      "id": "presentation",
+      "title": "Presentation",
+      "kind": "component",
+      "purpose": "The screens, drawing, number pad and voice player; AppRoot wires the app and decides which screen leads to which.",
+      "paths": [
+        "Assets/Znalica/Presentation",
+        "Assets/Znalica/Scenes/Main.unity"
+      ],
+      "depends_on": [
+        {
+          "id": "domain",
+          "refs": 380
+        },
+        {
+          "id": "storage",
+          "refs": 30
+        },
+        {
+          "id": "voice",
+          "refs": 1
+        }
+      ],
+      "tested_by": [],
+      "implements": [
+        "IProblemLog"
+      ]
+    },
+    {
+      "id": "voice",
+      "title": "Voice",
+      "kind": "component",
+      "purpose": "The spoken clips, the generated VoiceLibrary asset that maps a clip name to its clip, and VoiceScript.csv for the recorder.",
+      "paths": [
+        "Assets/Znalica/Voice"
+      ],
+      "depends_on": [],
+      "tested_by": [
+        "Assets/Znalica/Tests/EditMode/PhraseCatalogContentTests.cs",
+        "Assets/Znalica/Tests/EditMode/VoiceVolumeTests.cs"
+      ]
+    },
+    {
+      "id": "text",
+      "title": "Text",
+      "kind": "component",
+      "purpose": "Hr.json: the Croatian text and spoken clip names of every phrase, loose beside the player.",
+      "paths": [
+        "Assets/StreamingAssets/Text"
+      ],
+      "depends_on": [],
+      "tested_by": [
+        "Assets/Znalica/Tests/EditMode/PhraseCatalogFileTests.cs",
+        "Assets/Znalica/Tests/EditMode/PhraseCatalogContentTests.cs",
+        "Assets/Znalica/Tests/EditMode/ArithmeticScreenTextTests.cs"
+      ]
+    },
+    {
+      "id": "editor",
+      "title": "Editor (BuildScript)",
+      "kind": "component",
+      "purpose": "BuildScript.Build for the batch build, and VoiceLibraryBuilder, which regenerates the voice library and script.",
+      "paths": [
+        "Assets/Znalica/Editor"
+      ],
+      "depends_on": [
+        {
+          "id": "domain",
+          "refs": 10
+        },
+        {
+          "id": "presentation",
+          "refs": 8
+        },
+        {
+          "id": "storage",
+          "refs": 2
+        },
+        {
+          "id": "voice",
+          "refs": 1
+        },
+        {
+          "id": "text",
+          "refs": 1
+        }
+      ],
+      "tested_by": []
+    },
+    {
+      "id": "tests-editmode",
+      "title": "EditMode tests",
+      "kind": "component",
+      "purpose": "NUnit EditMode tests of Domain and Storage, with in-memory test doubles.",
+      "paths": [
+        "Assets/Znalica/Tests/EditMode"
+      ],
+      "depends_on": [
+        {
+          "id": "domain",
+          "refs": 1788
+        },
+        {
+          "id": "storage",
+          "refs": 76
+        },
+        {
+          "id": "text",
+          "refs": 6
+        },
+        {
+          "id": "voice",
+          "refs": 1
+        }
+      ],
+      "tested_by": []
+    }
+  ],
+  "interfaces": [
+    {
+      "id": "IAnswerLog",
+      "path": "Assets/Znalica/Domain/IAnswerLog.cs"
+    },
+    {
+      "id": "ICheckLog",
+      "path": "Assets/Znalica/Domain/ICheckLog.cs"
+    },
+    {
+      "id": "IClock",
+      "path": "Assets/Znalica/Domain/IClock.cs"
+    },
+    {
+      "id": "IItemSet",
+      "path": "Assets/Znalica/Domain/IItemSet.cs"
+    },
+    {
+      "id": "IProblemLog",
+      "path": "Assets/Znalica/Domain/IProblemLog.cs"
+    },
+    {
+      "id": "IRandom",
+      "path": "Assets/Znalica/Domain/IRandom.cs"
+    }
+  ]
+}
